@@ -5,9 +5,9 @@
   "main": "./src/main.ts",
   "scripts": {
     "dev": "NODE_ENV=dev ts-node-dev --ignore-watch ./node_modules --respawn --transpile-only ./src/server.ts",
-    "knex:migration:run": "knex --knexfile ./src/config/knexfile.ts migrate:latest",
-    "knex:migration:rollback": "knex --knexfile ./src/config/knexfile.ts migrate:rollback",
-    "knex:migration:make": "knex --knexfile ./src/config/knexfile.ts migrate:make"
+    "knex:migration:run": "knex --knexfile ./src/config/knexfile.config.ts migrate:latest",
+    "knex:migration:rollback": "knex --knexfile ./src/config/knexfile.config.ts migrate:rollback",
+    "knex:migration:make": "knex --knexfile ./src/config/knexfile.config.ts migrate:make"
   },
   "keywords": [],
   "author": "Alex Mota, Jefferson Lima, Jorge Nobre, Wesley Teixeira",

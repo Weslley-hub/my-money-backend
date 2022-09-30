@@ -1,5 +1,5 @@
 import Path from "path";
-import "./env";
+import "./env.config";
 
 const migrationsPath = [__dirname, "..", "database", "migrations"];
 const resolvedMigrationsPath = Path.resolve(...migrationsPath);

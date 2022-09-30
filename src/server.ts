@@ -1,4 +1,4 @@
-import "./config/env";
+import "./config/env.config";
 import { app } from "./app";
 
 const PORT = process.env.SERVER_PORT;
