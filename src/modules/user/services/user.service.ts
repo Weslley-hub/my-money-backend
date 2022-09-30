@@ -5,6 +5,7 @@ import { NotFoundException } from "../../api/exceptions/NotFound.exception";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { UserModel } from "../models/user.model";
 import { UserRepository } from "../repositories/user.repository";
+import { UserValidationSchema } from "../validation/user.schema";
 import { UserPasswordService } from "./user-password.service";
 
 export type UpdateUserProps = {
@@ -19,8 +20,14 @@ class UserService {
     this.userRepository = new UserRepository();
   }
 
+  async validateUserData(user: CreateUserDto) {
+    await UserValidationSchema.validate(user, { abortEarly: false });
+  }
+
   async save(user: CreateUserDto): Promise<void> {
     const userId = uuidV4();
+    await this.validateUserData(user);
+
     const userWithSameEmail = await this.userRepository.findByEmail(user.email);
 
     if (userWithSameEmail) {
@@ -86,6 +93,7 @@ class UserService {
   async update(updateUserProps: UpdateUserProps): Promise<void> {
     const { id, data } = updateUserProps;
 
+    await this.validateUserData(data);
     const userFound = await this.userRepository.findById(id);
 
     if (!userFound) {

@@ -1,4 +1,4 @@
-import { ApiResponse } from "../types/api-response.model";
+import { ApiResponse } from "../types/api-response.type";
 import { StatusCode } from "../types/status-code.type";
 
 type GenerateResponseProps = {
