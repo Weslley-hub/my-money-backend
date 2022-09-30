@@ -1,9 +1,6 @@
 import { v4 as uuidV4 } from "uuid";
-import { ExceptionHandler } from "../../api/exception-handler/ExceptionHandler";
 import { BusinessException } from "../../api/exceptions/Business.exception";
 import { NotFoundException } from "../../api/exceptions/NotFound.exception";
-import { ApiResponse } from "../../api/types/api-response.model";
-import { StatusCode } from "../../api/types/status-code.type";
 
 import { CreateUserDto } from "../dto/create-user.dto";
 import { UserModel } from "../models/user.model";
@@ -21,67 +18,42 @@ class UserService {
     this.userRepository = new UserRepository();
   }
 
-  async save(user: CreateUserDto): Promise<ApiResponse<null>> {
+  async save(user: CreateUserDto): Promise<void> {
     const userId = uuidV4();
+    const userWithSameEmail = await this.userRepository.findByEmail(user.email);
 
-    try {
-      const userWithSameEmail = await this.userRepository.findByEmail(
-        user.email
+    if (userWithSameEmail) {
+      throw new BusinessException(
+        `Já existe um usuário cadastro com ${user.email}`
       );
-
-      if (userWithSameEmail) {
-        throw new BusinessException(
-          `Já existe um usuário cadastro com ${user.email}`
-        );
-      }
-
-      const userWithUuid: UserModel = {
-        ...user,
-        id: userId,
-      };
-
-      await this.userRepository.save(userWithUuid);
-
-      return {
-        message: "Usuário cadastrado com sucesso",
-        statusCode: StatusCode.CREATED,
-      };
-    } catch (error) {
-      return ExceptionHandler.parseErrorToApiResponse(error as Error);
     }
+
+    const userWithUuid: UserModel = {
+      ...user,
+      id: userId,
+    };
+
+    await this.userRepository.save(userWithUuid);
   }
 
-  async findById(id: string): Promise<ApiResponse<null | UserModel>> {
+  async findById(id: string): Promise<UserModel> {
     const userFound = await this.userRepository.findById(id);
 
     if (!userFound) {
       throw new NotFoundException(`Não existe usuário cadastrado com ID ${id}`);
     }
 
-    return {
-      statusCode: StatusCode.SUCCESS,
-      data: userFound,
-    };
+    return userFound;
   }
 
-  async delete(id: string): Promise<ApiResponse<null | UserModel>> {
-    try {
-      const userFound = await this.userRepository.findById(id);
+  async delete(id: string): Promise<void> {
+    const userFound = await this.userRepository.findById(id);
 
-      if (!userFound) {
-        throw new NotFoundException(
-          `Não existe usuário cadastrado com ID ${id}`
-        );
-      }
-
-      await this.userRepository.delete(id);
-
-      return {
-        statusCode: StatusCode.SUCCESS,
-      };
-    } catch (error) {
-      return ExceptionHandler.parseErrorToApiResponse(error as Error);
+    if (!userFound) {
+      throw new NotFoundException(`Não existe usuário cadastrado com ID ${id}`);
     }
+
+    await this.userRepository.delete(id);
   }
 
   private async verifyUsersWithSameEmail(
@@ -103,32 +75,20 @@ class UserService {
     }
   }
 
-  async update(
-    updateUserProps: UpdateUserProps
-  ): Promise<ApiResponse<null | UserModel>> {
+  async update(updateUserProps: UpdateUserProps): Promise<void> {
     const { id, data } = updateUserProps;
 
-    try {
-      const userFound = await this.userRepository.findById(id);
+    const userFound = await this.userRepository.findById(id);
 
-      if (!userFound) {
-        throw new NotFoundException(
-          `Não existe usuário cadastrado com ID ${id}`
-        );
-      }
-
-      await this.verifyUsersWithSameEmail(data.email, id);
-      await this.userRepository.update({
-        ...data,
-        id,
-      });
-
-      return {
-        statusCode: StatusCode.SUCCESS,
-      };
-    } catch (error) {
-      return ExceptionHandler.parseErrorToApiResponse(error as Error);
+    if (!userFound) {
+      throw new NotFoundException(`Não existe usuário cadastrado com ID ${id}`);
     }
+
+    await this.verifyUsersWithSameEmail(data.email, id);
+    await this.userRepository.update({
+      ...data,
+      id,
+    });
   }
 }
 

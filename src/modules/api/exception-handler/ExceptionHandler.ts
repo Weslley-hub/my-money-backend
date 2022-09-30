@@ -8,6 +8,7 @@ export class ExceptionHandler {
     if (error instanceof NotFoundException) {
       return StatusCode.NOT_FOUND;
     }
+
     if (error instanceof BusinessException) {
       return StatusCode.BAD_REQUEST;
     }
@@ -15,7 +16,10 @@ export class ExceptionHandler {
     return StatusCode.INTERNAL_ERROR;
   }
 
-  static parseErrorToApiResponse<T>(error: Error, data?: T): ApiResponse<T> {
+  private static parseErrorToApiResponse<T>(
+    error: Error,
+    data?: T
+  ): ApiResponse<T> {
     const message = error.message;
     const statusCode = this.getApiErrorCode(error);
 
@@ -31,5 +35,13 @@ export class ExceptionHandler {
       message,
       statusCode,
     };
+  }
+
+  static parseErrorAndGetApiResponse<T>(
+    error: unknown,
+    data?: T
+  ): ApiResponse<T> {
+    const parsedError = error as Error;
+    return this.parseErrorToApiResponse<T>(parsedError, data);
   }
 }
