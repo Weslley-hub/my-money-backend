@@ -5,7 +5,7 @@ import { NotFoundException } from "../exceptions/NotFound.exception";
 
 import { ApiResponse } from "../types/api-response.type";
 import { StatusCode } from "../types/status-code.type";
-import { ValidationFieldError } from "../types/validation-field-error.type";
+import { YupValidationErrorHandler } from "./YupValidationErrorHandler";
 
 export class ExceptionHandler {
   private static getApiErrorCode(error: Error) {
@@ -18,36 +18,6 @@ export class ExceptionHandler {
     }
 
     return StatusCode.INTERNAL_ERROR;
-  }
-
-  private static parseYupValidationErrorToValidationFieldError(
-    validationError: ValidationError
-  ) {
-    const validationFieldError: ValidationFieldError = {
-      field: validationError.path!,
-      receivedValue: validationError.value,
-      errors: validationError.errors,
-    };
-
-    return validationFieldError;
-  }
-
-  private static parseYupValidationErrorToApiResponse(
-    validationErrors: ValidationError
-  ): ApiResponse<ValidationFieldError[]> {
-    const validationFieldErrors: ValidationFieldError[] = [];
-
-    validationErrors.inner.forEach((validationError) => {
-      const validationFieldError =
-        this.parseYupValidationErrorToValidationFieldError(validationError);
-      validationFieldErrors.push(validationFieldError);
-    });
-
-    return {
-      message: "Campos inválidos",
-      statusCode: StatusCode.BAD_REQUEST,
-      data: validationFieldErrors,
-    };
   }
 
   private static parseErrorToApiResponse(
@@ -78,7 +48,7 @@ export class ExceptionHandler {
     const parsedError = error as Error;
 
     if (parsedError instanceof ValidationError) {
-      return this.parseYupValidationErrorToApiResponse(
+      return YupValidationErrorHandler.parseYupValidationErrorToApiResponse(
         error as ValidationError
       );
     }
