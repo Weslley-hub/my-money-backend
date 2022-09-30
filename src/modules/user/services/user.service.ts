@@ -5,6 +5,7 @@ import { NotFoundException } from "../../api/exceptions/NotFound.exception";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { UserModel } from "../models/user.model";
 import { UserRepository } from "../repositories/user.repository";
+import { UserPasswordService } from "./user-password.service";
 
 export type UpdateUserProps = {
   id: string;
@@ -28,9 +29,16 @@ class UserService {
       );
     }
 
+    const encryptedPassword = UserPasswordService.encryptPassword(
+      user.password
+    );
+
     const userWithUuid: UserModel = {
-      ...user,
       id: userId,
+      name: user.name,
+      email: user.email,
+      password: encryptedPassword,
+      avatar: user.avatar,
     };
 
     await this.userRepository.save(userWithUuid);
