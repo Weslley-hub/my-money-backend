@@ -1,6 +1,7 @@
 import { ValidationError } from "yup";
 
-import { ApiResponse } from "../types/api-response.type";
+import { ApiErrorResponse } from "../types/api-error-response.type";
+import { ApiError } from "../types/api-error.type";
 import { StatusCode } from "../types/status-code.type";
 import { ValidationFieldError } from "../types/validation-field-error.type";
 
@@ -19,7 +20,7 @@ export class YupValidationErrorHandler {
 
   static parseYupValidationErrorToApiResponse(
     validationErrors: ValidationError
-  ): ApiResponse<ValidationFieldError[]> {
+  ): ApiErrorResponse<ValidationFieldError[]> {
     const validationFieldErrors: ValidationFieldError[] = [];
 
     validationErrors.inner.forEach((validationError) => {
@@ -32,6 +33,7 @@ export class YupValidationErrorHandler {
       message: "Campos inválidos",
       statusCode: StatusCode.BAD_REQUEST,
       data: validationFieldErrors,
+      errorType: ApiError.VALIDATION,
     };
   }
 }
