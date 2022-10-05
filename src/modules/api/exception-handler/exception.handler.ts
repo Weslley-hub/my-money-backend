@@ -9,7 +9,7 @@ export class ExceptionHandler {
   private static parseErrorToApiResponse(
     error: Error,
     data?: any
-  ): ApiErrorResponse<any> {
+  ): ApiErrorResponse {
     const message = error.message;
     const { errorType, statusCode } = error as ApiErrorException;
 
@@ -32,7 +32,7 @@ export class ExceptionHandler {
   static parseErrorAndGetApiResponse(
     error: unknown,
     data?: any
-  ): ApiErrorResponse<any> {
+  ): ApiErrorResponse {
     const parsedError = error as Error;
 
     if (parsedError instanceof ValidationError) {
