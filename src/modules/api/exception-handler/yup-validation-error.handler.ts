@@ -21,13 +21,9 @@ export class YupValidationErrorHandler {
   static parseYupValidationErrorToApiResponse(
     validationErrors: ValidationError
   ): ApiErrorResponse<ValidationFieldError[]> {
-    const validationFieldErrors: ValidationFieldError[] = [];
-
-    validationErrors.inner.forEach((validationError) => {
-      const validationFieldError =
-        this.parseYupValidationErrorToValidationFieldError(validationError);
-      validationFieldErrors.push(validationFieldError);
-    });
+    const validationFieldErrors = validationErrors.inner.map(
+      this.parseYupValidationErrorToValidationFieldError
+    );
 
     return {
       message: "Campos inválidos",

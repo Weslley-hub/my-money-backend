@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ExceptionHandler } from "../../api/exception-handler/ExceptionHandler";
+import { ExceptionHandler } from "../../api/exception-handler/exception.handler";
 import { StatusCode } from "../../api/types/status-code.type";
 import { ApiResponseGenerator } from "../../api/util/ApiReponseGenerator.util";
 
