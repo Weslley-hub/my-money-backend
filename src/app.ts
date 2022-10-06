@@ -8,6 +8,7 @@ const app = express();
 
 // Middlewares
 app.use(express.json());
+// app.use(jwt);
 
 // Documentation
 app.use("/api-docs", SwaggerUI.serve, SwaggerUI.setup(swaggerBasicInfo));
