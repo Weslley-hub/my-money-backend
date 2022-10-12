@@ -13,28 +13,17 @@ export type UpdateUserProps = {
   data: CreateUserDto;
 };
 
-class UserService {
+export class UserService {
   private userRepository: UserRepository;
 
   constructor() {
     this.userRepository = new UserRepository();
   }
 
-  async validateUserData(user: CreateUserDto) {
-    await UserValidationSchema.validate(user, { abortEarly: false });
-  }
-
   async save(user: CreateUserDto): Promise<void> {
     const userId = uuidV4();
     await this.validateUserData(user);
-
-    const userWithSameEmail = await this.userRepository.findByEmail(user.email);
-
-    if (userWithSameEmail) {
-      throw new BusinessException(
-        `Já existe um usuário cadastro com ${user.email}`
-      );
-    }
+    await this.verifyEmailAvailability(user.email);
 
     const encryptedPassword = UserPasswordService.encryptPassword(
       user.password
@@ -49,6 +38,63 @@ class UserService {
     };
 
     await this.userRepository.save(userWithUuid);
+  }
+
+  private async verifyEmailAvailability(email: string) {
+    const userWithSameEmail = await this.userRepository.findByEmail(email);
+
+    if (userWithSameEmail) {
+      throw new BusinessException(`Já existe um usuário cadastro com ${email}`);
+    }
+  }
+
+  async update(updateUserProps: UpdateUserProps): Promise<void> {
+    const { id, data } = updateUserProps;
+
+    await this.validateUserData(data);
+    await this.verifyUserExistence(id);
+    await this.verifyExistenceOfUsersWithSameEmail(data.email, id);
+
+    await this.userRepository.update({
+      avatar: data.avatar,
+      email: data.email,
+      name: data.name,
+      password: data.password,
+      id,
+    });
+  }
+
+  private async verifyUserExistence(userId: string) {
+    const userFound = await this.userRepository.findById(userId);
+
+    if (!userFound) {
+      throw new NotFoundException(
+        `Não existe usuário cadastrado com ID ${userId}`
+      );
+    }
+  }
+
+  private async verifyExistenceOfUsersWithSameEmail(
+    email: string,
+    userInVerificationId: string
+  ) {
+    const usersWithSameEmail = await this.userRepository.findAllByEmail(email);
+
+    if (usersWithSameEmail.length === 0) {
+      return;
+    }
+
+    if (usersWithSameEmail.length > 1) {
+      throw new BusinessException(`Já existe um usuário cadastro com ${email}`);
+    }
+
+    if (usersWithSameEmail[0].id !== userInVerificationId) {
+      throw new BusinessException(`Já existe um usuário cadastro com ${email}`);
+    }
+  }
+
+  async validateUserData(user: CreateUserDto) {
+    await UserValidationSchema.validate(user, { abortEarly: false });
   }
 
   async findById(id: string): Promise<UserModel> {
@@ -70,43 +116,4 @@ class UserService {
 
     await this.userRepository.delete(id);
   }
-
-  private async verifyUsersWithSameEmail(
-    email: string,
-    userInVerificationId: string
-  ) {
-    const usersWithSameEmail = await this.userRepository.findAllByEmail(email);
-
-    if (usersWithSameEmail.length === 0) {
-      return;
-    }
-
-    if (usersWithSameEmail.length > 1) {
-      throw new BusinessException(`Já existe um usuário cadastro com ${email}`);
-    }
-
-    if (usersWithSameEmail[0].id !== userInVerificationId) {
-      throw new BusinessException(`Já existe um usuário cadastro com ${email}`);
-    }
-  }
-
-  async update(updateUserProps: UpdateUserProps): Promise<void> {
-    const { id, data } = updateUserProps;
-
-    await this.validateUserData(data);
-    const userFound = await this.userRepository.findById(id);
-
-    if (!userFound) {
-      throw new NotFoundException(`Não existe usuário cadastrado com ID ${id}`);
-    }
-
-    await this.verifyUsersWithSameEmail(data.email, id);
-    await this.userRepository.update({
-      ...data,
-      id,
-    });
-  }
 }
-
-const userService = new UserService();
-export { userService };

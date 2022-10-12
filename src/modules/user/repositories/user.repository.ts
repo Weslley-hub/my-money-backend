@@ -1,38 +1,39 @@
 import { dbConnection } from "../../../database";
-import { CreateUserDto } from "../dto/create-user.dto";
-import { UserModel } from "../models/user.model";
+import { UserRepositoryDto } from "../dto/user-repository.dto";
 
 export class UserRepository {
-  save(user: UserModel) {
-    return dbConnection<UserModel>("users").insert(user);
+  save(user: UserRepositoryDto) {
+    return dbConnection<UserRepositoryDto>("users").insert(user);
   }
 
   findById(id: string) {
-    return dbConnection<UserModel>("users")
+    return dbConnection<UserRepositoryDto>("users")
       .select("*")
       .where("id", "=", id)
       .first();
   }
 
   findByEmail(email: string) {
-    return dbConnection<UserModel>("users")
+    return dbConnection<UserRepositoryDto>("users")
       .select("*")
       .where("email", "=", email)
       .first();
   }
 
   findAllByEmail(email: string) {
-    return dbConnection<UserModel>("users")
+    return dbConnection<UserRepositoryDto>("users")
       .select("*")
       .where("email", "=", email);
   }
 
   delete(id: string) {
-    return dbConnection<UserModel>("users").delete().where("id", "=", id);
+    return dbConnection<UserRepositoryDto>("users")
+      .delete()
+      .where("id", "=", id);
   }
 
-  update(userData: UserModel) {
-    return dbConnection<UserModel>("users")
+  update(userData: UserRepositoryDto) {
+    return dbConnection<UserRepositoryDto>("users")
       .update(userData)
       .where("id", "=", userData.id);
   }
