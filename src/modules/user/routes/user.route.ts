@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { userController } from "../controllers/user.controller";
+import { UserController } from "../controllers/user.controller";
 
 const userRouter = Router();
+const userController = new UserController();
 
-userRouter.post("/", userController.save);
-userRouter.get("/:userId", userController.findById);
-userRouter.delete("/:userId", userController.delete);
-userRouter.put("/:userId", userController.update);
+userRouter.post("/", userController.save.bind(userController));
+userRouter.get("/:userId", userController.findById.bind(userController));
+userRouter.delete("/:userId", userController.delete.bind(userController));
+userRouter.put("/:userId", userController.update.bind(userController));
 
 export { userRouter };
