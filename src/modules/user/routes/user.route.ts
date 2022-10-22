@@ -1,12 +1,25 @@
 import { Router } from "express";
+
+import { authenticationMiddleware } from "../../security/middlewares/authenticationMiddleware";
 import { UserController } from "../controllers/user.controller";
 
 const userRouter = Router();
 const userController = new UserController();
 
-userRouter.post("/", userController.save.bind(userController));
-userRouter.get("/:userId", userController.findById.bind(userController));
-userRouter.delete("/:userId", userController.delete.bind(userController));
-userRouter.put("/:userId", userController.update.bind(userController));
+userRouter.get(
+  "/",
+  authenticationMiddleware,
+  userController.findById.bind(userController)
+);
+userRouter.put(
+  "/",
+  authenticationMiddleware,
+  userController.update.bind(userController)
+);
+userRouter.delete(
+  "/",
+  authenticationMiddleware,
+  userController.delete.bind(userController)
+);
 
 export { userRouter };

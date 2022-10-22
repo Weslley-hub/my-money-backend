@@ -1,12 +1,11 @@
-import { v4 as uuidV4 } from "uuid";
 import { BusinessException } from "../../api/exceptions/business.exception";
 import { NotFoundException } from "../../api/exceptions/not-found.exception";
 
 import { CreateUserDto } from "../dto/create-user.dto";
+import { UserOutputDto } from "../dto/user-output.dto";
 import { UserModel } from "../models/user.model";
 import { UserRepository } from "../repositories/user.repository";
 import { UserValidationSchema } from "../validation/user.schema";
-import { UserPasswordService } from "./user-password.service";
 
 export type UpdateUserProps = {
   id: string;
@@ -18,34 +17,6 @@ export class UserService {
 
   constructor() {
     this.userRepository = new UserRepository();
-  }
-
-  async save(user: CreateUserDto): Promise<void> {
-    const userId = uuidV4();
-    await this.validateUserData(user);
-    await this.verifyEmailAvailability(user.email);
-
-    const encryptedPassword = UserPasswordService.encryptPassword(
-      user.password
-    );
-
-    const userWithUuid: UserModel = {
-      id: userId,
-      name: user.name,
-      email: user.email,
-      password: encryptedPassword,
-      avatar: user.avatar,
-    };
-
-    await this.userRepository.save(userWithUuid);
-  }
-
-  private async verifyEmailAvailability(email: string) {
-    const userWithSameEmail = await this.userRepository.findByEmail(email);
-
-    if (userWithSameEmail) {
-      throw new BusinessException(`Já existe um usuário cadastro com ${email}`);
-    }
   }
 
   async update(updateUserProps: UpdateUserProps): Promise<void> {
@@ -97,14 +68,24 @@ export class UserService {
     await UserValidationSchema.validate(user, { abortEarly: false });
   }
 
-  async findById(id: string): Promise<UserModel> {
+  async findById(id: string): Promise<UserOutputDto> {
     const userFound = await this.userRepository.findById(id);
 
     if (!userFound) {
       throw new NotFoundException(`Não existe usuário cadastrado com ID ${id}`);
     }
 
-    return userFound;
+    const userOutputDto = this.convertUserModelToUserOutputDto(userFound);
+    return userOutputDto;
+  }
+
+  private convertUserModelToUserOutputDto(userModal: UserModel): UserOutputDto {
+    return {
+      name: userModal.name,
+      email: userModal.email,
+      password: userModal.password,
+      avatar: userModal.avatar,
+    };
   }
 
   async delete(id: string): Promise<void> {
