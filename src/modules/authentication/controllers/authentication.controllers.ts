@@ -7,8 +7,12 @@ import {v4 as generatoUuidId} from "uuid";
 import { AuthenticationService } from "../services/authentication.service";
 import { StatusCode } from "../../api/types/status-code.type";
 import {ExceptionHandler} from "../../api/exception-handler/exception.handler"
+import { UserRepository } from "../../user/repositories/user.repository";
+import * as Yup from "yup";
+
 
 const authenticationService = new AuthenticationService();
+const userRepository = new UserRepository;
 
 class AuthenticationController {
     async register(request: Request, response: Response){
@@ -25,29 +29,21 @@ class AuthenticationController {
             return response.status(apiErrorResponse.statusCode).json(apiErrorResponse);
             
         }
-
-
-
-    try {
-        await UserValidationSchema.validate(userData,{
-            abortEarly:false,
-        });
-    } catch (error) {
-        return response.status(400)
-        .json({message: "Dados Invalidos",error:error});
     }
- 
-    try {
+    async login(request: Request, response: Response){
+        const userLogin = request.body;
+
+        try {
+            await authenticationService.login(userLogin);
+            return response.status(StatusCode.SUCCESS)
+                .json({message:"Login com sucesso",
+                statuscode: StatusCode.SUCCESS});
+        } catch (error) {
+            const apiErrorResponse = ExceptionHandler.parseErrorAndGetApiResponse(error);
+            return response.status(apiErrorResponse.statusCode).json(apiErrorResponse);
+        }
         
-    } catch (error) {
-
-    }
-    try {
-
-    } catch (error) {
-        return response.status(400).json({message: "Erro ao salvar usuário"})
     }
 }
-    }
 
     export {AuthenticationController};

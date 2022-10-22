@@ -37,4 +37,11 @@ export class UserRepository {
       .update(userData)
       .where("id", "=", userData.id);
   }
+  verificationEmailPassword(userEmail: string, userPassword: string){
+    return dbConnection<UserRepositoryDto>("users")
+      .where({
+          email: userEmail,
+          password: userPassword
+      }).select("id");
+}
 }
