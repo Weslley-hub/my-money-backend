@@ -15,6 +15,7 @@ type UserRegisterData = {
 };
 const authRoutes = Router();
 const authenticationController = new AuthenticationController;
+
 authRoutes.post("/register", authenticationController.register);
 
 export {authRoutes};

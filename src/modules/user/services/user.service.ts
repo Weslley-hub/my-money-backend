@@ -1,4 +1,3 @@
-import { v4 as uuidV4 } from "uuid";
 import { BusinessException } from "../../api/exceptions/business.exception";
 import { NotFoundException } from "../../api/exceptions/not-found.exception";
 
@@ -6,8 +5,6 @@ import { CreateUserDto } from "../dto/create-user.dto";
 import { UserModel } from "../models/user.model";
 import { UserRepository } from "../repositories/user.repository";
 import { UserValidationSchema } from "../validation/user.schema";
-import { UserPasswordService } from "./user-password.service";
-
 export type UpdateUserProps = {
   id: string;
   data: CreateUserDto;
@@ -18,34 +15,6 @@ export class UserService {
 
   constructor() {
     this.userRepository = new UserRepository();
-  }
-
-  async save(user: CreateUserDto): Promise<void> {
-    const userId = uuidV4();
-    await this.validateUserData(user);
-    await this.verifyEmailAvailability(user.email);
-
-    const encryptedPassword = UserPasswordService.encryptPassword(
-      user.password
-    );
-
-    const userWithUuid: UserModel = {
-      id: userId,
-      name: user.name,
-      email: user.email,
-      password: encryptedPassword,
-      avatar: user.avatar,
-    };
-
-    await this.userRepository.save(userWithUuid);
-  }
-
-  private async verifyEmailAvailability(email: string) {
-    const userWithSameEmail = await this.userRepository.findByEmail(email);
-
-    if (userWithSameEmail) {
-      throw new BusinessException(`Já existe um usuário cadastro com ${email}`);
-    }
   }
 
   async update(updateUserProps: UpdateUserProps): Promise<void> {
