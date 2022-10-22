@@ -18,7 +18,10 @@ npm run dev
 -Lembrando que o password do banco precisa ser discriptografado pra que senha comparada com a senha da pessoa, não sei se faz diferença, mas talvez o userData.password devesse ser encriptado ao invez
 do proprio password do banco.
 
-
+### Recuperação de Senha
+-Mapeando a Rota(login) da API
+-Validação do email
+-Gerar nova senha
 
 ### Problemas no Desenvolvimento
 ### 1
