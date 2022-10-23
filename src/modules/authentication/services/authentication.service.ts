@@ -1,13 +1,14 @@
-import { request, response } from "express";
 import  {v4 as generatoUuidId} from "uuid";
-import { dbConnection } from "../../../database";
 import { BusinessException } from "../../api/exceptions/business.exception";
-import { CreateUserDto, CreateUserLogin } from "../../user/dto/create-user.dto";
-import { UserModel } from "../../user/models/user.model";
+import { NotFoundException } from "../../api/exceptions/not-found.exception";
+import { CreateUserDto, CreateUserLogin, CreateUserRecoveryPassword } from "../../user/dto/create-user.dto";
 import { UserRepository } from "../../user/repositories/user.repository";
-import { UserValidationSchema,UserValidationLogin } from "../../user/validation/user.schema";
-import * as Yup from "yup";
+import { UserValidationSchema,UserValidationLogin, UserValidationRecoveryPassword } from "../../user/validation/user.schema";
+
 const userRepository = new UserRepository();
+function gerarPassword() {
+    return Math.random().toString(36).slice(-10);
+}
 
 class AuthenticationService{
     async register(userData:CreateUserDto){
@@ -16,7 +17,7 @@ class AuthenticationService{
             abortEarly:false,
         });
         const existingUserWithEmail = await userRepository.findByEmail(userData.email)
-
+        console.log(existingUserWithEmail);
         if(existingUserWithEmail){
             throw new BusinessException(
                 `Ja existe um usuario cadastrado com o e-mail: ${userData.email}`
@@ -54,10 +55,33 @@ class AuthenticationService{
             }
         }
         else{
-            throw new BusinessException(
+            throw new NotFoundException(
                 `Não foi encontrado usuario com o e-mail: ${userLogin.email}`
-                //preciso retornar statuscode 404 aqui e não 400
             );
+        }
+    }
+    async passwordRecovery(userEmail: CreateUserRecoveryPassword){
+        await UserValidationRecoveryPassword.validate(userEmail);
+        console.log("userEmail - ",userEmail.email)
+        const existingUserWithEmail = await userRepository.findByEmail(userEmail.email)
+        console.log("existingUserWithEmail - ",existingUserWithEmail);
+        //acredito que nao seja uma boa pratica passar todos os dados do user...
+        if(existingUserWithEmail){
+            //crio a nova senha
+            const password = gerarPassword();
+            console.log("Nova senha - ", password);
+            existingUserWithEmail.password = password;
+            const updateSenha = await userRepository.update(existingUserWithEmail)
+            if(updateSenha){
+                console.log("Senha criada com sucesso")
+            }
+            else{
+                throw new BusinessException("Não foi possivel atualizar a senha");
+            }
+        }
+        else{
+            //email não existe no banco preciso retornar erro
+            throw new NotFoundException(`Não existe usuario com o email ${userEmail.email}`);
         }
     }
 }

@@ -43,5 +43,13 @@ export class UserRepository {
           email: userEmail,
           password: userPassword
       }).select("id");
-}
+  }
+  verificationEmail(userEmail: string){
+    return dbConnection<UserRepositoryDto>("users")
+      .where({
+          email: userEmail,
+
+      }).select("email");
+  }
+
 }

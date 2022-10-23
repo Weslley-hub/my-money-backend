@@ -1,14 +1,9 @@
-import { dbConnection } from "../../../database";
-import { CreateUserDto } from "../../user/dto/create-user.dto";
-import { UserModel } from "../../user/models/user.model";
-import { UserValidationSchema } from "../../user/validation/user.schema";
+import { CreateUserDto, CreateUserLogin, CreateUserRecoveryPassword } from "../../user/dto/create-user.dto";
 import {Request, Response} from "express";
-import {v4 as generatoUuidId} from "uuid";
 import { AuthenticationService } from "../services/authentication.service";
 import { StatusCode } from "../../api/types/status-code.type";
 import {ExceptionHandler} from "../../api/exception-handler/exception.handler"
 import { UserRepository } from "../../user/repositories/user.repository";
-import * as Yup from "yup";
 
 
 const authenticationService = new AuthenticationService();
@@ -31,7 +26,7 @@ class AuthenticationController {
         }
     }
     async login(request: Request, response: Response){
-        const userLogin = request.body;
+        const userLogin = request.body as CreateUserLogin;
 
         try {
             await authenticationService.login(userLogin);
@@ -43,6 +38,20 @@ class AuthenticationController {
             return response.status(apiErrorResponse.statusCode).json(apiErrorResponse);
         }
         
+    }
+    
+    async passwordRecovery(request: Request, response: Response){
+        const userEmail = request.body as CreateUserRecoveryPassword;
+        console.log(userEmail);
+        try {
+            await authenticationService.passwordRecovery(userEmail);
+            return response.status(StatusCode.SUCCESS)
+                .json({message:"Nova senha gerada com sucesso",
+                statuscode: StatusCode.SUCCESS});
+        }catch (error) {
+            const apiErrorResponse = ExceptionHandler.parseErrorAndGetApiResponse(error);
+            return response.status(apiErrorResponse.statusCode).json(apiErrorResponse);
+        }
     }
 }
 
