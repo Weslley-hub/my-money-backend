@@ -38,7 +38,6 @@ class AuthenticationService {
       password: userData.password,
       avatar: userData.avatar,
     });
-    console.log("senha incriptada no registro -", userData.password);
   }
   async login(userLogin: UserLoginDto): Promise<UserOutputDto> {
     userLogin.password = UserPasswordService.encryptPassword(
@@ -58,8 +57,6 @@ class AuthenticationService {
         userLogin.password
       );
       if (userData) {
-        console.log("Id do usuario", userData);
-        console.log("senha incriptada no login -", userData.password);
         return {
           avatar: userData.avatar,
           email: userData.email,
@@ -90,7 +87,6 @@ class AuthenticationService {
         UserPasswordService.encryptPassword(password);
       const updatePassword = await userRepository.update(existingUserWithEmail);
       if (updatePassword) {
-        console.log("Senha criada com sucesso - ", password);
         return password;
       } else {
         throw new BusinessException("Não foi possivel atualizar a senha");

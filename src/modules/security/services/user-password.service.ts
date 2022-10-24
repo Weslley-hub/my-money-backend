@@ -15,7 +15,6 @@ export class UserPasswordService {
         this.hashAlgorithm
       )
       .toString(`hex`);
-    console.log(this.encryptSalt);
     return encryptedPassword;
   }
   static generateRandomPassword() {
