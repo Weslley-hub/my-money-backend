@@ -95,20 +95,20 @@ class AuthenticationService {
     }
   }
 
-  async newPassword(newPasswords: NewPasswords, userEmail: UserEmailDTO) {
+  async newPassword(newPasswords: NewPasswords /*userEmail: UserEmailDTO*/) {
     await UserValidationNewPasswords.validate(newPasswords);
 
     if (newPasswords.newPassword == newPasswords.newPassword) {
-      const userData = await userRepository.findByEmail(userEmail.email);
-      if (userData) {
-        userData.password = newPasswords.newPassword;
-        const updatePasswordUser = await userRepository.update(userData);
-        if (!updatePasswordUser) {
-          throw new InternalServerErrorException(
-            "Não foi possivel atualizar a senha"
-          );
-        }
-      }
+      // const userData = await userRepository.findByEmail(userEmail.email);
+      // if (userData) {
+      //   userData.password = newPasswords.newPassword;
+      //   const updatePasswordUser = await userRepository.update(userData);
+      //   if (!updatePasswordUser) {
+      //     throw new InternalServerErrorException(
+      //       "Não foi possivel atualizar a senha"
+      //     );
+      //   }
+      // }
     } else {
       throw new BusinessException("As senhas são diferentes");
     }

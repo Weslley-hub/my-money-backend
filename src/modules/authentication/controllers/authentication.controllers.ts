@@ -60,14 +60,14 @@ class AuthenticationController {
 
   async newPassword(
     request: Request,
-    response: Response,
-    userEmail: UserEmailDTO
+    response: Response
+    // userEmail: UserEmailDTO
   ) {
     const newPasswords = request.body as NewPasswords;
     try {
       const newPassword = await authenticationService.newPassword(
-        newPasswords,
-        userEmail
+        newPasswords
+        // userEmail
       );
       return response.status(StatusCode.SUCCESS).json({
         newPassword,
