@@ -1,16 +1,19 @@
 import { v4 as generatoUuidId } from "uuid";
 import { BusinessException } from "../../api/exceptions/business.exception";
+import { InternalServerErrorException } from "../../api/exceptions/internal-server-error.exception";
 import { NotFoundException } from "../../api/exceptions/not-found.exception";
 import { UserPasswordService } from "../../security/services/user-password.service";
 import { CreateUserDto } from "../../user/dto/create-user.dto";
-import { RecoveryPasswordDataDto } from "../../user/dto/recovery-data.dto";
+import { NewPasswords } from "../../user/dto/new-passwords.dto";
+import { UserEmailDTO } from "../../user/dto/user-email.dto";
 import { UserLoginDto } from "../../user/dto/user-login.dto";
 import { UserOutputDto } from "../../user/dto/user-output.dto";
 import { UserRepository } from "../../user/repositories/user.repository";
 import {
   UserValidationSchema,
   UserValidationLogin,
-  UserValidationRecoveryPassword,
+  UserValidationEmail,
+  UserValidationNewPasswords,
 } from "../../user/validation/user.schema";
 
 const userRepository = new UserRepository();
@@ -75,27 +78,39 @@ class AuthenticationService {
       );
     }
   }
-  async passwordRecovery(userEmail: RecoveryPasswordDataDto) {
-    await UserValidationRecoveryPassword.validate(userEmail);
+
+  async confirmEmail(userEmail: UserEmailDTO) {
+    await UserValidationEmail.validate(userEmail);
     const existingUserWithEmail = await userRepository.findByEmail(
       userEmail.email
     );
     if (existingUserWithEmail) {
-      //crio a nova senha
-      const password = UserPasswordService.generateRandomPassword();
-      existingUserWithEmail.password =
-        UserPasswordService.encryptPassword(password);
-      const updatePassword = await userRepository.update(existingUserWithEmail);
-      if (updatePassword) {
-        return password;
-      } else {
-        throw new BusinessException("Não foi possivel atualizar a senha");
-      }
+      /*redireciono o user para a rota /recoverypassword/newpassword e passa o
+      userEmail.email como um parametro*/
     } else {
       //email não existe no banco preciso retornar erro
       throw new NotFoundException(
         `Não existe usuario com o email ${userEmail.email}`
       );
+    }
+  }
+
+  async newPassword(newPasswords: NewPasswords, userEmail: UserEmailDTO) {
+    await UserValidationNewPasswords.validate(newPasswords);
+
+    if (newPasswords.newPassword == newPasswords.newPassword) {
+      const userData = await userRepository.findByEmail(userEmail.email);
+      if (userData) {
+        userData.password = newPasswords.newPassword;
+        const updatePasswordUser = await userRepository.update(userData);
+        if (!updatePasswordUser) {
+          throw new InternalServerErrorException(
+            "Não foi possivel atualizar a senha"
+          );
+        }
+      }
+    } else {
+      throw new BusinessException("As senhas são diferentes");
     }
   }
 }

@@ -3,8 +3,9 @@ import { Request, Response } from "express";
 import { AuthenticationService } from "../services/authentication.service";
 import { StatusCode } from "../../api/types/status-code.type";
 import { ExceptionHandler } from "../../api/exception-handler/exception.handler";
-import { RecoveryPasswordDataDto } from "../../user/dto/recovery-data.dto";
+import { UserEmailDTO } from "../../user/dto/user-email.dto";
 import { UserLoginDto } from "../../user/dto/user-login.dto";
+import { NewPasswords } from "../../user/dto/new-passwords.dto";
 
 const authenticationService = new AuthenticationService();
 
@@ -39,11 +40,33 @@ class AuthenticationController {
         .json(apiErrorResponse);
     }
   }
-
-  async passwordRecovery(request: Request, response: Response) {
-    const userEmail = request.body as RecoveryPasswordDataDto;
+  async confirmEmail(request: Request, response: Response) {
+    const userEmail = request.body as UserEmailDTO;
     try {
-      const newPassword = await authenticationService.passwordRecovery(
+      const confirmPassword = await authenticationService.confirmEmail(
+        userEmail
+      );
+      return response.status(StatusCode.SUCCESS).json({
+        confirmPassword,
+      });
+    } catch (error) {
+      const apiErrorResponse =
+        ExceptionHandler.parseErrorAndGetApiResponse(error);
+      return response
+        .status(apiErrorResponse.statusCode)
+        .json(apiErrorResponse);
+    }
+  }
+
+  async newPassword(
+    request: Request,
+    response: Response,
+    userEmail: UserEmailDTO
+  ) {
+    const newPasswords = request.body as NewPasswords;
+    try {
+      const newPassword = await authenticationService.newPassword(
+        newPasswords,
         userEmail
       );
       return response.status(StatusCode.SUCCESS).json({

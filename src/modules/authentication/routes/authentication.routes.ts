@@ -6,6 +6,13 @@ const authenticationController = new AuthenticationController();
 
 authRoutes.post("/register", authenticationController.register);
 authRoutes.post("/login", authenticationController.login);
-authRoutes.post("/recoverypassword", authenticationController.passwordRecovery);
+authRoutes.post(
+  "/recoverypassword/confirmemail",
+  authenticationController.confirmEmail
+);
+authRoutes.post(
+  "/recoverypassword/newpassword",
+  authenticationController.newPassword
+);
 
 export { authRoutes };

@@ -14,9 +14,21 @@ const UserValidationLogin = Yup.object().shape({
     .required("E-mail é obrigatório"),
   password: Yup.string().required("Senha é obrigatória"),
 });
-const UserValidationRecoveryPassword = Yup.object().shape({
+const UserValidationEmail = Yup.object().shape({
   email: Yup.string()
     .email("E-mail deve ser válido")
-    .required("E-mail é obrigatório")
+    .required("E-mail é obrigatório"),
 });
-export { UserValidationSchema, UserValidationLogin, UserValidationRecoveryPassword };
+
+const UserValidationNewPasswords = Yup.object().shape({
+  newPassword: Yup.string().required("A senha é obrigatório"),
+  confirmNewPassword: Yup.string().required(
+    "A confirmação de senha é obrigatoria"
+  ),
+});
+export {
+  UserValidationSchema,
+  UserValidationLogin,
+  UserValidationEmail,
+  UserValidationNewPasswords,
+};
