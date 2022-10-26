@@ -9,12 +9,10 @@ import { UserEmailDTO } from "../../user/dto/user-email.dto";
 import { UserLoginDto } from "../../user/dto/user-login.dto";
 import { UserOutputDto } from "../../user/dto/user-output.dto";
 import { UserRepository } from "../../user/repositories/user.repository";
-import {
-  UserValidationSchema,
-  UserValidationLogin,
-  UserValidationEmail,
-  UserValidationNewPasswords,
-} from "../../user/validation/user.schema";
+import { UserValidationSchema } from "../../user/validation/user.schema";
+import { UserValidationEmail } from "../../user/validation/user.validation.email";
+import { UserValidationLogin } from "../../user/validation/user.validation.login";
+import { UserValidationNewPasswords } from "../../user/validation/user.validation.newpasswords";
 
 const userRepository = new UserRepository();
 
@@ -98,11 +96,12 @@ class AuthenticationService {
   async newPassword(newPasswords: NewPasswords /*userEmail: UserEmailDTO*/) {
     await UserValidationNewPasswords.validate(newPasswords);
 
-    if (newPasswords.newPassword == newPasswords.newPassword) {
+    if (newPasswords.newPassword == newPasswords.confirmNewPassword) {
       // const userData = await userRepository.findByEmail(userEmail.email);
       // if (userData) {
       //   userData.password = newPasswords.newPassword;
       //   const updatePasswordUser = await userRepository.update(userData);
+      console.log("Senha trocada com sucesso.");
       //   if (!updatePasswordUser) {
       //     throw new InternalServerErrorException(
       //       "Não foi possivel atualizar a senha"

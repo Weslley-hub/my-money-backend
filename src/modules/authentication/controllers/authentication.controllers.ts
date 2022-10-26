@@ -43,11 +43,9 @@ class AuthenticationController {
   async confirmEmail(request: Request, response: Response) {
     const userEmail = request.body as UserEmailDTO;
     try {
-      const confirmPassword = await authenticationService.confirmEmail(
-        userEmail
-      );
+      const confirmEmail = await authenticationService.confirmEmail(userEmail);
       return response.status(StatusCode.SUCCESS).json({
-        confirmPassword,
+        confirmEmail,
       });
     } catch (error) {
       const apiErrorResponse =
