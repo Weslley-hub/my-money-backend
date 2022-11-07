@@ -85,6 +85,8 @@ class AuthenticationService {
     if (existingUserWithEmail) {
       /*redireciono o user para a rota /recoverypassword/newpassword e passa o
       userEmail.email como um parametro*/
+      console.log("Email confirmado");
+      return existingUserWithEmail;
     } else {
       //email não existe no banco preciso retornar erro
       throw new NotFoundException(
@@ -97,17 +99,21 @@ class AuthenticationService {
     await UserValidationNewPasswords.validate(newPasswords);
 
     if (newPasswords.newPassword == newPasswords.confirmNewPassword) {
-      // const userData = await userRepository.findByEmail(userEmail.email);
-      // if (userData) {
-      //   userData.password = newPasswords.newPassword;
-      //   const updatePasswordUser = await userRepository.update(userData);
-      console.log("Senha trocada com sucesso.");
-      //   if (!updatePasswordUser) {
-      //     throw new InternalServerErrorException(
-      //       "Não foi possivel atualizar a senha"
-      //     );
-      //   }
-      // }
+      const userData = await userRepository.findByEmail(newPasswords.email);
+      if (userData) {
+        console.log("senha antes da troca", userData.password);
+        userData.password = UserPasswordService.encryptPassword(
+          newPasswords.newPassword
+        );
+        console.log("senha depois da troca", userData.password);
+        const updatePasswordUser = await userRepository.update(userData);
+        console.log("Senha trocada com sucesso.");
+        if (!updatePasswordUser) {
+          throw new InternalServerErrorException(
+            "Não foi possivel atualizar a senha"
+          );
+        }
+      }
     } else {
       throw new BusinessException("As senhas são diferentes");
     }

@@ -7,11 +7,11 @@ const authenticationController = new AuthenticationController();
 authRoutes.post("/register", authenticationController.register);
 authRoutes.post("/login", authenticationController.login);
 authRoutes.post(
-  "/recoverypassword/confirmemail",
+  "/recovery-password/confirm-email",
   authenticationController.confirmEmail
 );
 authRoutes.post(
-  "/recoverypassword/newpassword",
+  "/recovery-password/new-password",
   authenticationController.newPassword
 );
 

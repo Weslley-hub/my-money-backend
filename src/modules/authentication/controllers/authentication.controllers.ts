@@ -43,10 +43,8 @@ class AuthenticationController {
   async confirmEmail(request: Request, response: Response) {
     const userEmail = request.body as UserEmailDTO;
     try {
-      const confirmEmail = await authenticationService.confirmEmail(userEmail);
-      return response.status(StatusCode.SUCCESS).json({
-        confirmEmail,
-      });
+      await authenticationService.confirmEmail(userEmail);
+      return response.sendStatus(StatusCode.SUCCESS);
     } catch (error) {
       const apiErrorResponse =
         ExceptionHandler.parseErrorAndGetApiResponse(error);
@@ -56,12 +54,9 @@ class AuthenticationController {
     }
   }
 
-  async newPassword(
-    request: Request,
-    response: Response
-    // userEmail: UserEmailDTO
-  ) {
+  async newPassword(request: Request, response: Response) {
     const newPasswords = request.body as NewPasswords;
+    console.log(newPasswords);
     try {
       const newPassword = await authenticationService.newPassword(
         newPasswords
