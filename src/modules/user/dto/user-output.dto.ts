@@ -1,6 +1,6 @@
 export type UserOutputDto = {
-  id: string;
-  email: string;
   name: string;
+  email: string;
+  password: string;
   avatar: string;
 };

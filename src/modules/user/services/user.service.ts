@@ -2,9 +2,11 @@ import { BusinessException } from "../../api/exceptions/business.exception";
 import { NotFoundException } from "../../api/exceptions/not-found.exception";
 
 import { CreateUserDto } from "../dto/create-user.dto";
+import { UserOutputDto } from "../dto/user-output.dto";
 import { UserModel } from "../models/user.model";
 import { UserRepository } from "../repositories/user.repository";
 import { UserValidationSchema } from "../validation/user.schema";
+
 export type UpdateUserProps = {
   id: string;
   data: CreateUserDto;
@@ -66,14 +68,24 @@ export class UserService {
     await UserValidationSchema.validate(user, { abortEarly: false });
   }
 
-  async findById(id: string): Promise<UserModel> {
+  async findById(id: string): Promise<UserOutputDto> {
     const userFound = await this.userRepository.findById(id);
 
     if (!userFound) {
       throw new NotFoundException(`Não existe usuário cadastrado com ID ${id}`);
     }
 
-    return userFound;
+    const userOutputDto = this.convertUserModelToUserOutputDto(userFound);
+    return userOutputDto;
+  }
+
+  private convertUserModelToUserOutputDto(userModal: UserModel): UserOutputDto {
+    return {
+      name: userModal.name,
+      email: userModal.email,
+      password: userModal.password,
+      avatar: userModal.avatar,
+    };
   }
 
   async delete(id: string): Promise<void> {

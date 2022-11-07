@@ -6,6 +6,7 @@ import { StatusCode } from "../../api/types/status-code.type";
 
 import { CreateUserDto } from "../dto/create-user.dto";
 import { UpdateUserDto } from "../dto/update-user.dto";
+
 import { UserService } from "../services/user.service";
 
 export class UserController {
@@ -15,31 +16,12 @@ export class UserController {
     this.userService = new UserService();
   }
 
-  async save(request: Request, response: Response) {
-    const userData = request.body as CreateUserDto;
-
-    try {
-      const apiResponse = await this.trySaveUser(userData, response);
-      return apiResponse;
-    } catch (error) {
-      return this.handleApiErrorResponse(error, response);
-    }
-  }
-
-  private async trySaveUser(userData: CreateUserDto, response: Response) {
-    await this.userService.save(userData);
-    const apiResponse: ApiResponse = {
-      message: "Usuário cadastrado com sucesso",
-      statusCode: StatusCode.CREATED,
-    };
-    return response.status(StatusCode.CREATED).json(apiResponse);
-  }
-
   async findById(request: Request, response: Response) {
-    const userId = request.params.userId as string;
+    const userId = request.userId as string;
 
     try {
-      return this.tryFindUserById(userId, response);
+      const apiResponse = await this.tryFindUserById(userId, response);
+      return apiResponse;
     } catch (error) {
       return this.handleApiErrorResponse(error, response);
     }
@@ -51,10 +33,11 @@ export class UserController {
   }
 
   async delete(request: Request, response: Response) {
-    const userId = request.params.userId as string;
+    const userId = request.userId as string;
 
     try {
-      return this.tryDeleteUser(userId, response);
+      const apiResponse = this.tryDeleteUser(userId, response);
+      return apiResponse;
     } catch (error) {
       return this.handleApiErrorResponse(error, response);
     }
@@ -70,16 +53,16 @@ export class UserController {
   }
 
   async update(request: Request, response: Response) {
-    const userId = request.params.userId as string;
     const userData = request.body as CreateUserDto;
 
     const userDataToUpdate: UpdateUserDto = {
-      id: userId,
+      id: request.userId as string,
       data: userData,
     };
 
     try {
-      return this.tryUpdateUser(userDataToUpdate, response);
+      const apiResponse = await this.tryUpdateUser(userDataToUpdate, response);
+      return apiResponse;
     } catch (error) {
       return this.handleApiErrorResponse(error, response);
     }

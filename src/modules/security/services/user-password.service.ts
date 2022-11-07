@@ -1,4 +1,5 @@
 import crypto from "crypto";
+
 export class UserPasswordService {
   private static encryptSalt = process.env.ENCRYPT_SALT;
   private static numberOfInterations = 1000;
@@ -15,6 +16,7 @@ export class UserPasswordService {
         this.hashAlgorithm
       )
       .toString(`hex`);
+
     return encryptedPassword;
   }
 }
