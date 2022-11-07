@@ -2,6 +2,7 @@ import { v4 as generatoUuidId } from "uuid";
 import { BusinessException } from "../../api/exceptions/business.exception";
 import { InternalServerErrorException } from "../../api/exceptions/internal-server-error.exception";
 import { NotFoundException } from "../../api/exceptions/not-found.exception";
+import { JwtService } from "../../security/services/jwt.service";
 import { UserPasswordService } from "../../security/services/user-password.service";
 import { CreateUserDto } from "../../user/dto/create-user.dto";
 import { NewPasswords } from "../../user/dto/new-passwords.dto";
@@ -13,6 +14,7 @@ import { UserValidationSchema } from "../../user/validation/user.schema";
 import { UserValidationEmail } from "../../user/validation/user.validation.email";
 import { UserValidationLogin } from "../../user/validation/user.validation.login";
 import { UserValidationNewPasswords } from "../../user/validation/user.validation.newpasswords";
+import { LoginOutPutDto } from "../dto/login-output.dto";
 
 const userRepository = new UserRepository();
 
@@ -40,7 +42,8 @@ class AuthenticationService {
       avatar: userData.avatar,
     });
   }
-  async login(userLogin: UserLoginDto): Promise<UserOutputDto> {
+
+  async login(userLogin: UserLoginDto): Promise<LoginOutPutDto> {
     userLogin.password = UserPasswordService.encryptPassword(
       userLogin.password
     );
@@ -52,28 +55,34 @@ class AuthenticationService {
       userLogin.email
     );
 
-    if (existingUserWithEmail) {
-      const userData = await userRepository.verificationEmailPassword(
-        userLogin.email,
-        userLogin.password
-      );
-      if (userData) {
-        return {
-          avatar: userData.avatar,
-          email: userData.email,
-          id: userData.id,
-          name: userData.name,
-        };
-      } else {
-        throw new BusinessException(
-          "Acesso não autorizado, dados de login incorretos"
-        );
-      }
-    } else {
+    if (!existingUserWithEmail) {
       throw new NotFoundException(
         `Não foi encontrado usuario com o e-mail: ${userLogin.email}`
       );
     }
+
+    const userData = await userRepository.verificationEmailPassword(
+      userLogin.email,
+      userLogin.password
+    );
+
+    if (!userData) {
+      throw new BusinessException(
+        "Acesso não autorizado, dados de login incorretos"
+      );
+    }
+
+    const jwtToken = JwtService.generateAccessToken(userData.id);
+
+    return {
+      token: jwtToken,
+      data: {
+        avatar: userData.avatar,
+        email: userData.email,
+        name: userData.name,
+        password: userData.password,
+      },
+    };
   }
 
   async confirmEmail(userEmail: UserEmailDTO) {
