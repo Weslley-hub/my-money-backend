@@ -17,7 +17,4 @@ export class UserPasswordService {
       .toString(`hex`);
     return encryptedPassword;
   }
-  static generateRandomPassword() {
-    return Math.random().toString(36).slice(-10);
-  }
 }

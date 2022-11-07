@@ -64,7 +64,6 @@ class AuthenticationService {
           id: userData.id,
           name: userData.name,
         };
-        //return response.status(200).json({message:"Logado com sucesso"});
       } else {
         throw new BusinessException(
           "Acesso não autorizado, dados de login incorretos"
@@ -83,12 +82,8 @@ class AuthenticationService {
       userEmail.email
     );
     if (existingUserWithEmail) {
-      /*redireciono o user para a rota /recoverypassword/newpassword e passa o
-      userEmail.email como um parametro*/
-      console.log("Email confirmado");
       return existingUserWithEmail;
     } else {
-      //email não existe no banco preciso retornar erro
       throw new NotFoundException(
         `Não existe usuario com o email ${userEmail.email}`
       );
@@ -101,13 +96,10 @@ class AuthenticationService {
     if (newPasswords.newPassword == newPasswords.confirmNewPassword) {
       const userData = await userRepository.findByEmail(newPasswords.email);
       if (userData) {
-        console.log("senha antes da troca", userData.password);
         userData.password = UserPasswordService.encryptPassword(
           newPasswords.newPassword
         );
-        console.log("senha depois da troca", userData.password);
         const updatePasswordUser = await userRepository.update(userData);
-        console.log("Senha trocada com sucesso.");
         if (!updatePasswordUser) {
           throw new InternalServerErrorException(
             "Não foi possivel atualizar a senha"

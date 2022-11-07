@@ -56,12 +56,8 @@ class AuthenticationController {
 
   async newPassword(request: Request, response: Response) {
     const newPasswords = request.body as NewPasswords;
-    console.log(newPasswords);
     try {
-      const newPassword = await authenticationService.newPassword(
-        newPasswords
-        // userEmail
-      );
+      const newPassword = await authenticationService.newPassword(newPasswords);
       return response.status(StatusCode.SUCCESS).json({
         newPassword,
       });
