@@ -1,6 +1,6 @@
 import crypto from "crypto";
 export class UserPasswordService {
-  private static encryptSalt = "e4222f61065f46066c3c49d0c687391e";
+  private static encryptSalt = process.env.ENCRYPT_SALT;
   private static numberOfInterations = 1000;
   private static generatedKeyLength = 64;
   private static hashAlgorithm = "sha512";
