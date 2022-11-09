@@ -1,9 +1,9 @@
 export type CreateCardDto = {
   id: string;
-  nome: string;
-  numero: string;
-  tipo: string;
-  bandeira: string;
-  limite: string;
+  name: string;
+  number: string;
+  type: string;
+  flag: string;
+  limit: string;
   user_id: string;
 };
