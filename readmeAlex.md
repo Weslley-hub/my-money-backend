@@ -42,3 +42,7 @@ npm run dev
 #### Rodar as migrations
 
 npm run knex:migration:run
+
+### 2 problema do exception handler
+
+jorge me ajudou, agora eu preciso tratar o error da criacao de um cartao que referencia um usuario que nao existe.
