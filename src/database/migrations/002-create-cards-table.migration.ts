@@ -6,9 +6,10 @@ export async function up(knex: Knex) {
     .createTable("cards", function (table) {
       table.string("id").primary();
       table.string("name").notNullable();
-      table.string("numero").notNullable();
-      table.string("tipo").notNullable();
-      table.string("bandeira").notNullable();
+      table.string("number").notNullable();
+      table.string("type").notNullable();
+      table.string("flag").notNullable();
+      table.string("limit").notNullable();
       table.string("user_id").notNullable();
       table.foreign("user_id").references("users.id");
       table.timestamp("created_at").defaultTo(knex.fn.now());
