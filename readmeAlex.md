@@ -38,3 +38,7 @@ npm run dev
 -Problema no throw new Error
 [ ] auth.controller.ts(12)
 [ ] auth.servise.ts(18)
+
+#### Rodar as migrations
+
+npm run knex:migration:run
