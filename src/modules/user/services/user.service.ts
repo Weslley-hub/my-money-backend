@@ -1,6 +1,6 @@
 import { v4 as uuidV4 } from "uuid";
-import { BusinessException } from "../../api/exceptions/Business.exception";
-import { NotFoundException } from "../../api/exceptions/NotFound.exception";
+import { BusinessException } from "../../api/exceptions/business.exception";
+import { NotFoundException } from "../../api/exceptions/not-found.exception";
 
 import { CreateUserDto } from "../dto/create-user.dto";
 import { UserModel } from "../models/user.model";

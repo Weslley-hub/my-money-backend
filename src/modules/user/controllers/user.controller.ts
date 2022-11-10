@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { ExceptionHandler } from "../../api/exception-handler/ExceptionHandler";
+import { ExceptionHandler } from "../../api/exception-handler/exception.handler";
+import { ApiResponse } from "../../api/types/api-response.type";
 import { StatusCode } from "../../api/types/status-code.type";
-import { ApiResponseGenerator } from "../../api/util/ApiReponseGenerator.util";
 
 import { CreateUserDto } from "../dto/create-user.dto";
 import { userService } from "../services/user.service";
@@ -12,10 +12,10 @@ class UserController {
 
     try {
       await userService.save(userData);
-      const apiResponse = ApiResponseGenerator.generateResponse<null>({
-        message: "Usuário cadastro com sucesso",
+      const apiResponse: ApiResponse = {
+        message: "Usuário cadastrado com sucesso",
         statusCode: StatusCode.CREATED,
-      });
+      };
       return response.status(StatusCode.CREATED).json(apiResponse);
     } catch (error) {
       const apiResponse = ExceptionHandler.parseErrorAndGetApiResponse(error);
@@ -40,10 +40,10 @@ class UserController {
 
     try {
       await userService.delete(userId);
-      const apiResponse = ApiResponseGenerator.generateResponse<null>({
+      const apiResponse: ApiResponse = {
         message: "Usuário excluído com sucesso",
         statusCode: StatusCode.SUCCESS,
-      });
+      };
       return response.status(StatusCode.SUCCESS).json(apiResponse);
     } catch (error) {
       const apiResponse = ExceptionHandler.parseErrorAndGetApiResponse(error);
@@ -61,10 +61,10 @@ class UserController {
         data: userData,
       };
 
-      const apiResponse = ApiResponseGenerator.generateResponse<null>({
+      const apiResponse: ApiResponse = {
         message: "Usuário atualizado com sucesso",
         statusCode: StatusCode.SUCCESS,
-      });
+      };
       await userService.update(userDataToUpdate);
 
       return response.status(StatusCode.SUCCESS).json(apiResponse);

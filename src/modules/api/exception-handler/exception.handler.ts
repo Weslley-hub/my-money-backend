@@ -1,50 +1,38 @@
 import { ValidationError } from "yup";
+import { ApiErrorException } from "../exceptions/api-error.exception";
 
-import { BusinessException } from "../exceptions/Business.exception";
-import { NotFoundException } from "../exceptions/NotFound.exception";
+import { ApiErrorResponse } from "../types/api-error-response.type";
 
-import { ApiResponse } from "../types/api-response.type";
-import { StatusCode } from "../types/status-code.type";
-import { YupValidationErrorHandler } from "./YupValidationErrorHandler";
+import { YupValidationErrorHandler } from "./yup-validation-error.handler";
 
 export class ExceptionHandler {
-  private static getApiErrorCode(error: Error) {
-    if (error instanceof NotFoundException) {
-      return StatusCode.NOT_FOUND;
-    }
-
-    if (error instanceof BusinessException) {
-      return StatusCode.BAD_REQUEST;
-    }
-
-    return StatusCode.INTERNAL_ERROR;
-  }
-
   private static parseErrorToApiResponse(
     error: Error,
     data?: any
-  ): ApiResponse<any> {
+  ): ApiErrorResponse {
     const message = error.message;
-    const statusCode = this.getApiErrorCode(error);
+    const { errorType, statusCode } = error as ApiErrorException;
 
     if (data) {
       return {
         message,
         statusCode,
         data: data,
+        errorType,
       };
     }
 
     return {
       message,
       statusCode,
+      errorType,
     };
   }
 
   static parseErrorAndGetApiResponse(
     error: unknown,
     data?: any
-  ): ApiResponse<any> {
+  ): ApiErrorResponse {
     const parsedError = error as Error;
 
     if (parsedError instanceof ValidationError) {
