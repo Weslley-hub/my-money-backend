@@ -1,15 +1,29 @@
 import { Router } from "express";
-import { ExceptionHandler } from "../../api/exception-handler/exception.handler";
-import { BusinessException } from "../../api/exceptions/business.exception";
-import { StatusCode } from "../../api/types/status-code.type";
 import { CardController } from "../controllers/cards.controllers";
-import { CreateCardDto } from "../dto/create-cards.dto";
 import { CardRepository } from "../repositories/cards.repository";
-import { CardValidationSchema } from "../validation/cards.schema";
 
 const cardRouter = Router();
-const cardRepository = new CardRepository();
 const cardController = new CardController();
-cardRouter.post("/register-card", cardController.registerCard);
+cardRouter.post("/register", cardController.registerCard);
+cardRouter.post("/current-user-cards", async (req, res) => {
+  const { id } = req.body;
+  const cardRepository = new CardRepository();
+  const cartoes = await cardRepository.findAllByUserId(id);
+  return res.status(200).json({ cartoes });
+});
+cardRouter.post("/delete", async (req, res) => {
+  const { id } = req.body;
+  const cardRepository = new CardRepository();
+  await cardRepository.delete(id);
+  return res.status(200).json({ message: "Cartão excluido" });
+});
+cardRouter.post("/update", async (req, res) => {
+  const { id } = req.body;
+  const cardRepository = new CardRepository();
+  //terminar essa parte dia 18/11
+
+  //await cardRepository.update();
+  return res.status(200).json({ message: "Cartão excluido" });
+});
 
 export { cardRouter };
