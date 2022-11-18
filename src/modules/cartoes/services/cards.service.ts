@@ -9,7 +9,7 @@ class CardsService {
     await CardValidationSchema.validate(cardData, {
       abortEarly: false,
     });
-    await cardRepository.registerCard(cardData);
+    await cardRepository.save(cardData);
   }
 }
 
