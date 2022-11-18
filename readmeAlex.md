@@ -46,3 +46,8 @@ npm run knex:migration:run
 ### 2 problema do exception handler
 
 jorge me ajudou, agora eu preciso tratar o error da criacao de um cartao que referencia um usuario que nao existe.
+
+### Ids conincidindo
+
+A forma como é atribuido um id aos usuarios e os cartões foi implementada de forma diferentes,
+iniciamente acredito que não tenha problemas os IDS de cartão e user fossem iguais, mas achei melhor alterar isso ja que pode dar a intender que pertecem ao mesmo user, sendo que seria apenas coincidência.
