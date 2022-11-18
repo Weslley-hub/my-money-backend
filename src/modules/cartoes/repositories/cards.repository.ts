@@ -26,10 +26,10 @@ export class CardRepository {
       .select("*")
       .where("user_id", "=", user_id);
   }
-  findById(number: string) {
+  findById(id: string) {
     return dbConnection<RepositoryCardDto>("cards")
       .select("*")
-      .where("number", "=", number)
+      .where("id", "=", id)
       .first();
   }
 }
