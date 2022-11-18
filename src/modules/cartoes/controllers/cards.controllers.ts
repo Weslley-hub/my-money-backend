@@ -11,9 +11,6 @@ const cardsService = new CardsService();
 class CardController {
   async registerCard(request: Request, response: Response) {
     const cardData = request.body as CreateCardDto;
-    console.log(cardData);
-    /*Eu preciso pegar o id do user que esta logado
-  Como fazer isso ?*/
     try {
       await cardsService.registerCard(cardData);
       return response.status(StatusCode.CREATED).json({
