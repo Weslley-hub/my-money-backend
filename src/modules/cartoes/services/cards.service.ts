@@ -7,7 +7,7 @@ import { CardValidationSchema } from "../validation/cards.schema";
 const cardRepository = new CardRepository();
 
 class CardsService {
-  async registerCard(cardData: CreateCardDto) {
+  async register(cardData: CreateCardDto) {
     await CardValidationSchema.validate(cardData, {
       abortEarly: false,
     });

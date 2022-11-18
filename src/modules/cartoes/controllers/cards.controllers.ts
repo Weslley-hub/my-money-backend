@@ -9,10 +9,10 @@ import { CardValidationSchema } from "../validation/cards.schema";
 const cardsService = new CardsService();
 
 class CardController {
-  async registerCard(request: Request, response: Response) {
+  async register(request: Request, response: Response) {
     const cardData = request.body as CreateCardDto;
     try {
-      await cardsService.registerCard(cardData);
+      await cardsService.register(cardData);
       return response.status(StatusCode.CREATED).json({
         message: "Criado com sucesso",
         statuscode: StatusCode.CREATED,
