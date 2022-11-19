@@ -15,8 +15,8 @@ const cardsService = new CardsService();
 
 class CardController {
   async register(request: Request, response: Response) {
-    const cardData = request.body as CreateCardDto;
     try {
+      const cardData = request.body as CreateCardDto;
       await cardsService.register(cardData);
       return response.status(StatusCode.CREATED).json({
         message: "Criado com sucesso",
@@ -34,42 +34,33 @@ class CardController {
   }
 
   async userCardList(request: Request, response: Response) {
-    const cardData = request.body as UserCardList;
-    await UserCardListValidation.validate(cardData);
-    const cardRepository = new CardRepository();
-    const cartoes = await cardRepository.findAllByUserId(cardData.id);
-    return response.status(200).json({ cartoes });
+    try {
+      const cardData = request.body as UserCardList;
+      const cartoes = await cardsService.userCardList(cardData);
+      return response.status(200).json({ cartoes });
+    } catch (error) {
+      return response.status(400).json({ error });
+    }
   }
 
   async delete(request: Request, response: Response) {
-    const cardData = request.body as DeleteCardDto;
-    const cardRepository = new CardRepository();
-    await CardValidationDelete.validate(cardData);
-
-    const existingCardById = await cardRepository.findById(cardData.id);
-    console.log("existingCardById - ", existingCardById);
-    if (!existingCardById) {
-      return response.status(400).json("Não existe um cartão com esse id.");
+    try {
+      const cardData = request.body as DeleteCardDto;
+      await cardsService.delete(cardData);
+      return response.status(200).json({ message: "Cartão excluido" });
+    } catch (error) {
+      return response.status(400).json({ error });
     }
-
-    await cardRepository.delete(cardData.id);
-    return response.status(200).json({ message: "Cartão excluido" });
   }
 
   async update(request: Request, response: Response) {
-    const cardData = request.body as RepositoryCardDto;
-    await CardValidationUpdate.validate(cardData);
-    console.log(cardData);
-    const cardRepository = new CardRepository();
-    const existingCardById = await cardRepository.findById(cardData.id);
-    console.log("existingCardById - ", existingCardById);
-
-    if (!existingCardById) {
-      return response.status(400).json("Não existe um cartão com esse id.");
+    try {
+      const cardData = request.body as RepositoryCardDto;
+      await cardsService.update(cardData);
+      return response.status(200).json({ message: "Cartão foi atualizado" });
+    } catch (error) {
+      return response.status(400).json({ error });
     }
-
-    await cardRepository.update(cardData);
-    return response.status(200).json({ message: "Cartão foi atualizado" });
   }
 }
 
