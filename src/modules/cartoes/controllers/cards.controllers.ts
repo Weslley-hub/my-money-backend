@@ -5,11 +5,8 @@ import { CreateCardDto } from "../dto/create-cards.dto";
 import { DeleteCardDto } from "../dto/delete-cards.dto";
 import { RepositoryCardDto } from "../dto/repository-cards.dto";
 import { UserCardList } from "../dto/user-card-list-dto";
-import { CardRepository } from "../repositories/cards.repository";
+
 import { CardsService } from "../services/cards.service";
-import { CardValidationDelete } from "../validation/card.validation.delete";
-import { CardValidationUpdate } from "../validation/card.validation.update";
-import { UserCardListValidation } from "../validation/user.card.list.validation";
 
 const cardsService = new CardsService();
 
