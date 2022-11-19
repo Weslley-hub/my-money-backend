@@ -45,7 +45,7 @@ class CardsService {
     await CardValidationDelete.validate(cardData);
     const cardRepository = new CardRepository();
     const existingCardById = await cardRepository.findById(cardData.id);
-    console.log("existingCardById - ", existingCardById);
+
     if (!existingCardById) {
       throw new BusinessException(
         `Não existe um cartão com o id.: ${cardData.id}`
@@ -56,10 +56,9 @@ class CardsService {
   }
   async update(cardData: RepositoryCardDto) {
     await CardValidationUpdate.validate(cardData);
-    console.log(cardData);
+
     const cardRepository = new CardRepository();
     const existingCardById = await cardRepository.findById(cardData.id);
-    console.log("existingCardById - ", existingCardById);
 
     if (!existingCardById) {
       throw new BusinessException(

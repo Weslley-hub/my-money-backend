@@ -20,10 +20,9 @@ class CardController {
         statuscode: StatusCode.CREATED,
       });
     } catch (error) {
-      console.log("error - ", error);
       const apiErrorResponse =
         ExceptionHandler.parseErrorAndGetApiResponse(error);
-      console.log("statuscode - ", apiErrorResponse.statusCode);
+
       return response
         .status(apiErrorResponse.statusCode)
         .json(apiErrorResponse);
