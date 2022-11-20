@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { BusinessException } from "../../api/exceptions/business.exception";
+import { UserRepository } from "../../user/repositories/user.repository";
 import { CreateCardDto } from "../dto/create-cards.dto";
 import { DeleteCardDto } from "../dto/delete-cards.dto";
 import { RepositoryCardDto } from "../dto/repository-cards.dto";
@@ -11,7 +12,7 @@ import { CardValidationSchema } from "../validation/cards.validation.schema";
 import { UserCardListValidation } from "../validation/user.card.list.validation";
 
 const cardRepository = new CardRepository();
-
+const userRepository = new UserRepository();
 class CardsService {
   async register(cardData: CreateCardDto) {
     await CardValidationSchema.validate(cardData, {
@@ -22,6 +23,12 @@ class CardsService {
     if (card) {
       throw new BusinessException(
         `Ja existe um cartão cadastrado com o número: ${cardData.number}`
+      );
+    }
+    const userId = await userRepository.findById(cardData.user_id);
+    if (!userId) {
+      throw new BusinessException(
+        `Não existe um usuario com o id: ${cardData.user_id}`
       );
     }
     await cardRepository.save({
