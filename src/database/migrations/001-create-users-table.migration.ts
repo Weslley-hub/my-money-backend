@@ -3,7 +3,7 @@ import { Knex } from "knex";
 export async function up(knex: Knex) {
   return knex.schema
     .withSchema("public")
-    .createTable("users", function (table) {
+    .createTableIfNotExists("users", function (table) {
       table.string("id").primary();
       table.string("name").notNullable();
       table.string("email").notNullable().unique();
