@@ -3,13 +3,14 @@ import { Knex } from "knex";
 export async function up(knex: Knex) {
   return knex.schema
     .withSchema("public")
-    .createTable("cards", function (table) {
+    .createTable("credit_cards", function (table) {
       table.string("id").primary();
-      table.string("name").notNullable();
       table.string("number").notNullable();
-      table.string("type").notNullable();
       table.string("flag").notNullable();
-      table.string("limit").notNullable();
+      table.string("type").notNullable();
+      table.decimal("limit").notNullable();
+      table.decimal("current_value").notNullable();
+      table.integer("invoice_day").notNullable();
       table.string("user_id").notNullable();
       table.foreign("user_id").references("users.id");
       table.timestamp("created_at").defaultTo(knex.fn.now());
