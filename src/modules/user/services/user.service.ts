@@ -31,11 +31,11 @@ export class UserService {
       email: data.email,
       name: data.name,
       password: data.password,
-      id,
+      id
     });
   }
 
-  private async verifyUserExistence(userId: string) {
+  async verifyUserExistence(userId: string) {
     const userFound = await this.userRepository.findById(userId);
 
     if (!userFound) {
@@ -84,7 +84,7 @@ export class UserService {
       name: userModal.name,
       email: userModal.email,
       password: userModal.password,
-      avatar: userModal.avatar,
+      avatar: userModal.avatar
     };
   }
 
