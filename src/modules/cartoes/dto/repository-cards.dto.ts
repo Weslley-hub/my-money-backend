@@ -1,9 +1,11 @@
 export type RepositoryCardDto = {
   id: string;
   name: string;
-  number: string;
-  type: string;
+  number: number;
   flag: string;
-  limit: string;
+  type: string;
+  limit: number;
+  invoice_amount: number;
+  invoice_day: number;
   user_id: string;
 };
