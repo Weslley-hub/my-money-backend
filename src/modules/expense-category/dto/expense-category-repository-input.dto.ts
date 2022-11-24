@@ -1,4 +1,4 @@
-export type CustomExpenseCategoryRepositoryDto = {
+export type ExpenseCategoryRepositoryDto = {
   id: string;
   name: string;
   icon: string;

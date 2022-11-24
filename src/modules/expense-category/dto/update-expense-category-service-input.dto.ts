@@ -1,4 +1,4 @@
-export type UpdateCustomExpenseCategoryServiceInput = {
+export type UpdateExpenseCategoryServiceInputDto = {
   id: string;
   name: string;
   icon: string;

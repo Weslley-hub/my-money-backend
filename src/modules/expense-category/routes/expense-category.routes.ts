@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { CustomExpenseCategoryController } from "../controllers";
+import { ExpenseCategoryController } from "../controllers";
 
 const expenseCategoryRoutes = Router();
-const customExpenseCategoryController = new CustomExpenseCategoryController();
+const customExpenseCategoryController = new ExpenseCategoryController();
 
 expenseCategoryRoutes.get(
   "/",

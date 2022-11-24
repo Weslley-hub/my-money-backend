@@ -2,26 +2,25 @@ import { Request, Response } from "express";
 import { ExceptionHandler } from "../../api/exception-handler";
 import { ApiResponse, StatusCode } from "../../api/types";
 import {
-  CustomExpenseCategoryInputDto,
-  CreateCustomExpenseCategoryServiceInput,
-  UpdateCustomExpenseCategoryServiceInput,
-  DeleteCustomExpenseCategoryServiceInput
+  ExpenseCategoryInputDto,
+  CreateExpenseCategoryServiceInputDto,
+  UpdateExpenseCategoryServiceInputDto,
+  DeleteExpenseCategoryServiceInputDto
 } from "../dto";
-import { CustomExpenseCategoryService } from "../services";
+import { ExpenseCategoryService } from "../services";
 
-class CustomExpenseCategoryController {
-  private customExpenseCategoryService: CustomExpenseCategoryService;
+class ExpenseCategoryController {
+  private customExpenseCategoryService: ExpenseCategoryService;
 
   constructor() {
-    this.customExpenseCategoryService = new CustomExpenseCategoryService();
+    this.customExpenseCategoryService = new ExpenseCategoryService();
   }
 
   async create(request: Request, response: Response) {
     const userId = request.userId;
-    const customExpenseCategoryData =
-      request.body as CustomExpenseCategoryInputDto;
+    const customExpenseCategoryData = request.body as ExpenseCategoryInputDto;
 
-    const data: CreateCustomExpenseCategoryServiceInput = {
+    const data: CreateExpenseCategoryServiceInputDto = {
       icon: customExpenseCategoryData.icon,
       name: customExpenseCategoryData.name,
       userId: userId || ""
@@ -37,7 +36,7 @@ class CustomExpenseCategoryController {
   }
 
   private async tryCreate(
-    data: CreateCustomExpenseCategoryServiceInput,
+    data: CreateExpenseCategoryServiceInputDto,
     response: Response
   ) {
     const apiResponse: ApiResponse = {
@@ -53,10 +52,9 @@ class CustomExpenseCategoryController {
     const expenseId = request.params.expenseCategoryId as string;
     const userId = request.userId;
 
-    const customExpenseCategoryData =
-      request.body as CustomExpenseCategoryInputDto;
+    const customExpenseCategoryData = request.body as ExpenseCategoryInputDto;
 
-    const data: UpdateCustomExpenseCategoryServiceInput = {
+    const data: UpdateExpenseCategoryServiceInputDto = {
       id: expenseId,
       icon: customExpenseCategoryData.icon,
       name: customExpenseCategoryData.name,
@@ -73,7 +71,7 @@ class CustomExpenseCategoryController {
   }
 
   private async tryUpdate(
-    data: UpdateCustomExpenseCategoryServiceInput,
+    data: UpdateExpenseCategoryServiceInputDto,
     response: Response
   ) {
     const apiResponse: ApiResponse = {
@@ -110,7 +108,7 @@ class CustomExpenseCategoryController {
     const customExpenseCategoryId = request.params.expenseCategoryId || "";
 
     try {
-      const data: DeleteCustomExpenseCategoryServiceInput = {
+      const data: DeleteExpenseCategoryServiceInputDto = {
         customExpenseCategoryId,
         userId
       };
@@ -124,7 +122,7 @@ class CustomExpenseCategoryController {
   }
 
   async tryDelete(
-    deleteData: DeleteCustomExpenseCategoryServiceInput,
+    deleteData: DeleteExpenseCategoryServiceInputDto,
     response: Response
   ) {
     const apiResponse: ApiResponse = {
@@ -147,4 +145,4 @@ class CustomExpenseCategoryController {
   }
 }
 
-export { CustomExpenseCategoryController };
+export { ExpenseCategoryController };

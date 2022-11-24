@@ -3,30 +3,29 @@ import { BusinessException, NotFoundException } from "../../api/exceptions";
 import { UserService } from "../../user/services/user.service";
 
 import {
-  CustomExpenseCategoryRepositoryDto,
-  CreateCustomExpenseCategoryServiceInput,
-  UpdateCustomExpenseCategoryServiceInput,
-  CreateCustomExpenseCategoryServiceOutput
+  ExpenseCategoryRepositoryDto,
+  CreateExpenseCategoryServiceInputDto,
+  UpdateExpenseCategoryServiceInputDto,
+  CreateExpenseCategoryServiceOutputDto
 } from "../dto";
-import { CustomExpenseCategoryRepository } from "../repositories/custom-expense-category.repository";
-import { CustomExpenseCategoryValidationSchema } from "../validation";
+import { ExpenseCategoryRepository } from "../repositories/expense-category.repository";
+import { ExpenseCategoryValidationSchema } from "../validation";
 
-export class CustomExpenseCategoryService {
-  private customExpenseCategoryRepository: CustomExpenseCategoryRepository;
+export class ExpenseCategoryService {
+  private customExpenseCategoryRepository: ExpenseCategoryRepository;
   private userService: UserService;
 
   constructor() {
-    this.customExpenseCategoryRepository =
-      new CustomExpenseCategoryRepository();
+    this.customExpenseCategoryRepository = new ExpenseCategoryRepository();
     this.userService = new UserService();
   }
 
   async create(
-    customExpenseCategoryData: CreateCustomExpenseCategoryServiceInput
+    customExpenseCategoryData: CreateExpenseCategoryServiceInputDto
   ) {
     const expenseCategoryId = generateUuidV4();
 
-    const respositoryData: CustomExpenseCategoryRepositoryDto = {
+    const respositoryData: ExpenseCategoryRepositoryDto = {
       id: expenseCategoryId,
       name: customExpenseCategoryData.name,
       icon: customExpenseCategoryData.icon,
@@ -58,11 +57,11 @@ export class CustomExpenseCategoryService {
   }
 
   async update(
-    customExpenseCategoryData: UpdateCustomExpenseCategoryServiceInput
+    customExpenseCategoryData: UpdateExpenseCategoryServiceInputDto
   ) {
     await this.validateExpenseCategoryData(customExpenseCategoryData);
 
-    const respositoryData: CustomExpenseCategoryRepositoryDto = {
+    const respositoryData: ExpenseCategoryRepositoryDto = {
       id: customExpenseCategoryData.id,
       name: customExpenseCategoryData.name,
       icon: customExpenseCategoryData.icon,
@@ -82,13 +81,13 @@ export class CustomExpenseCategoryService {
   }
 
   private async validateExpenseCategoryData(
-    customExpenseCategoryData: CreateCustomExpenseCategoryServiceInput
+    customExpenseCategoryData: CreateExpenseCategoryServiceInputDto
   ) {
     const validationOptions = {
       abortEarly: false
     };
 
-    await CustomExpenseCategoryValidationSchema.validate(
+    await ExpenseCategoryValidationSchema.validate(
       customExpenseCategoryData,
       validationOptions
     );
@@ -132,23 +131,23 @@ export class CustomExpenseCategoryService {
   async list(userId: string) {
     await this.userService.verifyUserExistence(userId);
 
-    const userCustomExpenseCategories =
+    const userExpenseCategories =
       await this.customExpenseCategoryRepository.findByUserId(userId);
 
     const expenseCategories =
-      this.mapCustomExpenseCategoryRepositoryListToCustomExpenseCategoryOutputList(
-        userCustomExpenseCategories
+      this.mapExpenseCategoryRepositoryListToExpenseCategoryOutputList(
+        userExpenseCategories
       );
 
     return expenseCategories;
   }
 
-  private mapCustomExpenseCategoryRepositoryListToCustomExpenseCategoryOutputList(
-    customExpenseRepositoryCategories: CustomExpenseCategoryRepositoryDto[]
+  private mapExpenseCategoryRepositoryListToExpenseCategoryOutputList(
+    customExpenseRepositoryCategories: ExpenseCategoryRepositoryDto[]
   ) {
     const customExpenseCategoriesOutput = customExpenseRepositoryCategories.map(
       (customExpenseCategory) => {
-        return this.mapCustomExpenseCategoryRepositoryToCustomExpenseCategoryOutput(
+        return this.mapExpenseCategoryRepositoryToExpenseCategoryOutput(
           customExpenseCategory
         );
       }
@@ -157,9 +156,9 @@ export class CustomExpenseCategoryService {
     return customExpenseCategoriesOutput;
   }
 
-  private mapCustomExpenseCategoryRepositoryToCustomExpenseCategoryOutput(
-    customExpenseCategory: CustomExpenseCategoryRepositoryDto
-  ): CreateCustomExpenseCategoryServiceOutput {
+  private mapExpenseCategoryRepositoryToExpenseCategoryOutput(
+    customExpenseCategory: ExpenseCategoryRepositoryDto
+  ): CreateExpenseCategoryServiceOutputDto {
     return {
       icon: customExpenseCategory.icon,
       id: customExpenseCategory.id,
