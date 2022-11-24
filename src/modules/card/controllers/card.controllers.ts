@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { ExceptionHandler } from "../../api/exception-handler/exception.handler";
 import { StatusCode } from "../../api/types/status-code.type";
+import { EnumFlagDto } from "../dto/card-enum-flag-dto";
 import { CreateCardDto } from "../dto/create-cards.dto";
-import { DeleteCardDto } from "../dto/delete-cards.dto";
 import { RepositoryCardDto } from "../dto/repository-cards.dto";
 
 import { CardsService } from "../services/card.service";
@@ -11,16 +11,26 @@ const cardsService = new CardsService();
 
 class CardController {
   async register(request: Request, response: Response) {
+    const cardData = request.body as CreateCardDto;
+    if ((cardData.flag = EnumFlagDto.credit)) {
+      const apiResponse = this.tryRegister(cardData, response);
+      return apiResponse;
+    }
+    if ((cardData.flag = EnumFlagDto.debit)) {
+      const apiResponse = this.tryRegister(cardData, response);
+      return apiResponse;
+    }
+    if ((cardData.flag = EnumFlagDto.credit_debit)) {
+      const apiResponse = this.tryRegister(cardData, response);
+      return apiResponse;
+    }
     try {
-      return await this.tryRegister(request, response);
     } catch (error) {
-      const apiErrorResponse = await this.cathPattern(error, response);
-      return apiErrorResponse;
+      return this.handleApiErrorResponse(error, response);
     }
   }
 
-  private async tryRegister(request: Request, response: Response) {
-    const cardData = request.body as CreateCardDto;
+  private async tryRegister(cardData: CreateCardDto, response: Response) {
     await cardsService.register(cardData);
     return response.status(StatusCode.CREATED).json({
       message: "Criado com sucesso",
@@ -37,10 +47,16 @@ class CardController {
 
   async list(request: Request, response: Response) {
     try {
-      return await this.tryList(request, response);
+      const cardId = request.body as string;
+      const cards = await cardsService.list(cardId);
+      return response.status(StatusCode.SUCCESS).json({ cards });
     } catch (error) {
-      const apiErrorResponse = await this.cathPattern(error, response);
-      return apiErrorResponse;
+      const apiErrorResponse =
+        ExceptionHandler.parseErrorAndGetApiResponse(error);
+
+      return response
+        .status(apiErrorResponse.statusCode)
+        .json(apiErrorResponse);
     }
   }
 
@@ -52,10 +68,16 @@ class CardController {
 
   async delete(request: Request, response: Response) {
     try {
-      return await this.tryDelete(request, response);
+      const cardId = request.body as string;
+      await cardsService.delete(cardId);
+      return response.status(200).json({ message: "Cartão excluido" });
     } catch (error) {
-      const apiErrorResponse = await this.cathPattern(error, response);
-      return apiErrorResponse;
+      const apiErrorResponse =
+        ExceptionHandler.parseErrorAndGetApiResponse(error);
+
+      return response
+        .status(apiErrorResponse.statusCode)
+        .json(apiErrorResponse);
     }
   }
 
@@ -67,10 +89,16 @@ class CardController {
 
   async update(request: Request, response: Response) {
     try {
-      return await this.tryUpdate(request, response);
+      const cardData = request.body as RepositoryCardDto;
+      await cardsService.update(cardData);
+      return response.status(200).json({ message: "Cartão foi atualizado" });
     } catch (error) {
-      const apiErrorResponse = await this.cathPattern(error, response);
-      return apiErrorResponse;
+      const apiErrorResponse =
+        ExceptionHandler.parseErrorAndGetApiResponse(error);
+
+      return response
+        .status(apiErrorResponse.statusCode)
+        .json(apiErrorResponse);
     }
   }
 
@@ -78,6 +106,10 @@ class CardController {
     const cardData = request.body as RepositoryCardDto;
     await cardsService.update(cardData);
     return response.status(200).json({ message: "Cartão foi atualizado" });
+  }
+  private handleApiErrorResponse(error: unknown, response: Response) {
+    const apiResponse = ExceptionHandler.parseErrorAndGetApiResponse(error);
+    return response.status(apiResponse.statusCode).json(apiResponse);
   }
 }
 
