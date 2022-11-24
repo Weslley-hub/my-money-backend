@@ -3,7 +3,7 @@ import SwaggerUI from "swagger-ui-express";
 import { swaggerBasicInfo } from "./docs";
 import { userRouter } from "./modules/user/routes/user.route";
 import { authRoutes } from "./modules/authentication/routes/authentication.routes";
-import { cardRouter } from "./modules/cartoes/routes/cards.routes";
+import { cardRouter } from "./modules/card/routes/card.routes";
 const app = express();
 
 // Middlewares
