@@ -28,38 +28,41 @@ export class ExceptionHandler {
     data?: any
   ): ApiErrorResponse {
     const message = error.message;
-    const errorType = ExceptionHandler.getErrorType(error);
-    const statusCode = ExceptionHandler.getStatusError(error);
+    const apiErrorException = error as ApiErrorException;
+    
+    const errorType = this.getErrorType(apiErrorException.errorType);
+    const statusCode = this.getStatusCode(apiErrorException.statusCode);
 
     if (data) {
       return {
         message,
         statusCode,
         data: data,
-        errorType,
+        errorType
       };
     }
 
     return {
       message,
       statusCode,
-      errorType,
+      errorType
     };
   }
 
-  static getErrorType(error: Error) {
-    const apiErrorException = error as ApiErrorException;
-    if (!apiErrorException.errorType) {
-      return ApiError.INTERNAL_SERVER_ERROR;
+  private static getStatusCode(apiStatusCode?: number) {
+    if (apiStatusCode) {
+      return apiStatusCode;
     }
-    return apiErrorException.errorType;
+
+    return StatusCode.INTERNAL_SERVER_ERROR;
   }
 
-  static getStatusError(error: Error) {
-    const apiErrorException = error as ApiErrorException;
-    if (!apiErrorException.statusCode) {
-      return StatusCode.INTERNAL_SERVER_ERROR;
+  private static getErrorType(errorType?: ApiError) {
+    if (errorType) {
+      return errorType;
     }
-    return apiErrorException.statusCode;
+
+    return ApiError.INTERNAL_SERVER_ERROR;
+
   }
 }
