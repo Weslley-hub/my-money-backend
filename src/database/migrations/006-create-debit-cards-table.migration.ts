@@ -5,7 +5,8 @@ export async function up(knex: Knex) {
     .withSchema("public")
     .createTable("debit_cards", function (table) {
       table.string("id").primary();
-      table.string("number").notNullable();
+      table.string("name").notNullable();
+      table.integer("number").notNullable();
       table.string("flag").notNullable();
       table.string("user_id").notNullable();
       table.foreign("user_id").references("users.id");
