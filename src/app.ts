@@ -4,6 +4,7 @@ import { swaggerBasicInfo } from "./docs";
 
 import { userRouter } from "./modules/user/routes/user.route";
 import { authRoutes } from "./modules/authentication/routes/authentication.routes";
+import { cardRouter } from "./modules/card/routes/card.routes";
 
 const app = express();
 
@@ -16,5 +17,7 @@ app.use("/api-docs", SwaggerUI.serve, SwaggerUI.setup(swaggerBasicInfo));
 // Routes
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/cards", cardRouter);
+
 
 export { app };

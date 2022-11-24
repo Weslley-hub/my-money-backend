@@ -29,7 +29,7 @@ export class ExceptionHandler {
   ): ApiErrorResponse {
     const message = error.message;
     const apiErrorException = error as ApiErrorException;
-
+    
     const errorType = this.getErrorType(apiErrorException.errorType);
     const statusCode = this.getStatusCode(apiErrorException.statusCode);
 
@@ -63,5 +63,6 @@ export class ExceptionHandler {
     }
 
     return ApiError.INTERNAL_SERVER_ERROR;
+
   }
 }
