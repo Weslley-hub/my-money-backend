@@ -5,7 +5,7 @@ import { CreateCardDto } from "../dto/create-cards.dto";
 import { DeleteCardDto } from "../dto/delete-cards.dto";
 import { RepositoryCardDto } from "../dto/repository-cards.dto";
 import { UserCardList } from "../dto/user-card-list-dto";
-import { CardRepository } from "../repositories/cards.repository";
+import { CardRepository } from "../repositories/card.repository";
 import { CardValidationDelete } from "../validation/card.validation.delete";
 import { CardValidationUpdate } from "../validation/card.validation.update";
 import { CardValidationSchema } from "../validation/cards.validation.schema";
