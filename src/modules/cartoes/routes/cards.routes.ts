@@ -5,8 +5,8 @@ const cardRouter = Router();
 const cardController = new CardController();
 
 cardRouter.post("/register", cardController.register);
-cardRouter.post("/current-user-cards", cardController.userCardList);
-cardRouter.delete("/delete", cardController.delete);
-cardRouter.put("/update", cardController.update);
+cardRouter.post("/", cardController.list);
+cardRouter.delete("/", cardController.delete);
+cardRouter.put("/", cardController.update);
 
 export { cardRouter };
