@@ -1,7 +1,7 @@
 import { Knex } from "knex";
 import { createTableIfNotExists } from "../utils";
 
-const TABLE_NAME = "custom_expense_categories";
+const TABLE_NAME = "expense_categories";
 
 export async function up(knex: Knex) {
   return createTableIfNotExists(TABLE_NAME, knex, createTable);

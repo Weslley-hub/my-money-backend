@@ -1,4 +1,4 @@
-export type DeleteCustomExpenseCategoryServiceInput = {
+export type DeleteExpenseCategoryServiceInputDto = {
   customExpenseCategoryId: string;
   userId: string;
 };

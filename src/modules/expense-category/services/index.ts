@@ -1,1 +1,1 @@
-export * from "./custom-expense-category.service";
+export * from "./expense-category.service";
