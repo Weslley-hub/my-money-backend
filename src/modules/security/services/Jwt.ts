@@ -1,7 +1,7 @@
-import "../../../config/env.config";
+import "../../../config/env";
 
 import jwt from "jsonwebtoken";
-import { TokenPayloadDto } from "../dto/token-payload.dto";
+import { TokenPayloadDto } from "../dto/TokenPayload";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -11,7 +11,7 @@ export class JwtService {
 
     const token = jwt.sign({}, JWT_SECRET, {
       expiresIn: WEEK_SECONDS_TOTAL,
-      subject: userId,
+      subject: userId
     });
 
     return token;
