@@ -1,11 +1,16 @@
-import { CreateUserDto } from "../../user/dto/create-user.dto";
 import { Request, Response } from "express";
+
+import { ExceptionHandler } from "../../api/error-handler";
+import { StatusCode } from "../../api/types";
+
+import {
+  CreateUserDto,
+  NewPasswordsDto,
+  UserEmailDTO,
+  UserLoginDto
+} from "../../user/dto";
+
 import { AuthenticationService } from "../services";
-import { StatusCode } from "../../api/types/StatusCode";
-import { ExceptionHandler } from "../../api/error-handler/Exception";
-import { UserEmailDTO } from "../../user/dto/user-email.dto";
-import { UserLoginDto } from "../../user/dto/user-login.dto";
-import { NewPasswords } from "../../user/dto/new-passwords.dto";
 
 const authenticationService = new AuthenticationService();
 
@@ -55,7 +60,7 @@ class AuthenticationController {
   }
 
   async newPassword(request: Request, response: Response) {
-    const newPasswords = request.body as NewPasswords;
+    const newPasswords = request.body as NewPasswordsDto;
     try {
       const newPassword = await authenticationService.newPassword(newPasswords);
       return response.status(StatusCode.SUCCESS).json({

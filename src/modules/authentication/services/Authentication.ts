@@ -1,18 +1,27 @@
 import { v4 as generatoUuidId } from "uuid";
-import { BusinessException } from "../../api/exception/Business";
-import { InternalServerErrorException } from "../../api/exception/InternalServerError";
-import { NotFoundException } from "../../api/exception/NotFound";
-import { JwtService } from "../../security/services/jwt.service";
-import { UserPasswordService } from "../../security/services/user-password.service";
-import { CreateUserDto } from "../../user/dto/create-user.dto";
-import { NewPasswords } from "../../user/dto/new-passwords.dto";
-import { UserEmailDTO } from "../../user/dto/user-email.dto";
-import { UserLoginDto } from "../../user/dto/user-login.dto";
-import { UserRepository } from "../../user/repositories/user.repository";
-import { UserValidationSchema } from "../../user/validation/user.schema";
-import { UserValidationEmail } from "../../user/validation/user.validation.email";
-import { UserValidationLogin } from "../../user/validation/user.validation.login";
-import { UserValidationNewPasswords } from "../../user/validation/user.validation.newpasswords";
+
+import {
+  BusinessException,
+  NotFoundException,
+  InternalServerErrorException
+} from "../../api/exception";
+
+import { UserPasswordService, JwtService } from "../../security/services";
+
+import {
+  CreateUserDto,
+  UserLoginDto,
+  UserEmailDTO,
+  NewPasswordsDto
+} from "../../user/dto";
+import { UserRepository } from "../../user/repositories";
+import {
+  UserValidationSchema,
+  UserValidationLogin,
+  UserValidationEmail,
+  UserValidationNewPasswords
+} from "../../user/validation";
+
 import { LoginOutputDto } from "../dto";
 
 const userRepository = new UserRepository();
@@ -98,7 +107,7 @@ class AuthenticationService {
     }
   }
 
-  async newPassword(newPasswords: NewPasswords /*userEmail: UserEmailDTO*/) {
+  async newPassword(newPasswords: NewPasswordsDto /*userEmail: UserEmailDTO*/) {
     await UserValidationNewPasswords.validate(newPasswords);
 
     if (newPasswords.newPassword == newPasswords.confirmNewPassword) {
