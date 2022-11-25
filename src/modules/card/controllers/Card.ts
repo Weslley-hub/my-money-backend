@@ -1,11 +1,9 @@
 import { Request, Response } from "express";
-import { ExceptionHandler } from "../../api/exception-handler/exception.handler";
-import { StatusCode } from "../../api/types/status-code.type";
-import { EnumFlagDto } from "../dto/card-enum-flag-dto";
-import { CreateCardDto } from "../dto/create-cards.dto";
-import { RepositoryCardDto } from "../dto/repository-cards.dto";
+import { ExceptionHandler } from "../../api/error-handler";
+import { StatusCode } from "../../api/types";
+import { CreateCardDto, EnumFlagDto, RepositoryCardDto } from "../dto";
 
-import { CardsService } from "../services/card.service";
+import { CardsService } from "../services";
 
 const cardsService = new CardsService();
 
@@ -34,7 +32,7 @@ class CardController {
     await cardsService.register(cardData);
     return response.status(StatusCode.CREATED).json({
       message: "Criado com sucesso",
-      statuscode: StatusCode.CREATED,
+      statuscode: StatusCode.CREATED
     });
   }
 

@@ -1,5 +1,5 @@
 import { dbConnection } from "../../../database";
-import { RepositoryCardDto } from "../dto/repository-cards.dto";
+import { RepositoryCardDto } from "../dto";
 
 export class CardRepository {
   save(card: RepositoryCardDto) {

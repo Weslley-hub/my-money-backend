@@ -8,7 +8,7 @@ const CardValidationUpdate = Yup.object().shape({
   type: Yup.string().required("O tipo é obrigatorio"),
   flag: Yup.string().required("A bandeira é obrigatoria"),
   limit: Yup.string().required("O limite é obrigatorio"),
-  invoice_day: Yup.string().required("O dia da fatura é obrigatório"),
+  invoice_day: Yup.string().required("O dia da fatura é obrigatório")
 });
 
 export { CardValidationUpdate };
