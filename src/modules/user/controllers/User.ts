@@ -1,13 +1,9 @@
 import { Request, Response } from "express";
 
-import { ExceptionHandler } from "../../api/error-handler/Exception";
-import { ApiResponse } from "../../api/types/ApiResponse";
-import { StatusCode } from "../../api/types/StatusCode";
-
-import { CreateUserDto } from "../dto/CreateUser";
-import { UpdateUserDto } from "../dto/UpdateUser";
-
-import { UserService } from "../services/User";
+import { ExceptionHandler } from "../../api/error-handler";
+import { ApiResponse, StatusCode } from "../../api/types";
+import { CreateUserDto, UpdateUserDto } from "../dto";
+import { UserService } from "../services";
 
 export class UserController {
   private userService: UserService;

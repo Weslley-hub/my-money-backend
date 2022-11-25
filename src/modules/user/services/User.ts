@@ -1,16 +1,12 @@
-import { BusinessException } from "../../api/exception/Business";
-import { NotFoundException } from "../../api/exception/NotFound";
-
-import { CreateUserDto } from "../dto/CreateUser";
-import { UserOutputDto } from "../dto/UserOutput";
-import { UserModel } from "../models/User";
-import { UserRepository } from "../repositories/User";
-import { UserValidationSchema } from "../validation/user.schema";
-
-export type UpdateUserProps = {
-  id: string;
-  data: CreateUserDto;
-};
+import { NotFoundException, BusinessException } from "../../api/exception";
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  UserOutputDto,
+  UserRepositoryDto
+} from "../dto";
+import { UserRepository } from "../repositories";
+import { UserValidationSchema } from "../validation";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -19,8 +15,8 @@ export class UserService {
     this.userRepository = new UserRepository();
   }
 
-  async update(updateUserProps: UpdateUserProps): Promise<void> {
-    const { id, data } = updateUserProps;
+  async update(updateUserDto: UpdateUserDto): Promise<void> {
+    const { id, data } = updateUserDto;
 
     await this.validateUserData(data);
     await this.verifyUserExistence(id);
@@ -75,16 +71,19 @@ export class UserService {
       throw new NotFoundException(`Não existe usuário cadastrado com ID ${id}`);
     }
 
-    const userOutputDto = this.convertUserModelToUserOutputDto(userFound);
+    const userOutputDto =
+      this.convertUserRepostiroyDtoToUserOutputDto(userFound);
     return userOutputDto;
   }
 
-  private convertUserModelToUserOutputDto(userModal: UserModel): UserOutputDto {
+  private convertUserRepostiroyDtoToUserOutputDto(
+    user: UserRepositoryDto
+  ): UserOutputDto {
     return {
-      name: userModal.name,
-      email: userModal.email,
-      password: userModal.password,
-      avatar: userModal.avatar
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      avatar: user.avatar
     };
   }
 
