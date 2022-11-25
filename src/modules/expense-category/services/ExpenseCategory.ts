@@ -1,5 +1,5 @@
 import { v4 as generateUuidV4 } from "uuid";
-import { BusinessException, NotFoundException } from "../../api/exceptions";
+import { BusinessException, NotFoundException } from "../../api/exception";
 import { UserService } from "../../user/services/user.service";
 
 import {
@@ -8,7 +8,7 @@ import {
   UpdateExpenseCategoryServiceInputDto,
   CreateExpenseCategoryServiceOutputDto
 } from "../dto";
-import { ExpenseCategoryRepository } from "../repositories/expense-category.repository";
+import { ExpenseCategoryRepository } from "../repositories/ExpenseCategory";
 import { ExpenseCategoryValidationSchema } from "../validation";
 
 export class ExpenseCategoryService {

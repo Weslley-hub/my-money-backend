@@ -1,1 +1,1 @@
-export * from "./expense-category.schema";
+export * from "./ExpenseCategory";

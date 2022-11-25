@@ -1,1 +1,1 @@
-export * from "./expense-category.controller";
+export * from "./ExpenseCategory";
