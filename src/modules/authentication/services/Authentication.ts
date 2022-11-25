@@ -1,20 +1,19 @@
 import { v4 as generatoUuidId } from "uuid";
-import { BusinessException } from "../../api/exceptions/business.exception";
-import { InternalServerErrorException } from "../../api/exceptions/internal-server-error.exception";
-import { NotFoundException } from "../../api/exceptions/not-found.exception";
+import { BusinessException } from "../../api/exception/Business";
+import { InternalServerErrorException } from "../../api/exception/InternalServerError";
+import { NotFoundException } from "../../api/exception/NotFound";
 import { JwtService } from "../../security/services/jwt.service";
 import { UserPasswordService } from "../../security/services/user-password.service";
 import { CreateUserDto } from "../../user/dto/create-user.dto";
 import { NewPasswords } from "../../user/dto/new-passwords.dto";
 import { UserEmailDTO } from "../../user/dto/user-email.dto";
 import { UserLoginDto } from "../../user/dto/user-login.dto";
-import { UserOutputDto } from "../../user/dto/user-output.dto";
 import { UserRepository } from "../../user/repositories/user.repository";
 import { UserValidationSchema } from "../../user/validation/user.schema";
 import { UserValidationEmail } from "../../user/validation/user.validation.email";
 import { UserValidationLogin } from "../../user/validation/user.validation.login";
 import { UserValidationNewPasswords } from "../../user/validation/user.validation.newpasswords";
-import { LoginOutPutDto } from "../dto/login-output.dto";
+import { LoginOutputDto } from "../dto";
 
 const userRepository = new UserRepository();
 
@@ -22,7 +21,7 @@ class AuthenticationService {
   async register(userData: CreateUserDto) {
     userData.password = UserPasswordService.encryptPassword(userData.password);
     await UserValidationSchema.validate(userData, {
-      abortEarly: false,
+      abortEarly: false
     });
     const existingUserWithEmail = await userRepository.findByEmail(
       userData.email
@@ -39,16 +38,16 @@ class AuthenticationService {
       name: userData.name,
       email: userData.email,
       password: userData.password,
-      avatar: userData.avatar,
+      avatar: userData.avatar
     });
   }
 
-  async login(userLogin: UserLoginDto): Promise<LoginOutPutDto> {
+  async login(userLogin: UserLoginDto): Promise<LoginOutputDto> {
     userLogin.password = UserPasswordService.encryptPassword(
       userLogin.password
     );
     await UserValidationLogin.validate(userLogin, {
-      abortEarly: false,
+      abortEarly: false
     });
 
     const existingUserWithEmail = await userRepository.findByEmail(
@@ -80,8 +79,8 @@ class AuthenticationService {
         avatar: userData.avatar,
         email: userData.email,
         name: userData.name,
-        password: userData.password,
-      },
+        password: userData.password
+      }
     };
   }
 

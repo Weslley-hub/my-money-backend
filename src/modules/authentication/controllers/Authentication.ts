@@ -1,8 +1,8 @@
 import { CreateUserDto } from "../../user/dto/create-user.dto";
 import { Request, Response } from "express";
-import { AuthenticationService } from "../services/authentication.service";
-import { StatusCode } from "../../api/types/status-code.type";
-import { ExceptionHandler } from "../../api/exception-handler/exception.handler";
+import { AuthenticationService } from "../services";
+import { StatusCode } from "../../api/types/StatusCode";
+import { ExceptionHandler } from "../../api/error-handler/Exception";
 import { UserEmailDTO } from "../../user/dto/user-email.dto";
 import { UserLoginDto } from "../../user/dto/user-login.dto";
 import { NewPasswords } from "../../user/dto/new-passwords.dto";
@@ -16,7 +16,7 @@ class AuthenticationController {
       await authenticationService.register(userData);
       return response.status(StatusCode.CREATED).json({
         message: "Criado com sucesso",
-        statuscode: StatusCode.CREATED,
+        statuscode: StatusCode.CREATED
       });
     } catch (error) {
       const apiErrorResponse =
@@ -59,7 +59,7 @@ class AuthenticationController {
     try {
       const newPassword = await authenticationService.newPassword(newPasswords);
       return response.status(StatusCode.SUCCESS).json({
-        newPassword,
+        newPassword
       });
     } catch (error) {
       const apiErrorResponse =
