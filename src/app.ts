@@ -1,8 +1,8 @@
 import express from "express";
 
-import { userRouter } from "./modules/user/routes/user.route";
-import { authRoutes } from "./modules/authentication/routes/authentication.routes";
-import { cardRouter } from "./modules/card/routes/card.routes";
+import { userRouter } from "./modules/user/routes";
+import { authRoutes } from "./modules/authentication/routes";
+import { cardRouter } from "./modules/card/routes";
 
 const app = express();
 
