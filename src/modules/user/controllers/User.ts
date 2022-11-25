@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 
-import { ExceptionHandler } from "../../api/exception-handler/exception.handler";
-import { ApiResponse } from "../../api/types/api-response.type";
-import { StatusCode } from "../../api/types/status-code.type";
+import { ExceptionHandler } from "../../api/error-handler/Exception";
+import { ApiResponse } from "../../api/types/ApiResponse";
+import { StatusCode } from "../../api/types/StatusCode";
 
-import { CreateUserDto } from "../dto/create-user.dto";
-import { UpdateUserDto } from "../dto/update-user.dto";
+import { CreateUserDto } from "../dto/CreateUser";
+import { UpdateUserDto } from "../dto/UpdateUser";
 
-import { UserService } from "../services/user.service";
+import { UserService } from "../services/User";
 
 export class UserController {
   private userService: UserService;
@@ -47,7 +47,7 @@ export class UserController {
     await this.userService.delete(userId);
     const apiResponse: ApiResponse = {
       message: "Usuário excluído com sucesso",
-      statusCode: StatusCode.SUCCESS,
+      statusCode: StatusCode.SUCCESS
     };
     return response.status(StatusCode.SUCCESS).json(apiResponse);
   }
@@ -57,7 +57,7 @@ export class UserController {
 
     const userDataToUpdate: UpdateUserDto = {
       id: request.userId as string,
-      data: userData,
+      data: userData
     };
 
     try {
@@ -74,7 +74,7 @@ export class UserController {
   ) {
     const apiResponse: ApiResponse = {
       message: "Usuário atualizado com sucesso",
-      statusCode: StatusCode.SUCCESS,
+      statusCode: StatusCode.SUCCESS
     };
     await this.userService.update(userDataToUpdate);
     return response.status(StatusCode.SUCCESS).json(apiResponse);

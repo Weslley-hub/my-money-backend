@@ -1,10 +1,10 @@
-import { BusinessException } from "../../api/exceptions/business.exception";
-import { NotFoundException } from "../../api/exceptions/not-found.exception";
+import { BusinessException } from "../../api/exception/Business";
+import { NotFoundException } from "../../api/exception/NotFound";
 
-import { CreateUserDto } from "../dto/create-user.dto";
-import { UserOutputDto } from "../dto/user-output.dto";
-import { UserModel } from "../models/user.model";
-import { UserRepository } from "../repositories/user.repository";
+import { CreateUserDto } from "../dto/CreateUser";
+import { UserOutputDto } from "../dto/UserOutput";
+import { UserModel } from "../models/User";
+import { UserRepository } from "../repositories/User";
 import { UserValidationSchema } from "../validation/user.schema";
 
 export type UpdateUserProps = {
