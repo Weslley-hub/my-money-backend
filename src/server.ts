@@ -1,4 +1,4 @@
-import "./config/env.config";
+import "./config/env";
 
 import { app } from "./app";
 import { initializeDatabase } from "./database";

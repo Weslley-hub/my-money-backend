@@ -1,1 +1,1 @@
-export * from "./expense-category.routes";
+export * from "./ExpenseCategory";
