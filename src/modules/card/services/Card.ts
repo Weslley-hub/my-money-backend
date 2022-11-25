@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
+
 import { BusinessException } from "../../api/exception";
-import { UserRepository } from "../../user/repositories/user.repository";
+import { UserRepository } from "../../user/repositories";
 import { CreateCardDto, RepositoryCardDto } from "../dto";
 import { CardRepository } from "../repositories";
 import { CardValidationSchema, CardValidationUpdate } from "../validation";
