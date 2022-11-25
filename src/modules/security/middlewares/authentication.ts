@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ApiError } from "../../api/types/ApiError";
-import { StatusCode } from "../../api/types/StatusCode";
-
-import { TokenPayloadDto } from "../dto/TokenPayload";
-import { JwtService } from "../services/Jwt";
+import { StatusCode, ApiError } from "../../api/types";
+import { TokenPayloadDto } from "../dto";
+import { JwtService } from "../services";
 
 export function authenticationMiddleware(
   request: Request,

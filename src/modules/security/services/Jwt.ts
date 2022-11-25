@@ -1,7 +1,7 @@
 import "../../../config/env";
+import Jwt from "jsonwebtoken";
 
-import jwt from "jsonwebtoken";
-import { TokenPayloadDto } from "../dto/TokenPayload";
+import { TokenPayloadDto } from "../dto";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -9,7 +9,7 @@ export class JwtService {
   static generateAccessToken(userId: string) {
     const WEEK_SECONDS_TOTAL = 7 * 24 * 60 * 60;
 
-    const token = jwt.sign({}, JWT_SECRET, {
+    const token = Jwt.sign({}, JWT_SECRET, {
       expiresIn: WEEK_SECONDS_TOTAL,
       subject: userId
     });
@@ -19,7 +19,7 @@ export class JwtService {
 
   static verifyTokenValidation(token: string) {
     try {
-      const tokenPayload = jwt.verify(token, JWT_SECRET);
+      const tokenPayload = Jwt.verify(token, JWT_SECRET);
       return tokenPayload as TokenPayloadDto;
     } catch (error) {
       throw new Error("Token de accesso inválido");
