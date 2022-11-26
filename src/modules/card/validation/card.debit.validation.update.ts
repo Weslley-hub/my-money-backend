@@ -5,8 +5,7 @@ const CardDebitValidationUpdate = Yup.object().shape({
   name: Yup.string().required("Nome é obrigatorio"),
   userId: Yup.string().required("O user_id é obrigatorio"),
   number: Yup.string().required("O numero é obrigatorio"),
-  type: Yup.string().required("O tipo é obrigatorio"),
-  flag: Yup.string().required("A bandeira é obrigatoria")
+  type: Yup.string().required("O tipo é obrigatorio")
 });
 
 export { CardDebitValidationUpdate };
