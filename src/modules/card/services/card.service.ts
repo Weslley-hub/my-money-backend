@@ -26,6 +26,7 @@ class CardsService {
 
     await this.verificationNumber(cardData.number);
     await this.verificationId(cardData.user_id);
+    await this.verificationCardTypeValid(cardData.type);
 
     await this.verificationCardTypeValid(cardData.type);
 
@@ -34,7 +35,6 @@ class CardsService {
       await CardCreditValidationSchema.validate(cardData, {
         abortEarly: false,
       });
-
       await this.cardRepository.saveCredit({
         id: carId,
         name: cardData.name,
@@ -52,6 +52,7 @@ class CardsService {
       await CardDeditValidationSchema.validate(cardData, {
         abortEarly: false,
       });
+
       await this.cardRepository.saveDebit({
         id: carId,
         name: cardData.name,
@@ -169,6 +170,7 @@ class CardsService {
       );
     }
   }
+
   private async verificationExistingCardById(cardId: string) {
     const existingCardCredit = await this.cardRepository.findCreditById(cardId);
     const existingCardDebit = await this.cardRepository.findDebitById(cardId);
