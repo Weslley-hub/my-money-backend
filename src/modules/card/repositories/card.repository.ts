@@ -14,10 +14,10 @@ export class CardRepository {
       .update(card)
       .where("id", "=", card.id);
   }
-  updateDebit(card: RepositoryCardCreditDto) {
+  updateDebit(card: RepositoryCardDebitDto) {
     return dbConnection<RepositoryCardCreditDto>("debit_cards")
-      .update(card)
-      .where("id", "=", card.id);
+      .where("id", "=", card.id)
+      .update(card);
   }
   deleteCredit(id: string) {
     return dbConnection<RepositoryCardCreditDto>("credit_cards")
