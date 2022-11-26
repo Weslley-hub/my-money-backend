@@ -85,6 +85,7 @@ class ExpenseCategoryController {
   }
 
   async list(request: Request, response: Response) {
+    console.log(request.userId);
     const userId = request.userId || "";
 
     try {
