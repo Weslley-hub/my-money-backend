@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import { ExceptionHandler } from "../../api/exception-handler/exception.handler";
 import { StatusCode } from "../../api/types/status-code.type";
-import { EnumFlagDto } from "../dto/card-enum-flag-dto";
 import { CreateCardDto } from "../dto/create-cards.dto";
-import { RepositoryCardDto } from "../dto/repository-cards.dto";
+import { RepositoryCardCreditDto } from "../dto/repository-cards-credit.dto";
 
 import { CardsService } from "../services/card.service";
 
@@ -12,21 +11,14 @@ const cardsService = new CardsService();
 class CardController {
   async register(request: Request, response: Response) {
     const cardData = request.body as CreateCardDto;
-    if ((cardData.flag = EnumFlagDto.credit)) {
-      const apiResponse = this.tryRegister(cardData, response);
-      return apiResponse;
-    }
-    if ((cardData.flag = EnumFlagDto.debit)) {
-      const apiResponse = this.tryRegister(cardData, response);
-      return apiResponse;
-    }
-    if ((cardData.flag = EnumFlagDto.credit_debit)) {
-      const apiResponse = this.tryRegister(cardData, response);
-      return apiResponse;
-    }
+    // const cardTypes = [CardType.CREDIT,CardType.DEBIT,CardType.CREDIT_DEBIT];
+
     try {
+      const apiResponse = await this.tryRegister(cardData, response);
+      return apiResponse;
+      
     } catch (error) {
-      return this.handleApiErrorResponse(error, response);
+      return this.cathPattern(error, response);
     }
   }
 
@@ -38,17 +30,12 @@ class CardController {
     });
   }
 
-  private async cathPattern(error: unknown, response: Response) {
-    const apiErrorResponse =
-      ExceptionHandler.parseErrorAndGetApiResponse(error);
-
-    return response.status(apiErrorResponse.statusCode).json(apiErrorResponse);
-  }
-
+  
   async list(request: Request, response: Response) {
     try {
-      const cardId = request.body as string;
-      const cards = await cardsService.list(cardId);
+      const userId = request.query.userId as string;
+
+      const cards = await cardsService.list(userId);
       return response.status(StatusCode.SUCCESS).json({ cards });
     } catch (error) {
       const apiErrorResponse =
@@ -68,7 +55,7 @@ class CardController {
 
   async delete(request: Request, response: Response) {
     try {
-      const cardId = request.body as string;
+      const cardId = request.query.cardId as string;
       await cardsService.delete(cardId);
       return response.status(200).json({ message: "Cartão excluido" });
     } catch (error) {
@@ -89,7 +76,7 @@ class CardController {
 
   async update(request: Request, response: Response) {
     try {
-      const cardData = request.body as RepositoryCardDto;
+      const cardData = request.body as RepositoryCardCreditDto;
       await cardsService.update(cardData);
       return response.status(200).json({ message: "Cartão foi atualizado" });
     } catch (error) {
@@ -103,13 +90,20 @@ class CardController {
   }
 
   private async tryUpdate(request: Request, response: Response) {
-    const cardData = request.body as RepositoryCardDto;
+    const cardData = request.body as RepositoryCardCreditDto;
     await cardsService.update(cardData);
     return response.status(200).json({ message: "Cartão foi atualizado" });
   }
   private handleApiErrorResponse(error: unknown, response: Response) {
     const apiResponse = ExceptionHandler.parseErrorAndGetApiResponse(error);
     return response.status(apiResponse.statusCode).json(apiResponse);
+  }
+
+  private async cathPattern(error: unknown, response: Response) {
+    const apiErrorResponse =
+      ExceptionHandler.parseErrorAndGetApiResponse(error);
+  
+    return response.status(apiErrorResponse.statusCode).json(apiErrorResponse);
   }
 }
 
