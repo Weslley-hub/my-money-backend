@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-const CardValidationUpdate = Yup.object().shape({
+const CardDebitValidationUpdate = Yup.object().shape({
   id: Yup.string().required("O id é obrigatorio"),
   name: Yup.string().required("Nome é obrigatorio"),
   user_id: Yup.string().required("O user_id é obrigatorio"),
@@ -9,6 +9,7 @@ const CardValidationUpdate = Yup.object().shape({
   flag: Yup.string().required("A bandeira é obrigatoria"),
   limit: Yup.string().required("O limite é obrigatorio"),
   invoice_day: Yup.string().required("O dia da fatura é obrigatório"),
+  invoice_amout: Yup.string().required("O dia da fatura é obrigatório"),
 });
 
-export { CardValidationUpdate };
+export { CardDebitValidationUpdate };

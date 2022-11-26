@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-const CardValidationSchema = Yup.object().shape({
+const CardDeditValidationSchema = Yup.object().shape({
   name: Yup.string().required("Nome é obrigatório"),
   user_id: Yup.string().required("O Cartão precisa de um user_id"),
   number: Yup.string().required("O numero é obrigatório"),
@@ -10,4 +10,4 @@ const CardValidationSchema = Yup.object().shape({
   invoice_day: Yup.string().required("O dia da fatura é obrigatório"),
 });
 
-export { CardValidationSchema };
+export { CardDeditValidationSchema };
