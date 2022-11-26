@@ -1,39 +1,70 @@
 import { dbConnection } from "../../../database";
-import { RepositoryCardDto } from "../dto/repository-cards.dto";
+import { RepositoryCardCreditDto } from "../dto/repository-cards-credit.dto";
+import { RepositoryCardDebitDto } from "../dto/repository-cards-debit.dto";
 
 export class CardRepository {
-  save(card: RepositoryCardDto) {
-    return dbConnection<RepositoryCardDto>("credit_cards").insert(card);
+  saveCredit(card: RepositoryCardCreditDto) {
+    return dbConnection<RepositoryCardCreditDto>("credit_cards").insert(card);
   }
-  update(card: RepositoryCardDto) {
-    return dbConnection<RepositoryCardDto>("credit_cards")
+  saveDebit(card: RepositoryCardDebitDto) {
+    return dbConnection<RepositoryCardDebitDto>("debit_cards").insert(card);
+  }
+  updateCredit(card: RepositoryCardCreditDto) {
+    return dbConnection<RepositoryCardCreditDto>("credit_cards")
       .update(card)
       .where("id", "=", card.id);
   }
-  delete(id: string) {
-    return dbConnection<RepositoryCardDto>("credit_cards")
+  updateDebit(card: RepositoryCardCreditDto) {
+    return dbConnection<RepositoryCardCreditDto>("debit_cards")
+      .update(card)
+      .where("id", "=", card.id);
+  }
+  deleteCredit(id: string) {
+    return dbConnection<RepositoryCardCreditDto>("credit_cards")
+      .delete()
+      .where("id", "=", id);
+  }
+  deleteDebit(id: string) {
+    return dbConnection<RepositoryCardCreditDto>("debit_cards")
       .delete()
       .where("id", "=", id);
   }
   findByUserId(user_id: string) {
-    return dbConnection<RepositoryCardDto>("credit_cards")
+    return dbConnection<RepositoryCardCreditDto>("credit_cards")
       .select("*")
       .where("user_id", "=", user_id)
       .first();
   }
-  findAllByUserId(user_id: string) {
-    return dbConnection<RepositoryCardDto>("credit_cards")
+  findAllCreditByUserId(user_id: string) {
+    return dbConnection<RepositoryCardCreditDto>("credit_cards")
       .select("*")
       .where("user_id", "=", user_id);
   }
-  findById(id: string) {
-    return dbConnection<RepositoryCardDto>("credit_cards")
+  findAllDebitByUserId(user_id: string) {
+    return dbConnection<RepositoryCardCreditDto>("debit_cards")
+      .select("*")
+      .where("user_id", "=", user_id);
+  }
+  findCreditById(id: string) {
+    return dbConnection<RepositoryCardCreditDto>("credit_cards")
       .select("*")
       .where("id", "=", id)
       .first();
   }
-  findByNumber(number: number) {
-    return dbConnection<RepositoryCardDto>("credit_cards")
+  findDebitById(id: string) {
+    return dbConnection<RepositoryCardCreditDto>("debit_cards")
+      .select("*")
+      .where("id", "=", id)
+      .first();
+  }
+  findByNumberCredit(number: number) {
+    return dbConnection<RepositoryCardCreditDto>("credit_cards")
+      .select("*")
+      .where("number", "=", number)
+      .first();
+  }
+  findByNumberDebit(number: number) {
+    return dbConnection<RepositoryCardCreditDto>("debit_cards")
       .select("*")
       .where("number", "=", number)
       .first();
