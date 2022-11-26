@@ -26,6 +26,7 @@ class CardsService {
 
     await this.verificationNumber(cardData.number);
     await this.verificationId(cardData.user_id);
+
     await this.verificationCardTypeValid(cardData.type);
 
     if ((cardData.type == CardType.CREDIT || cardData.type == CardType.CREDIT_DEBIT)) {
@@ -33,7 +34,7 @@ class CardsService {
       await CardCreditValidationSchema.validate(cardData, {
         abortEarly: false,
       });
-      
+
       await this.cardRepository.saveCredit({
         id: carId,
         name: cardData.name,
@@ -51,12 +52,11 @@ class CardsService {
       await CardDeditValidationSchema.validate(cardData, {
         abortEarly: false,
       });
-
       await this.cardRepository.saveDebit({
         id: carId,
         name: cardData.name,
         number: cardData.number,
-        flag: await this.verificationFlag(cardData.number),
+        flag:  await this.verificationFlag(cardData.number),
         type: cardData.type,
         user_id: cardData.user_id
       });
@@ -72,8 +72,8 @@ class CardsService {
   }
 
   private async verificationNumber(number: number) {
-    const cardNumberCredit = await this.cardRepository.findCreditByNumber(number);
-    const cardNumberDebit = await this.cardRepository.findDebitByNumber(number);
+    const cardNumberCredit = await this.cardRepository.findByNumberCredit(number);
+    const cardNumberDebit = await this.cardRepository.findByNumberDebit(number);
 
     if (cardNumberCredit || cardNumberDebit) {
       throw new BusinessException(
@@ -169,7 +169,6 @@ class CardsService {
       );
     }
   }
-
   private async verificationExistingCardById(cardId: string) {
     const existingCardCredit = await this.cardRepository.findCreditById(cardId);
     const existingCardDebit = await this.cardRepository.findDebitById(cardId);
@@ -205,8 +204,8 @@ class CardsService {
   }
   
   private async verificationCardExistingWithNumber(cardNumber: number, cardId:string){
-    const cardCredit = await this.cardRepository.findCreditByNumber(cardNumber);
-    const cardDebit  = await this.cardRepository.findDebitByNumber(cardNumber);
+    const cardCredit = await this.cardRepository.findByNumberCredit(cardNumber);
+    const cardDebit  = await this.cardRepository.findByNumberDebit(cardNumber);
     if(cardCredit || cardDebit){
       if(await this.verificationCurrentNumberEqualNewNumber(cardNumber,cardId)){
         return;
