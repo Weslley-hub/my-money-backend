@@ -1,10 +1,12 @@
 import express from "express";
 
+import { authenticationMiddleware } from "./modules/security/middlewares";
+
 import { userRouter } from "./modules/user/routes";
 import { authRoutes } from "./modules/authentication/routes";
 import { cardRouter } from "./modules/card/routes";
 import { expenseCategoryRouter } from "./modules/expense-category/routes";
-import { authenticationMiddleware } from "./modules/security/middlewares";
+import { revenueRouter } from "./modules/revenue/routes";
 
 const app = express();
 
@@ -20,5 +22,6 @@ app.use(
   authenticationMiddleware,
   expenseCategoryRouter
 );
+app.use("/api/v1/revenues", authenticationMiddleware, revenueRouter);
 
 export { app };
