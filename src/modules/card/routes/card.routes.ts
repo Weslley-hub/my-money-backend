@@ -15,6 +15,11 @@ cardRouter.get(
   authenticationMiddleware,
   cardController.list.bind(cardController)
 );
+cardRouter.get(
+  "/uniqueListing",
+  authenticationMiddleware,
+  cardController.uniqueListing.bind(cardController)
+);
 cardRouter.delete(
   "/",
   authenticationMiddleware,
