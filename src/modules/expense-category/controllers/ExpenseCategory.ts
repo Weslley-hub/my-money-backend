@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { ExceptionHandler } from "../../api/exception-handler";
+
+import { ExceptionHandler } from "../../api/error-handler";
 import { ApiResponse, StatusCode } from "../../api/types";
 import {
   ExpenseCategoryInputDto,
@@ -84,6 +85,7 @@ class ExpenseCategoryController {
   }
 
   async list(request: Request, response: Response) {
+    console.log(request.userId);
     const userId = request.userId || "";
 
     try {

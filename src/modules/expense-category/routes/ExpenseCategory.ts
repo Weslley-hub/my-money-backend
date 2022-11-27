@@ -1,24 +1,24 @@
 import { Router } from "express";
 import { ExpenseCategoryController } from "../controllers";
 
-const expenseCategoryRoutes = Router();
+const expenseCategoryRouter = Router();
 const customExpenseCategoryController = new ExpenseCategoryController();
 
-expenseCategoryRoutes.get(
+expenseCategoryRouter.get(
   "/",
   customExpenseCategoryController.list.bind(customExpenseCategoryController)
 );
-expenseCategoryRoutes.post(
+expenseCategoryRouter.post(
   "/",
   customExpenseCategoryController.create.bind(customExpenseCategoryController)
 );
-expenseCategoryRoutes.put(
+expenseCategoryRouter.put(
   "/:expenseCategoryId",
   customExpenseCategoryController.update.bind(customExpenseCategoryController)
 );
-expenseCategoryRoutes.delete(
+expenseCategoryRouter.delete(
   "/:expenseCategoryId",
   customExpenseCategoryController.delete.bind(customExpenseCategoryController)
 );
 
-export { expenseCategoryRoutes };
+export { expenseCategoryRouter };

@@ -1,1 +1,1 @@
-export * from "./card.routes";
+export * from "./Card";

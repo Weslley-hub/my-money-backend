@@ -1,11 +1,11 @@
-import { CreateUserDto } from "../../user/dto/create-user.dto";
+import { CreateUserDto } from "../../user/dto/CreateUser";
 import { Request, Response } from "express";
-import { AuthenticationService } from "../services/authentication.service";
+import { AuthenticationService } from "../services/Authentication";
 import { StatusCode } from "../../api/types/status-code.type";
 import { ExceptionHandler } from "../../api/exception-handler/exception.handler";
-import { UserEmailDTO } from "../../user/dto/user-email.dto";
-import { UserLoginDto } from "../../user/dto/user-login.dto";
-import { NewPasswords } from "../../user/dto/new-passwords.dto";
+import { UserEmailDTO } from "../../user/dto/UserEmail";
+import { UserLoginDto } from "../../user/dto/UserLogin";
+import { NewPasswords } from "../../user/dto/NewPasswords";
 
 const authenticationService = new AuthenticationService();
 

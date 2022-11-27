@@ -1,23 +1,27 @@
 import express from "express";
-import SwaggerUI from "swagger-ui-express";
-import { swaggerBasicInfo } from "./docs";
 
-import { userRouter } from "./modules/user/routes/user.route";
-import { authRoutes } from "./modules/authentication/routes/authentication.routes";
-import { cardRouter } from "./modules/card/routes/card.routes";
+import { authenticationMiddleware } from "./modules/security/middlewares";
+
+import { userRouter } from "./modules/user/routes";
+import { authRoutes } from "./modules/authentication/routes";
+import { cardRouter } from "./modules/card/routes";
+import { expenseCategoryRouter } from "./modules/expense-category/routes";
+import { revenueRouter } from "./modules/revenue/routes";
 
 const app = express();
 
 // Middlewares
 app.use(express.json());
 
-// Documentation
-app.use("/api-docs", SwaggerUI.serve, SwaggerUI.setup(swaggerBasicInfo));
-
 // Routes
-app.use("/api/v1/users", userRouter);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/users", userRouter);
 app.use("/api/v1/cards", cardRouter);
-
+app.use(
+  "/api/v1/expense-categories",
+  authenticationMiddleware,
+  expenseCategoryRouter
+);
+app.use("/api/v1/revenues", authenticationMiddleware, revenueRouter);
 
 export { app };
