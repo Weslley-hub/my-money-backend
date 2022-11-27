@@ -6,7 +6,7 @@ export async function up(knex: Knex) {
     .createTable("debit_cards", function (table) {
       table.string("id").primary();
       table.string("name").notNullable();
-      table.integer("number").notNullable().unique();
+      table.bigint("number").notNullable().unique();
       table.string("flag").notNullable();
       table.string("type").notNullable();
       table.string("user_id").notNullable();
