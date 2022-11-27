@@ -1,5 +1,5 @@
 import { dbConnection } from "../../../database";
-import { UserRepositoryDto } from "../dto/user-repository.dto";
+import { UserRepositoryDto } from "../dto/UserRepository";
 
 export class UserRepository {
   save(user: UserRepositoryDto) {
@@ -42,6 +42,7 @@ export class UserRepository {
       .where({
         email: userEmail,
         password: userPassword,
+
       })
       .select("*")
       .first();

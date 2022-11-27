@@ -6,13 +6,13 @@ import { RepositoryCardCreditDto } from "../dto/RepositoryCardCredit";
 
 import { CardsService } from "../services/Card";
 
+
 const cardsService = new CardsService();
 
 class CardController {
   async register(request: Request, response: Response) {
     const cardData = request.body as CreateCardDto;
-    // const cardTypes = [CardType.CREDIT,CardType.DEBIT,CardType.CREDIT_DEBIT];
-
+    
     try {
       const apiResponse = await this.tryRegister(cardData, response);
       return apiResponse;

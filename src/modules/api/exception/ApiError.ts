@@ -1,4 +1,4 @@
-import { ApiError } from "../types/api-error.type";
+import { ApiError } from "../types/ApiError";
 
 type ApiErrorExceptionProps = {
   statusCode: number;

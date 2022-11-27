@@ -6,7 +6,7 @@ const UserValidationSchema = Yup.object().shape({
     .email("email deve ser válido")
     .required("E-mail é obrigatório"),
   password: Yup.string().required("Senha é obrigatória"),
-  avatar: Yup.string().required("Avatar é obrigatório"),
+  avatar: Yup.string().required("Avatar é obrigatório")
 });
 
 export { UserValidationSchema };

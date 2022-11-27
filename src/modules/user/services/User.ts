@@ -1,16 +1,12 @@
-import { BusinessException } from "../../api/exceptions/business.exception";
-import { NotFoundException } from "../../api/exceptions/not-found.exception";
-
-import { CreateUserDto } from "../dto/create-user.dto";
-import { UserOutputDto } from "../dto/user-output.dto";
-import { UserModel } from "../models/user.model";
-import { UserRepository } from "../repositories/user.repository";
-import { UserValidationSchema } from "../validation/user.schema";
-
-export type UpdateUserProps = {
-  id: string;
-  data: CreateUserDto;
-};
+import { NotFoundException, BusinessException } from "../../api/exception";
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  UserOutputDto,
+  UserRepositoryDto
+} from "../dto";
+import { UserRepository } from "../repositories";
+import { UserValidationSchema } from "../validation";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -85,6 +81,7 @@ export class UserService {
       email: userModal.email,
       password: userModal.password,
       avatar: userModal.avatar
+
     };
   }
 

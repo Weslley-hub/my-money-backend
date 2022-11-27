@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { authenticationMiddleware } from "../../security/middlewares/authenticationMiddleware";
+
+import { authenticationMiddleware } from "../../security/middlewares";
 import { CardController } from "../controllers";
 
 const cardRouter = Router();

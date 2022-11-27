@@ -1,11 +1,11 @@
 import { ValidationError } from "yup";
-import { ApiErrorException } from "../exceptions/api-error.exception";
+import { ApiErrorException } from "../exception/ApiError";
 
-import { ApiErrorResponse } from "../types/api-error-response.type";
-import { ApiError } from "../types/api-error.type";
-import { StatusCode } from "../types/status-code.type";
+import { ApiErrorResponse } from "../types/ApiErrorResponse";
+import { ApiError } from "../types/ApiError";
+import { StatusCode } from "../types/StatusCode";
 
-import { YupValidationErrorHandler } from "./yup-validation-error.handler";
+import { YupValidationErrorHandler } from "./YupValidationError";
 
 export class ExceptionHandler {
   static parseErrorAndGetApiResponse(
@@ -29,7 +29,7 @@ export class ExceptionHandler {
   ): ApiErrorResponse {
     const message = error.message;
     const apiErrorException = error as ApiErrorException;
-    
+
     const errorType = this.getErrorType(apiErrorException.errorType);
     const statusCode = this.getStatusCode(apiErrorException.statusCode);
 
@@ -63,6 +63,5 @@ export class ExceptionHandler {
     }
 
     return ApiError.INTERNAL_SERVER_ERROR;
-
   }
 }
