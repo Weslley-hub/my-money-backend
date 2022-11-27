@@ -29,12 +29,6 @@ export class CardRepository {
       .delete()
       .where("id", "=", id);
   }
-  findByUserId(user_id: string) {
-    return dbConnection<RepositoryCardCreditDto>("credit_cards")
-      .select("*")
-      .where("user_id", "=", user_id)
-      .first();
-  }
   findAllCreditByUserId(user_id: string) {
     return dbConnection<RepositoryCardCreditDto>("credit_cards")
       .select("*")
@@ -57,13 +51,13 @@ export class CardRepository {
       .where("id", "=", id)
       .first();
   }
-  findByNumberCredit(number: number) {
+  findCreditByNumber(number: number) {
     return dbConnection<RepositoryCardCreditDto>("credit_cards")
       .select("*")
       .where("number", "=", number)
       .first();
   }
-  findByNumberDebit(number: number) {
+  findDebitByNumber(number: number) {
     return dbConnection<RepositoryCardCreditDto>("debit_cards")
       .select("*")
       .where("number", "=", number)
