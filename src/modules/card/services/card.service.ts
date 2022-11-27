@@ -38,7 +38,7 @@ class CardsService {
         id: carId,
         name: cardData.name,
         number: cardData.number,
-        flag: cardData.flag,
+        flag: await this.verificationFlag(cardData.number),
         type: cardData.type,
         limit: cardData.limit,
         invoice_amount: 0,
@@ -56,14 +56,13 @@ class CardsService {
         id: carId,
         name: cardData.name,
         number: cardData.number,
-        flag: cardData.flag,
+        flag: await this.verificationFlag(cardData.number),
         type: cardData.type,
         user_id: cardData.user_id
       });
     }
   }
 
-  //tirar o nome card pra evitar redundancia
   private async verificationId(user_id: string) {
     const id = await this.userRepository.findById(user_id);
 
@@ -73,8 +72,8 @@ class CardsService {
   }
 
   private async verificationNumber(number: number) {
-    const cardNumberCredit = await this.cardRepository.findByNumberCredit(number);
-    const cardNumberDebit = await this.cardRepository.findByNumberDebit(number);
+    const cardNumberCredit = await this.cardRepository.findCreditByNumber(number);
+    const cardNumberDebit = await this.cardRepository.findDebitByNumber(number);
 
     if (cardNumberCredit || cardNumberDebit) {
       throw new BusinessException(
@@ -88,6 +87,13 @@ class CardsService {
     const listOfDebitCards = await this.cardRepository.findAllDebitByUserId(userId);
 
     var apiResponse = [listOfCreditCards,listOfDebitCards];
+    return apiResponse;
+  }
+  async uniqueListing(userId: string){
+    const cardCredit = await this.cardRepository.findCreditById(userId);
+    const cardDebit = await this.cardRepository.findDebitById(userId);
+
+    var apiResponse = [cardCredit ,cardDebit];
     return apiResponse;
   }
 
@@ -105,7 +111,8 @@ class CardsService {
   async update(cardData: FormCardCreditDto) {
     await this.verificationCardTypeValid(cardData.type);
     await this.verificationExistingCardById(cardData.id);
-    
+    await this.verificationCardExistingWithNumber(cardData.number,cardData.id);
+
     if(cardData.type == CardType.CREDIT || cardData.type == CardType.CREDIT_DEBIT){
       await CardCreditValidationUpdate.validate(cardData);
 
@@ -113,14 +120,14 @@ class CardsService {
         id: cardData.id,
         name: cardData.name,
         number: cardData.number,
-        flag: cardData.flag,
+        flag: await this.verificationFlag(cardData.number),
         type: cardData.type,
         limit: cardData.limit,
         invoice_amount: cardData.invoiceAmount,
         invoice_day: cardData.invoiceDay,
         user_id: cardData.userId
       }
-      const existingCreditCard = await this.verificationExistingCardCreditByIdUpdate(cardData.id);
+      const existingCreditCard = await this.verificationCardCreditExistingByIdUpdate(cardData.id);
       
       if(existingCreditCard){
         await this.cardRepository.updateCredit(creditCardDataUpdate);
@@ -138,7 +145,7 @@ class CardsService {
         id: cardData.id,
         name: cardData.name,
         number: cardData.number,
-        flag: cardData.flag,
+        flag: await this.verificationFlag(cardData.number),
         type: cardData.type,
         user_id: cardData.userId
       }
@@ -185,10 +192,63 @@ class CardsService {
     return existingCardDebit;
   }
 
-  private async verificationExistingCardCreditByIdUpdate(cardId: string) {
+  private async verificationCardCreditExistingByIdUpdate(cardId: string) {
     const existingCardCredit = await this.cardRepository.findCreditById(cardId);
     return existingCardCredit;
   }
+  private async verificationCurrentNumberEqualNewNumber(cardNumber: number, cardId:string){
+    const cardCredit = await this.cardRepository.findCreditById(cardId);
+    const cardDebit  = await this.cardRepository.findDebitById(cardId);
+    if((cardCredit?.number == cardNumber) || (cardDebit?.number == cardNumber)){
+      return true;
+    }
+  }
+  
+  private async verificationCardExistingWithNumber(cardNumber: number, cardId:string){
+    const cardCredit = await this.cardRepository.findCreditByNumber(cardNumber);
+    const cardDebit  = await this.cardRepository.findDebitByNumber(cardNumber);
+    if(cardCredit || cardDebit){
+      if(await this.verificationCurrentNumberEqualNewNumber(cardNumber,cardId)){
+        return;
+      }
+      throw new BusinessException(
+        `Já existe um cartão registrado com esse número`
+      );
+    }
+  }
+
+  private async  verificationFlag(cardNumber:Number){
+      const cardNumberString = cardNumber.toString();
+  
+      var regexVisa = /^4[0-9]{12}(?:[0-9]{3})?/;
+      var regexMaster = /^5[1-5][0-9]{14}/;
+      var regexAmex = /^3[47][0-9]{13}/;
+      var regexDiners = /^3(?:0[0-5]|[68][0-9])[0-9]{11}/;
+      var regexDiscover = /^6(?:011|5[0-9]{2})[0-9]{12}/;
+      var regexJCB = /^(?:2131|1800|35\d{3})\d{11}/;
+    
+      if(regexVisa.test(cardNumberString)){
+       return 'VISA';
+      }
+      if(regexMaster.test(cardNumberString)){
+       return 'MasterCard';
+      }
+      if(regexAmex.test(cardNumberString)){
+       return 'American Express';
+      }
+      if(regexDiners.test(cardNumberString)){
+       return 'Diners Club';
+      }
+      if(regexDiscover.test(cardNumberString)){
+       return 'Discover';
+      }
+      if(regexJCB.test(cardNumberString)){
+       return 'JCB';
+      }
+    
+      return '';
+    
+    }
 }
 
 export { CardsService };
