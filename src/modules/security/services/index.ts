@@ -1,2 +1,2 @@
-export * from "./Jwt";
+export * from "./jwt";
 export * from "./UserPassword";
