@@ -3,7 +3,8 @@ import { Request, Response } from "express";
 import { ExceptionHandler } from "../../api/error-handler";
 import { StatusCode } from "../../api/types";
 
-import { CreateCardDto, EnumFlagDto, RepositoryCardDto } from "../dto";
+import { CreateCardDto, RepositoryCardDto } from "../dto";
+import { CardType } from "../enums/CardFlag";
 
 import { CardsService } from "../services";
 
@@ -12,15 +13,15 @@ const cardsService = new CardsService();
 class CardController {
   async register(request: Request, response: Response) {
     const cardData = request.body as CreateCardDto;
-    if ((cardData.flag = EnumFlagDto.credit)) {
+    if ((cardData.flag = CardType.CREDIT)) {
       const apiResponse = this.tryRegister(cardData, response);
       return apiResponse;
     }
-    if ((cardData.flag = EnumFlagDto.debit)) {
+    if ((cardData.flag = CardType.DEBIT)) {
       const apiResponse = this.tryRegister(cardData, response);
       return apiResponse;
     }
-    if ((cardData.flag = EnumFlagDto.credit_debit)) {
+    if ((cardData.flag = CardType.CREDIT_DEBIT)) {
       const apiResponse = this.tryRegister(cardData, response);
       return apiResponse;
     }
