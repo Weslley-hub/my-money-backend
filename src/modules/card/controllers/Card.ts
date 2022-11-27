@@ -3,7 +3,8 @@ import { Request, Response } from "express";
 import { ExceptionHandler } from "../../api/error-handler";
 import { StatusCode } from "../../api/types";
 
-import { CreateCardDto, RepositoryCardDto } from "../dto";
+import { CreateCardDto } from "../dto";
+import { FormCardCreditDto } from "../dto";
 import { CardType } from "../enums/CardFlag";
 
 import { CardsService } from "../services";
@@ -90,7 +91,7 @@ class CardController {
 
   async update(request: Request, response: Response) {
     try {
-      const cardData = request.body as RepositoryCardDto;
+      const cardData = request.body as FormCardCreditDto;
       await cardsService.update(cardData);
       return response.status(200).json({ message: "Cartão foi atualizado" });
     } catch (error) {
@@ -104,7 +105,7 @@ class CardController {
   }
 
   private async tryUpdate(request: Request, response: Response) {
-    const cardData = request.body as RepositoryCardDto;
+    const cardData = request.body as FormCardCreditDto;
     await cardsService.update(cardData);
     return response.status(200).json({ message: "Cartão foi atualizado" });
   }

@@ -1,4 +1,4 @@
-export type RepositoryCardDto = {
+export type RepositoryCardCreditDto = {
   id: string;
   name: string;
   number: number;
