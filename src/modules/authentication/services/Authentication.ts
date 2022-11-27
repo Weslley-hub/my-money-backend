@@ -12,7 +12,7 @@ import {
   UserLoginDto,
   UserEmailDTO,
   NewPasswordsDto
-} from "../../user/dto";
+} from "../dto";
 import { UserRepository } from "../../user/repositories";
 import {
   UserValidationSchema,

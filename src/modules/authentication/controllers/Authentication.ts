@@ -6,7 +6,7 @@ import {
   NewPasswordsDto,
   UserEmailDTO,
   UserLoginDto
-} from "../../user/dto";
+} from "../dto";
 
 import { AuthenticationService } from "../services";
 
