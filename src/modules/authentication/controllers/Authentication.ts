@@ -19,7 +19,7 @@ class AuthenticationController {
       await authenticationService.register(userData);
       return response.status(StatusCode.CREATED).json({
         message: "Criado com sucesso",
-        statuscode: StatusCode.CREATED,
+        statuscode: StatusCode.CREATED
       });
     } catch (error) {
       const apiErrorResponse =
@@ -58,13 +58,11 @@ class AuthenticationController {
   }
 
   async newPassword(request: Request, response: Response) {
-
-    const newPasswords = request.body as NewPasswords;
+    const newPasswords = request.body as NewPasswordsDto;
     try {
       const newPassword = await authenticationService.newPassword(newPasswords);
       return response.status(StatusCode.SUCCESS).json({
-        newPassword,
-
+        newPassword
       });
     } catch (error) {
       const apiErrorResponse =
