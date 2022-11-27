@@ -15,8 +15,8 @@ export class UserService {
     this.userRepository = new UserRepository();
   }
 
-  async update(updateUserDto: UpdateUserDto): Promise<void> {
-    const { id, data } = updateUserDto;
+  async update(updateUserProps: UpdateUserProps): Promise<void> {
+    const { id, data } = updateUserProps;
 
     await this.validateUserData(data);
     await this.verifyUserExistence(id);
@@ -71,19 +71,17 @@ export class UserService {
       throw new NotFoundException(`Não existe usuário cadastrado com ID ${id}`);
     }
 
-    const userOutputDto =
-      this.convertUserRepostiroyDtoToUserOutputDto(userFound);
+    const userOutputDto = this.convertUserModelToUserOutputDto(userFound);
     return userOutputDto;
   }
 
-  private convertUserRepostiroyDtoToUserOutputDto(
-    user: UserRepositoryDto
-  ): UserOutputDto {
+  private convertUserModelToUserOutputDto(userModal: UserModel): UserOutputDto {
     return {
-      name: user.name,
-      email: user.email,
-      password: user.password,
-      avatar: user.avatar
+      name: userModal.name,
+      email: userModal.email,
+      password: userModal.password,
+      avatar: userModal.avatar
+
     };
   }
 

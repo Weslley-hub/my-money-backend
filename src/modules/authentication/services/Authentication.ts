@@ -1,5 +1,4 @@
 import { v4 as generatoUuidId } from "uuid";
-
 import {
   BusinessException,
   NotFoundException,
@@ -30,7 +29,7 @@ class AuthenticationService {
   async register(userData: CreateUserDto) {
     userData.password = UserPasswordService.encryptPassword(userData.password);
     await UserValidationSchema.validate(userData, {
-      abortEarly: false
+      abortEarly: false,
     });
     const existingUserWithEmail = await userRepository.findByEmail(
       userData.email
@@ -47,6 +46,11 @@ class AuthenticationService {
       name: userData.name,
       email: userData.email,
       password: userData.password,
+      avatar: userData.avatar,
+    });
+  }
+
+  async login(userLogin: UserLoginDto): Promise<LoginOutPutDto> {
       avatar: userData.avatar
     });
   }
@@ -56,7 +60,8 @@ class AuthenticationService {
       userLogin.password
     );
     await UserValidationLogin.validate(userLogin, {
-      abortEarly: false
+
+      abortEarly: false,
     });
 
     const existingUserWithEmail = await userRepository.findByEmail(
@@ -88,8 +93,8 @@ class AuthenticationService {
         avatar: userData.avatar,
         email: userData.email,
         name: userData.name,
-        password: userData.password
-      }
+        password: userData.password,
+      },
     };
   }
 
@@ -106,6 +111,7 @@ class AuthenticationService {
       );
     }
   }
+
 
   async newPassword(newPasswords: NewPasswordsDto /*userEmail: UserEmailDTO*/) {
     await UserValidationNewPasswords.validate(newPasswords);

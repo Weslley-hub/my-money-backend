@@ -41,7 +41,8 @@ export class UserRepository {
     return dbConnection<UserRepositoryDto>("users")
       .where({
         email: userEmail,
-        password: userPassword
+        password: userPassword,
+
       })
       .select("*")
       .first();
@@ -49,7 +50,7 @@ export class UserRepository {
   verificationEmail(userEmail: string) {
     return dbConnection<UserRepositoryDto>("users")
       .where({
-        email: userEmail
+        email: userEmail,
       })
       .select("email");
   }

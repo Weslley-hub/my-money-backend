@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 
-import { StatusCode, ApiError } from "../../api/types";
-import { TokenPayloadDto } from "../dto";
-import { JwtService } from "../services";
+import { ApiError } from "../../api/types/api-error.type";
+import { StatusCode } from "../../api/types/status-code.type";
+
+import { TokenPayloadDto } from "../dto/token-payload.dto";
+import { JwtService } from "../services/jwt.service";
 
 export function authenticationMiddleware(
   request: Request,
@@ -25,7 +27,7 @@ export function authenticationMiddleware(
     return response.status(StatusCode.UNAUTHORIZED).json({
       message: parsedError.message,
       statusCode: StatusCode.UNAUTHORIZED,
-      errorType: ApiError.UNAUTHORIZED
+      errorType: ApiError.UNAUTHORIZED,
     });
   }
 }

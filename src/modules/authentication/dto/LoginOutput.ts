@@ -1,6 +1,6 @@
-import { UserOutputDto } from "../../user/dto/UserOutput";
+import { UserOutputDto } from "../../user/dto/user-output.dto";
 
-export type LoginOutputDto = {
+export type LoginOutPutDto = {
   token: string;
   data: UserOutputDto;
 };

@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
-
 import { ExceptionHandler } from "../../api/error-handler";
 import { StatusCode } from "../../api/types";
-
 import {
   CreateUserDto,
   NewPasswordsDto,
@@ -21,7 +19,7 @@ class AuthenticationController {
       await authenticationService.register(userData);
       return response.status(StatusCode.CREATED).json({
         message: "Criado com sucesso",
-        statuscode: StatusCode.CREATED
+        statuscode: StatusCode.CREATED,
       });
     } catch (error) {
       const apiErrorResponse =
@@ -60,11 +58,13 @@ class AuthenticationController {
   }
 
   async newPassword(request: Request, response: Response) {
-    const newPasswords = request.body as NewPasswordsDto;
+
+    const newPasswords = request.body as NewPasswords;
     try {
       const newPassword = await authenticationService.newPassword(newPasswords);
       return response.status(StatusCode.SUCCESS).json({
-        newPassword
+        newPassword,
+
       });
     } catch (error) {
       const apiErrorResponse =

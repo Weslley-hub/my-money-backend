@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-
 import { ExceptionHandler } from "../../api/error-handler";
 import { ApiResponse, StatusCode } from "../../api/types";
 import { CreateUserDto, UpdateUserDto } from "../dto";
@@ -43,7 +42,7 @@ export class UserController {
     await this.userService.delete(userId);
     const apiResponse: ApiResponse = {
       message: "Usuário excluído com sucesso",
-      statusCode: StatusCode.SUCCESS
+      statusCode: StatusCode.SUCCESS,
     };
     return response.status(StatusCode.SUCCESS).json(apiResponse);
   }
@@ -53,7 +52,7 @@ export class UserController {
 
     const userDataToUpdate: UpdateUserDto = {
       id: request.userId as string,
-      data: userData
+      data: userData,
     };
 
     try {
@@ -70,7 +69,7 @@ export class UserController {
   ) {
     const apiResponse: ApiResponse = {
       message: "Usuário atualizado com sucesso",
-      statusCode: StatusCode.SUCCESS
+      statusCode: StatusCode.SUCCESS,
     };
     await this.userService.update(userDataToUpdate);
     return response.status(StatusCode.SUCCESS).json(apiResponse);
