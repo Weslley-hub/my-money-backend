@@ -6,7 +6,6 @@ const CardCreditValidationUpdate = Yup.object().shape({
   userId: Yup.string().required("O user_id é obrigatorio"),
   number: Yup.number().required("O numero é obrigatorio"),
   type: Yup.string().required("O tipo é obrigatorio"),
-  flag: Yup.string().required("A bandeira é obrigatoria"),
   limit: Yup.number().required("O limite é obrigatorio"),
   invoiceDay: Yup.number().required("O dia da fatura é obrigatório"),
   invoiceAmount: Yup.number().required("O dia da fatura é obrigatório"),
