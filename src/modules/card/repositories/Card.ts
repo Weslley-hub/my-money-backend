@@ -1,6 +1,6 @@
 import { dbConnection } from "../../../database";
-import { RepositoryCardCreditDto } from "../dto/repository-cards-credit.dto";
-import { RepositoryCardDebitDto } from "../dto/repository-cards-debit.dto";
+import { RepositoryCardCreditDto } from "../dto/RepositoryCardCredit";
+import { RepositoryCardDebitDto } from "../dto/RepositoryCardDebit";
 
 export class CardRepository {
   saveCredit(card: RepositoryCardCreditDto) {
