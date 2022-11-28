@@ -1,1 +1,2 @@
-export * from "./database-connection";
+export * from "./databaseConnection";
+export * from "./databaseInitialization";
