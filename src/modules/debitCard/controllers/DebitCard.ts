@@ -4,7 +4,7 @@ import { StatusCode } from "../../api/types/StatusCode";
 import { CreateCardDto } from "../dto/CreateCard";
 import { RepositoryCardCreditDto } from "../dto/RepositoryCardCredit";
 
-import { CardsService } from "../services/Card";
+import { CardsService } from "../services/DebitCard";
 
 const cardsService = new CardsService();
 

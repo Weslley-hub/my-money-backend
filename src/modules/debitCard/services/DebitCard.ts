@@ -5,7 +5,7 @@ import { CreateCardDto } from "../dto/CreateCard";
 import { FormCardCreditDto } from "../dto/FormCardCredit";
 import { CardType } from "../enums/CardType";
 
-import { CardRepository } from "../repositories/Card";
+import { CardRepository } from "../repositories/DebitCard";
 import { CardCreditValidationSchema } from "../validation/CardCredit";
 import { CardCreditValidationUpdate } from "../validation/UpdateCardCredit";
 import { CardDeditValidationSchema } from "../validation/CardDebit";
