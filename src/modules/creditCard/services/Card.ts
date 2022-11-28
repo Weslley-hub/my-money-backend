@@ -6,7 +6,7 @@ import { FormCardCreditDto } from "../dto/FormCardCredit";
 import { CardType } from "../enums/CardType";
 
 import { CardRepository } from "../repositories/Card";
-import { CardCreditValidationSchema } from "../validation/CardCredit";
+import { CreditCardValidationSchema } from "../validation/CardCredit";
 import { CardCreditValidationUpdate } from "../validation/UpdateCardCredit";
 import { CardDeditValidationSchema } from "../validation/CardDebit";
 import { CardDebitValidationUpdate } from "../validation/UpdateCardDebit";
@@ -29,42 +29,20 @@ class CardsService {
     await this.verificationExistingUserById(cardData.user_id);
     await this.verificationCardTypeValid(cardData.type);
 
-    await this.verificationCardTypeValid(cardData.type);
-
-    if (
-      cardData.type == CardType.CREDIT ||
-      cardData.type == CardType.CREDIT_DEBIT
-    ) {
-      await CardCreditValidationSchema.validate(cardData, {
-        abortEarly: false
-      });
-      await this.cardRepository.saveCredit({
-        id: carId,
-        name: cardData.name,
-        number: cardData.number,
-        flag: await this.verificationFlag(cardData.number),
-        type: cardData.type,
-        limit: cardData.limit,
-        invoice_amount: 0,
-        invoice_day: cardData.invoice_day,
-        user_id: cardData.user_id
-      });
-    }
-
-    if (cardData.type == CardType.DEBIT) {
-      await CardDeditValidationSchema.validate(cardData, {
-        abortEarly: false
-      });
-
-      await this.cardRepository.saveDebit({
-        id: carId,
-        name: cardData.name,
-        number: cardData.number,
-        flag: await this.verificationFlag(cardData.number),
-        type: cardData.type,
-        user_id: cardData.user_id
-      });
-    }
+    await CreditCardValidationSchema.validate(cardData, {
+      abortEarly: false
+    });
+    await this.cardRepository.saveCredit({
+      id: carId,
+      name: cardData.name,
+      number: cardData.number,
+      flag: await this.verificationFlag(cardData.number),
+      type: cardData.type,
+      limit: cardData.limit,
+      invoice_amount: 0,
+      invoice_day: cardData.invoice_day,
+      user_id: cardData.user_id
+    });
   }
 
   private async verificationExistingUserById(user_id: string) {
@@ -76,7 +54,7 @@ class CardsService {
   }
 
   private async verificationExistingCardByNumber(number: number) {
-    const creditCardByNumber = await this.cardRepository.findByNumberCredit(
+    const creditCardByNumber = await this.cardRepository.findCreditByNumber(
       number
     );
 
@@ -207,7 +185,7 @@ class CardsService {
     cardNumber: number,
     cardId: string
   ) {
-    const cardCredit = await this.cardRepository.findByNumberCredit(cardNumber);
+    const cardCredit = await this.cardRepository.findCreditByNumber(cardNumber);
     if (cardCredit) {
       if (
         await this.verificationCurrentNumberEqualNewNumber(cardNumber, cardId)

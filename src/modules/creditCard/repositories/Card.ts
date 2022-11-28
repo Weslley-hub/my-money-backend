@@ -64,7 +64,7 @@ export class CardRepository {
       .first();
   }
 
-  findByNumberCredit(number: number) {
+  findCreditByNumber(number: number) {
     return dbConnection<RepositoryCardCreditDto>("credit_cards")
       .select("*")
       .where("number", "=", number)
