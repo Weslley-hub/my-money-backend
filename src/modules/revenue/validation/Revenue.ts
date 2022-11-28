@@ -1,5 +1,6 @@
 import * as Yup from "yup";
 import { MonthKeys } from "../enums";
+import { expenseCategoryAmountPercentageValidationSchema } from "./ExpenseCategoryPercentage";
 
 const RevenueValidationSchema = Yup.object().shape({
   year: Yup.number()
@@ -11,7 +12,11 @@ const RevenueValidationSchema = Yup.object().shape({
   amount: Yup.number()
     .positive("Valor da receita não pode ser negativo")
     .required("Valor da receita é obrigatório"),
-  userId: Yup.string().required("Usuário é obrigatório")
+  expenseCategoryPercentages: Yup.array()
+    .of(expenseCategoryAmountPercentageValidationSchema)
+    .required("Porcentagens por categorias são obrigatórias")
+    .min(1, "Pelo menos uma categoria deve ser adicionada à receita"),
+  userId: Yup.string().required("Id do usuário é obrigatório")
 });
 
 export { RevenueValidationSchema };

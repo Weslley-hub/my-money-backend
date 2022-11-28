@@ -1,6 +1,9 @@
 import { dbConnection } from "../../../database";
 import { RevenueRepositoryDto, UpdateRevenueRepositoryInputDto } from "../dto";
-import { FindByMonthAndYearAndNotId } from "../types";
+import {
+  FindByMonthAndYearAndNotIdRepository,
+  FindByMonthAndYearAndUserIdRepository
+} from "../types";
 
 const TABLE_NAME = "revenues";
 
@@ -13,7 +16,7 @@ export class RevenueRepository {
       .first();
   }
 
-  findByMonthAndYearAndNotId(params: FindByMonthAndYearAndNotId) {
+  findByMonthAndYearAndNotId(params: FindByMonthAndYearAndNotIdRepository) {
     return dbConnection<RevenueRepositoryDto>(TABLE_NAME)
       .select()
       .where("month", "=", params.month)
@@ -33,6 +36,15 @@ export class RevenueRepository {
     return dbConnection<RevenueRepositoryDto>(TABLE_NAME)
       .select("*")
       .where("user_id", "=", userId);
+  }
+
+  findByUserIdAndMonthAndYear(params: FindByMonthAndYearAndUserIdRepository) {
+    return dbConnection<RevenueRepositoryDto>(TABLE_NAME)
+      .select("*")
+      .where("user_id", "=", params.userId)
+      .and.where("month", "=", params.month)
+      .and.where("year", "=", params.year)
+      .first();
   }
 
   create(data: RevenueRepositoryDto) {

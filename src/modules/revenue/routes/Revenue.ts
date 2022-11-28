@@ -4,7 +4,10 @@ import { RevenueController } from "../controller";
 const revenueRouter = Router();
 const revenueController = new RevenueController();
 
-revenueRouter.get("/", revenueController.list.bind(revenueController));
+revenueRouter.get(
+  "/",
+  revenueController.findByMonthAndYear.bind(revenueController)
+);
 revenueRouter.post("/", revenueController.register.bind(revenueController));
 revenueRouter.put(
   "/:revenueId",
