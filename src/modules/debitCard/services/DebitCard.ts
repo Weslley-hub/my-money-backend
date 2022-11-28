@@ -60,15 +60,11 @@ class CardsService {
   }
 
   async list(userId: string) {
-    const listOfCreditCards = await this.cardRepository.findAllCreditByUserId(
-      userId
-    );
     const listOfDebitCards = await this.cardRepository.findAllDebitByUserId(
       userId
     );
 
-    var apiResponse = [listOfCreditCards, listOfDebitCards];
-    return apiResponse;
+    return listOfDebitCards;
   }
   async uniqueListing(userId: string) {
     const cardCredit = await this.cardRepository.findCreditById(userId);
