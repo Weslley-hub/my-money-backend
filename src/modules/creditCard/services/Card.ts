@@ -122,16 +122,6 @@ class CardsService {
     return existingCreditCard;
   }
 
-  private async verificationExistingCardDebitByIdUpdate(cardId: string) {
-    const existingCardDebit = await this.cardRepository.findDebitById(cardId);
-    return existingCardDebit;
-  }
-  //plagio
-  private async verificationCardCreditExistingByIdUpdate(cardId: string) {
-    const existingCardCredit = await this.cardRepository.findCreditById(cardId);
-    return existingCardCredit;
-  }
-
   private async verificationExistingCardWithNumber(
     cardNumber: number,
     cardId: string
