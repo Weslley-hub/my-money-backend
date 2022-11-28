@@ -125,10 +125,6 @@ class CardsService {
     return existingCardDebit;
   }
 
-  private async verificationCardCreditExistingByIdUpdate(cardId: string) {
-    const existingCardCredit = await this.cardRepository.findCreditById(cardId);
-    return existingCardCredit;
-  }
   private async verificationCurrentNumberEqualNewNumber(
     cardNumber: number,
     cardId: string
