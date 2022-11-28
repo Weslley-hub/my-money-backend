@@ -27,10 +27,11 @@ const userRepository = new UserRepository();
 
 class AuthenticationService {
   async register(userData: CreateUserDto) {
-    userData.password = UserPasswordService.encryptPassword(userData.password);
     await UserValidationSchema.validate(userData, {
       abortEarly: false
     });
+
+    userData.password = UserPasswordService.encryptPassword(userData.password);
     const existingUserWithEmail = await userRepository.findByEmail(
       userData.email
     );
@@ -51,13 +52,13 @@ class AuthenticationService {
   }
 
   async login(userLogin: UserLoginDto): Promise<LoginOutputDto> {
-    userLogin.password = UserPasswordService.encryptPassword(
-      userLogin.password
-    );
     await UserValidationLogin.validate(userLogin, {
       abortEarly: false
     });
 
+    userLogin.password = UserPasswordService.encryptPassword(
+      userLogin.password
+    );
     const existingUserWithEmail = await userRepository.findByEmail(
       userLogin.email
     );
