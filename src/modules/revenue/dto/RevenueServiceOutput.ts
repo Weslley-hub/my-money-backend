@@ -1,4 +1,5 @@
 import { MonthKey } from "../enums";
+import { ExpenseCategoryPercentageServiceOutputDto } from "./ExpenseCategoryPercentageServiceOutput";
 
 export type RevenueServiceOutputDto = {
   id: string;
@@ -6,4 +7,6 @@ export type RevenueServiceOutputDto = {
   month: MonthKey;
   amount: number;
   usedAmount: number;
+
+  categoryPercentages: ExpenseCategoryPercentageServiceOutputDto[];
 };
