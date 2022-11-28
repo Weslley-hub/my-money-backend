@@ -1,13 +1,7 @@
 import { Request, Response } from "express";
 import { ExceptionHandler } from "../../api/error-handler";
 import { StatusCode } from "../../api/types/StatusCode";
-import {
-  FormCardDebitDto,
-  RepositoryCardDebitDto,
-  UpdateCardDebitDto
-} from "../dto";
-import { RepositoryCardCreditDto } from "../dto/RepositoryCardCredit";
-
+import { FormCardDebitDto } from "../dto";
 import { CardsService } from "../services/DebitCard";
 
 const cardsService = new CardsService();
@@ -93,7 +87,7 @@ class CardController {
       number: cardData.number,
       flag: cardData.flag,
       type: cardData.type,
-      userId: cardData.user_id
+      userId: cardData.userId
     });
     return response.status(200).json({ message: "Cartão foi atualizado" });
   }
