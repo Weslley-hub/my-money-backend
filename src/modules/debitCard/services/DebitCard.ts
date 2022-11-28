@@ -1,15 +1,13 @@
 import { v4 as uuidv4 } from "uuid";
 import { BusinessException } from "../../api/exception";
 import { UserRepository } from "../../user/repositories/User";
-import { CreateCardDto } from "../dto/CreateCard";
-import { FormCardCreditDto } from "../dto/FormCardCredit";
+import { FormCardCreditDto } from "../dto/UpdateCardDebit";
 import { CardType } from "../enums/CardType";
-
 import { CardRepository } from "../repositories/DebitCard";
-import { CardCreditValidationSchema } from "../validation/CardCredit";
 import { CardCreditValidationUpdate } from "../validation/UpdateCardCredit";
 import { CardDeditValidationSchema } from "../validation/CardDebit";
 import { CardDebitValidationUpdate } from "../validation/UpdateCardDebit";
+import { FormCardDebitDto } from "../dto";
 
 const cardRepository = new CardRepository();
 const userRepository = new UserRepository();
@@ -22,52 +20,28 @@ class CardsService {
     this.userRepository = new UserRepository();
   }
 
-  async register(cardData: CreateCardDto) {
+  async register(cardData: FormCardDebitDto) {
     const carId = uuidv4();
 
-    await this.verificationNumber(cardData.number);
-    await this.verificationId(cardData.user_id);
+    await this.verificationExistingCardByNumber(cardData.number);
+    await this.verificationExistingUserById(cardData.user_id);
     await this.verificationCardTypeValid(cardData.type);
 
-    await this.verificationCardTypeValid(cardData.type);
+    await CardDeditValidationSchema.validate(cardData, {
+      abortEarly: false
+    });
 
-    if (
-      cardData.type == CardType.CREDIT ||
-      cardData.type == CardType.CREDIT_DEBIT
-    ) {
-      await CardCreditValidationSchema.validate(cardData, {
-        abortEarly: false
-      });
-      await this.cardRepository.saveCredit({
-        id: carId,
-        name: cardData.name,
-        number: cardData.number,
-        flag: await this.verificationFlag(cardData.number),
-        type: cardData.type,
-        limit: cardData.limit,
-        invoice_amount: 0,
-        invoice_day: cardData.invoice_day,
-        user_id: cardData.user_id
-      });
-    }
-
-    if (cardData.type == CardType.DEBIT) {
-      await CardDeditValidationSchema.validate(cardData, {
-        abortEarly: false
-      });
-
-      await this.cardRepository.saveDebit({
-        id: carId,
-        name: cardData.name,
-        number: cardData.number,
-        flag: await this.verificationFlag(cardData.number),
-        type: cardData.type,
-        user_id: cardData.user_id
-      });
-    }
+    await this.cardRepository.saveDebit({
+      id: carId,
+      name: cardData.name,
+      number: cardData.number,
+      flag: await this.verificationFlag(cardData.number),
+      type: cardData.type,
+      user_id: cardData.user_id
+    });
   }
 
-  private async verificationId(user_id: string) {
+  private async verificationExistingUserById(user_id: string) {
     const id = await this.userRepository.findById(user_id);
 
     if (!id) {
@@ -75,13 +49,10 @@ class CardsService {
     }
   }
 
-  private async verificationNumber(number: number) {
-    const cardNumberCredit = await this.cardRepository.findByNumberCredit(
-      number
-    );
+  private async verificationExistingCardByNumber(number: number) {
     const cardNumberDebit = await this.cardRepository.findByNumberDebit(number);
 
-    if (cardNumberCredit || cardNumberDebit) {
+    if (cardNumberDebit) {
       throw new BusinessException(
         `Ja existe um cartão cadastrado com o número: ${number.toString()}`
       );
@@ -121,7 +92,7 @@ class CardsService {
     }
   }
 
-  async update(cardData: FormCardCreditDto) {
+  async update(cardData: FormCardDebitDto) {
     await this.verificationCardTypeValid(cardData.type);
     await this.verificationExistingCardById(cardData.id);
     await this.verificationCardExistingWithNumber(cardData.number, cardData.id);
@@ -177,11 +148,7 @@ class CardsService {
   }
 
   private async verificationCardTypeValid(cardType: string) {
-    if (
-      cardType != CardType.CREDIT &&
-      cardType != CardType.CREDIT_DEBIT &&
-      cardType != CardType.DEBIT
-    ) {
+    if (cardType != CardType.DEBIT) {
       throw new BusinessException(`O tipo ${cardType} é invalido`);
     }
   }

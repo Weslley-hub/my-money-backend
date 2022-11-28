@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ExceptionHandler } from "../../api/error-handler";
 import { StatusCode } from "../../api/types/StatusCode";
-import { CreateCardDto } from "../dto/CreateCard";
+import { FormCardDebitDto } from "../dto";
 import { RepositoryCardCreditDto } from "../dto/RepositoryCardCredit";
 
 import { CardsService } from "../services/DebitCard";
@@ -10,7 +10,7 @@ const cardsService = new CardsService();
 
 class CardController {
   async register(request: Request, response: Response) {
-    const cardData = request.body as CreateCardDto;
+    const cardData = request.body as FormCardDebitDto;
 
     try {
       const apiResponse = await this.tryRegister(cardData, response);
@@ -20,7 +20,7 @@ class CardController {
     }
   }
 
-  private async tryRegister(cardData: CreateCardDto, response: Response) {
+  private async tryRegister(cardData: FormCardDebitDto, response: Response) {
     await cardsService.register(cardData);
     return response.status(StatusCode.CREATED).json({
       message: "Criado com sucesso",
