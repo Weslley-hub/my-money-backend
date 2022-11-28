@@ -52,13 +52,13 @@ class AuthenticationService {
   }
 
   async login(userLogin: UserLoginDto): Promise<LoginOutputDto> {
-    userLogin.password = UserPasswordService.encryptPassword(
-      userLogin.password
-    );
     await UserValidationLogin.validate(userLogin, {
       abortEarly: false
     });
 
+    userLogin.password = UserPasswordService.encryptPassword(
+      userLogin.password
+    );
     const existingUserWithEmail = await userRepository.findByEmail(
       userLogin.email
     );
