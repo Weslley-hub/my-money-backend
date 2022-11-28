@@ -73,7 +73,7 @@ class CardsService {
   }
 
   async delete(cardId: string) {
-    const cardData = await this.verificationExistingCardById(cardId);
+    await this.verificationExistingCardById(cardId);
 
     await this.cardRepository.deleteDebit(cardId);
   }
