@@ -88,54 +88,21 @@ class CardsService {
     await this.verificationExistingCreditCardById(cardData.id);
     await this.verificationExistingCardWithNumber(cardData.number, cardData.id);
 
-    if (
-      cardData.type == CardType.CREDIT ||
-      cardData.type == CardType.CREDIT_DEBIT
-    ) {
-      await CardCreditValidationUpdate.validate(cardData);
+    await CardCreditValidationUpdate.validate(cardData);
 
-      const creditCardDataUpdate = {
-        id: cardData.id,
-        name: cardData.name,
-        number: cardData.number,
-        flag: await this.verificationFlag(cardData.number),
-        type: cardData.type,
-        limit: cardData.limit,
-        invoice_amount: cardData.invoiceAmount,
-        invoice_day: cardData.invoiceDay,
-        user_id: cardData.userId
-      };
-      const existingCreditCard =
-        await this.verificationCardCreditExistingByIdUpdate(cardData.id);
+    const creditCardDataUpdate = {
+      id: cardData.id,
+      name: cardData.name,
+      number: cardData.number,
+      flag: await this.verificationFlag(cardData.number),
+      type: cardData.type,
+      limit: cardData.limit,
+      invoice_amount: cardData.invoiceAmount,
+      invoice_day: cardData.invoiceDay,
+      user_id: cardData.userId
+    };
 
-      if (existingCreditCard) {
-        await this.cardRepository.updateCredit(creditCardDataUpdate);
-      } else {
-        await this.cardRepository.saveCredit(creditCardDataUpdate);
-        await this.cardRepository.deleteDebit(creditCardDataUpdate.id);
-      }
-    }
-    if (cardData.type == CardType.DEBIT) {
-      await CardDebitValidationUpdate.validate(cardData);
-
-      const debitCardDataUpdate = {
-        id: cardData.id,
-        name: cardData.name,
-        number: cardData.number,
-        flag: await this.verificationFlag(cardData.number),
-        type: cardData.type,
-        user_id: cardData.userId
-      };
-      const existingDebitCard =
-        await this.verificationExistingCardDebitByIdUpdate(cardData.id);
-
-      if (existingDebitCard) {
-        await this.cardRepository.updateDebit(debitCardDataUpdate);
-      } else {
-        await this.cardRepository.saveDebit(debitCardDataUpdate);
-        await this.cardRepository.deleteCredit(debitCardDataUpdate.id);
-      }
-    }
+    await this.cardRepository.updateCredit(creditCardDataUpdate);
   }
 
   private async verificationCardTypeValid(cardType: string) {
@@ -143,7 +110,7 @@ class CardsService {
       throw new BusinessException(`O tipo ${cardType} é invalido`);
     }
   }
-
+  //plagio
   private async verificationExistingCreditCardById(cardId: string) {
     const existingCreditCard = await this.cardRepository.findCreditById(cardId);
 
@@ -159,20 +126,10 @@ class CardsService {
     const existingCardDebit = await this.cardRepository.findDebitById(cardId);
     return existingCardDebit;
   }
-
+  //plagio
   private async verificationCardCreditExistingByIdUpdate(cardId: string) {
     const existingCardCredit = await this.cardRepository.findCreditById(cardId);
     return existingCardCredit;
-  }
-  private async verificationCurrentNumberEqualNewNumber(
-    cardNumber: number,
-    cardId: string
-  ) {
-    const cardCredit = await this.cardRepository.findCreditById(cardId);
-    const cardDebit = await this.cardRepository.findDebitById(cardId);
-    if (cardCredit?.number == cardNumber || cardDebit?.number == cardNumber) {
-      return true;
-    }
   }
 
   private async verificationExistingCardWithNumber(
@@ -189,6 +146,16 @@ class CardsService {
       throw new BusinessException(
         `Já existe um cartão registrado com esse número`
       );
+    }
+  }
+
+  private async verificationCurrentNumberEqualNewNumber(
+    cardNumber: number,
+    cardId: string
+  ) {
+    const cardCredit = await this.cardRepository.findCreditById(cardId);
+    if (cardCredit?.number == cardNumber) {
+      return true;
     }
   }
 
