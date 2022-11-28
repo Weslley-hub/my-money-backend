@@ -13,7 +13,7 @@ export class ExpenseCategoryPercentageRepository {
     ).insert(expenseCategoryPercentage);
   }
 
-  findByRevenueId(
+  findAllByRevenueId(
     revenueId: string
   ): Promise<ExpenseCategoryPercentageRepositoryOutputDto[]> {
     return dbConnection<ExpenseCategoryPercentageRepositoryDto>(TABLE_NAME)
@@ -25,6 +25,17 @@ export class ExpenseCategoryPercentageRepository {
         "=",
         "revenue_category_percentages.expense_category_id"
       );
+  }
+
+  findByRevenueIdAndExpenseCategoryId(
+    revenueId: string,
+    expenseCategoryId: string
+  ) {
+    return dbConnection<ExpenseCategoryPercentageRepositoryDto>(TABLE_NAME)
+      .select("*")
+      .where("revenue_id", "=", revenueId)
+      .and.where("expense_category_id", "=", expenseCategoryId)
+      .first();
   }
 
   removeAllByRevenueId(revenueId: string) {
