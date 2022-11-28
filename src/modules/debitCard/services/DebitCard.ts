@@ -3,8 +3,8 @@ import { BusinessException } from "../../api/exception";
 import { UserRepository } from "../../user/repositories/User";
 import { CardType } from "../enums/CardType";
 import { CardRepository } from "../repositories/DebitCard";
-import { CardDeditValidationSchema } from "../validation/CardDebit";
-import { CardDebitValidationUpdate } from "../validation/UpdateCardDebit";
+import { CardDeditValidationSchema } from "../validation/DebitCard";
+import { CardDebitValidationUpdate } from "../validation/UpdateDebitCard";
 import { FormCardDebitDto } from "../dto";
 
 const cardRepository = new CardRepository();
