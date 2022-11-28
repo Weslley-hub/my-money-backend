@@ -88,7 +88,6 @@ class AuthenticationService {
         avatar: userData.avatar,
         email: userData.email,
         name: userData.name,
-        password: userData.password
       }
     };
   }
