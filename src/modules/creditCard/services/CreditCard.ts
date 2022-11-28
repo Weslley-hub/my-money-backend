@@ -2,14 +2,12 @@ import { v4 as uuidv4 } from "uuid";
 import { BusinessException } from "../../api/exception";
 import { UserRepository } from "../../user/repositories/User";
 import { CreateCardDto } from "../dto/CreateCard";
-import { FormCardCreditDto } from "../dto/FormCardCredit";
+import { FormCardCreditDto } from "../dto/FormCreditCard";
 import { CardType } from "../enums/CardType";
 
-import { CardRepository } from "../repositories/Card";
+import { CardRepository } from "../repositories/CreditCard";
 import { CreditCardValidationSchema } from "../validation/CardCredit";
-import { CardCreditValidationUpdate } from "../validation/UpdateCardCredit";
-import { CardDeditValidationSchema } from "../validation/CardDebit";
-import { CardDebitValidationUpdate } from "../validation/UpdateCardDebit";
+import { CardCreditValidationUpdate } from "../validation/UpdateCreditCard";
 
 const cardRepository = new CardRepository();
 const userRepository = new UserRepository();

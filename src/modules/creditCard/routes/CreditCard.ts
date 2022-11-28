@@ -7,7 +7,7 @@ const cardRouter = Router();
 const cardController = new CardController();
 
 cardRouter.post(
-  "/register",
+  "/",
   authenticationMiddleware,
   cardController.register.bind(cardController)
 );

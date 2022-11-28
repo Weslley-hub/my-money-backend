@@ -1,5 +1,3 @@
 export * from "./CreateCard";
-export * from "./FormCardCredit";
-export * from "./FormCardDebit";
-export * from "./RepositoryCardCredit";
-export * from "./RepositoryCardDebit";
+export * from "./FormCreditCard";
+export * from "./RepositoryCreditCard";

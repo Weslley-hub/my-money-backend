@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import { ExceptionHandler } from "../../api/error-handler";
 import { StatusCode } from "../../api/types/StatusCode";
 import { CreateCardDto } from "../dto/CreateCard";
-import { RepositoryCardCreditDto } from "../dto/RepositoryCardCredit";
+import { RepositoryCardCreditDto } from "../dto/RepositoryCreditCard";
 
-import { CardsService } from "../services/Card";
+import { CardsService } from "../services/CreditCard";
 
 const cardsService = new CardsService();
 

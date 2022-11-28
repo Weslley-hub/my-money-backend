@@ -1,5 +1,3 @@
 export * from "./CardCredit";
-export * from "./CardDebit";
-export * from "./UpdateCardCredit";
-export * from "./UpdateCardDebit";
-
+export * from "./UpdateCreditCard";
+export * from "./UpdateCreditCard";
