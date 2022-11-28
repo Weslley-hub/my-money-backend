@@ -104,7 +104,9 @@ export class ExpenseCategoryPercentageService {
 
   async findByRevenueId(revenueId: string) {
     const repositoryPercentages =
-      await this.expenseCategoryPercentageRepository.findByRevenueId(revenueId);
+      await this.expenseCategoryPercentageRepository.findAllByRevenueId(
+        revenueId
+      );
 
     const expenseCategoriesPercentages = repositoryPercentages.map(
       (expenseCategoryPercentage) =>

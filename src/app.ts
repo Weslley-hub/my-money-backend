@@ -7,6 +7,7 @@ import { authRoutes } from "./modules/authentication/routes";
 import { cardRouter } from "./modules/card/routes";
 import { expenseCategoryRouter } from "./modules/expense-category/routes";
 import { revenueRouter } from "./modules/revenue/routes";
+import { expenseRouter } from "./modules/expenses/routes";
 
 const app = express();
 
@@ -23,5 +24,6 @@ app.use(
   expenseCategoryRouter
 );
 app.use("/api/v1/revenues", authenticationMiddleware, revenueRouter);
+app.use("/api/v1/expenses", authenticationMiddleware, expenseRouter);
 
 export { app };
