@@ -67,11 +67,9 @@ class CardsService {
     return listOfDebitCards;
   }
   async uniqueListing(userId: string) {
-    const cardCredit = await this.cardRepository.findCreditById(userId);
     const cardDebit = await this.cardRepository.findDebitById(userId);
 
-    var apiResponse = [cardCredit, cardDebit];
-    return apiResponse;
+    return cardDebit;
   }
 
   async delete(cardId: string) {
