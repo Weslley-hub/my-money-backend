@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 import { ExceptionHandler } from "../../api/error-handler";
 import { StatusCode } from "../../api/types/StatusCode";
-import { FormCardDebitDto } from "../dto";
+import {
+  FormCardDebitDto,
+  RepositoryCardDebitDto,
+  UpdateCardDebitDto
+} from "../dto";
 import { RepositoryCardCreditDto } from "../dto/RepositoryCardCredit";
 
 import { CardsService } from "../services/DebitCard";
@@ -73,7 +77,7 @@ class CardController {
   }
 
   async update(request: Request, response: Response) {
-    const cardData = request.body as RepositoryCardCreditDto;
+    const cardData = request.body as FormCardDebitDto;
     try {
       const apiResponse = await this.tryUpdate(cardData, response);
       return apiResponse;
@@ -82,19 +86,13 @@ class CardController {
     }
   }
 
-  private async tryUpdate(
-    cardData: RepositoryCardCreditDto,
-    response: Response
-  ) {
+  private async tryUpdate(cardData: FormCardDebitDto, response: Response) {
     await cardsService.update({
       id: cardData.id,
       name: cardData.name,
       number: cardData.number,
       flag: cardData.flag,
       type: cardData.type,
-      limit: cardData.limit,
-      invoiceAmount: cardData.invoice_amount,
-      invoiceDay: cardData.invoice_day,
       userId: cardData.user_id
     });
     return response.status(200).json({ message: "Cartão foi atualizado" });

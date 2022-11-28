@@ -1,10 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
 import { BusinessException } from "../../api/exception";
 import { UserRepository } from "../../user/repositories/User";
-import { FormCardCreditDto } from "../dto/UpdateCardDebit";
 import { CardType } from "../enums/CardType";
 import { CardRepository } from "../repositories/DebitCard";
-import { CardCreditValidationUpdate } from "../validation/UpdateCardCredit";
 import { CardDeditValidationSchema } from "../validation/CardDebit";
 import { CardDebitValidationUpdate } from "../validation/UpdateCardDebit";
 import { FormCardDebitDto } from "../dto";
@@ -24,7 +22,7 @@ class CardsService {
     const carId = uuidv4();
 
     await this.verificationExistingCardByNumber(cardData.number);
-    await this.verificationExistingUserById(cardData.user_id);
+    await this.verificationExistingUserById(cardData.userId);
     await this.verificationCardTypeValid(cardData.type);
 
     await CardDeditValidationSchema.validate(cardData, {
@@ -37,7 +35,7 @@ class CardsService {
       number: cardData.number,
       flag: await this.verificationFlag(cardData.number),
       type: cardData.type,
-      user_id: cardData.user_id
+      user_id: cardData.userId
     });
   }
 
@@ -83,33 +81,6 @@ class CardsService {
     await this.verificationExistingCardById(cardData.id);
     await this.verificationCardExistingWithNumber(cardData.number, cardData.id);
 
-    if (
-      cardData.type == CardType.CREDIT ||
-      cardData.type == CardType.CREDIT_DEBIT
-    ) {
-      await CardCreditValidationUpdate.validate(cardData);
-
-      const creditCardDataUpdate = {
-        id: cardData.id,
-        name: cardData.name,
-        number: cardData.number,
-        flag: await this.verificationFlag(cardData.number),
-        type: cardData.type,
-        limit: cardData.limit,
-        invoice_amount: cardData.invoiceAmount,
-        invoice_day: cardData.invoiceDay,
-        user_id: cardData.userId
-      };
-      const existingCreditCard =
-        await this.verificationCardCreditExistingByIdUpdate(cardData.id);
-
-      if (existingCreditCard) {
-        await this.cardRepository.updateCredit(creditCardDataUpdate);
-      } else {
-        await this.cardRepository.saveCredit(creditCardDataUpdate);
-        await this.cardRepository.deleteDebit(creditCardDataUpdate.id);
-      }
-    }
     if (cardData.type == CardType.DEBIT) {
       await CardDebitValidationUpdate.validate(cardData);
 
