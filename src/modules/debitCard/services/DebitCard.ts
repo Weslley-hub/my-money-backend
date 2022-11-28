@@ -75,15 +75,7 @@ class CardsService {
   async delete(cardId: string) {
     const cardData = await this.verificationExistingCardById(cardId);
 
-    if (
-      cardData?.type == CardType.CREDIT ||
-      cardData?.type == CardType.CREDIT_DEBIT
-    ) {
-      await this.cardRepository.deleteCredit(cardId);
-    }
-    if (cardData?.type == CardType.DEBIT) {
-      await this.cardRepository.deleteDebit(cardId);
-    }
+    await this.cardRepository.deleteDebit(cardId);
   }
 
   async update(cardData: FormCardDebitDto) {
@@ -148,19 +140,12 @@ class CardsService {
   }
 
   private async verificationExistingCardById(cardId: string) {
-    const existingCardCredit = await this.cardRepository.findCreditById(cardId);
     const existingCardDebit = await this.cardRepository.findDebitById(cardId);
 
-    if (!existingCardCredit && !existingCardDebit) {
+    if (!existingCardDebit) {
       throw new BusinessException(
         `Não existe um cartão com esse id: ${cardId}`
       );
-    }
-    if (!existingCardDebit && existingCardCredit) {
-      return existingCardCredit;
-    }
-    if (!existingCardCredit && existingCardDebit) {
-      return existingCardDebit;
     }
   }
 
