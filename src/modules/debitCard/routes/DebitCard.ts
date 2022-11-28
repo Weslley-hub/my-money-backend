@@ -3,33 +3,33 @@ import { Router } from "express";
 import { authenticationMiddleware } from "../../security/middlewares";
 import { CardController } from "../controllers";
 
-const cardRouter = Router();
+const debitCardRouter = Router();
 const cardController = new CardController();
 
-cardRouter.post(
+debitCardRouter.post(
   "/register",
   authenticationMiddleware,
   cardController.register.bind(cardController)
 );
-cardRouter.get(
+debitCardRouter.get(
   "/",
   authenticationMiddleware,
   cardController.list.bind(cardController)
 );
-cardRouter.get(
+debitCardRouter.get(
   "/uniqueListing",
   authenticationMiddleware,
   cardController.uniqueListing.bind(cardController)
 );
-cardRouter.delete(
+debitCardRouter.delete(
   "/",
   authenticationMiddleware,
   cardController.delete.bind(cardController)
 );
-cardRouter.put(
+debitCardRouter.put(
   "/",
   authenticationMiddleware,
   cardController.update.bind(cardController)
 );
 
-export { cardRouter };
+export { debitCardRouter };
