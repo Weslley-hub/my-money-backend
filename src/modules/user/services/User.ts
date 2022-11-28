@@ -19,7 +19,7 @@ export class UserService {
     const { id, data } = updateUserDto;
 
     await this.validateUserData(data);
-    await this.verifyUserExistence(id);
+    await this.verifyUserExistenceAndThrowExceptionIfDoesntExists(id);
     await this.verifyExistenceOfUsersWithSameEmail(data.email, id);
 
     await this.userRepository.update({
@@ -31,7 +31,7 @@ export class UserService {
     });
   }
 
-  async verifyUserExistence(userId: string) {
+  async verifyUserExistenceAndThrowExceptionIfDoesntExists(userId: string) {
     const userFound = await this.userRepository.findById(userId);
 
     if (!userFound) {

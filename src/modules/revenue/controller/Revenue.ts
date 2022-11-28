@@ -1,12 +1,15 @@
 import { Request, Response } from "express";
+
 import { ExceptionHandler } from "../../api/error-handler";
 import { ApiResponse, StatusCode } from "../../api/types";
+
 import {
   RevenueControllerInputDto,
   CreateRevenueServiceInputDto,
   UpdateRevenueServiceInputDto
 } from "../dto";
 import { RevenueService } from "../services";
+import { FindByMonthAndYearAndUserIdController } from "../types";
 
 export class RevenueController {
   private revenueService: RevenueService;
@@ -24,6 +27,7 @@ export class RevenueController {
         amount: requestData.amount,
         month: requestData.month,
         year: requestData.year,
+        expenseCategoryPercentages: requestData.expenseCategoryPercentages,
         userId
       };
 
@@ -60,6 +64,7 @@ export class RevenueController {
         amount: requestData.amount,
         month: requestData.month,
         year: requestData.year,
+        expenseCategoryPercentages: requestData.expenseCategoryPercentages,
         userId
       };
 
@@ -84,11 +89,19 @@ export class RevenueController {
     return response.status(apiResponse.statusCode).json(apiResponse);
   }
 
-  async list(request: Request, response: Response) {
+  async findByMonthAndYear(request: Request, response: Response) {
     const userId = request.userId || "";
+    const month = (request.query.month as string) || undefined;
+    const year = (request.query.year as string) || undefined;
 
     try {
-      const apiResponse = await this.tryList(userId, response);
+      const params: FindByMonthAndYearAndUserIdController = {
+        month,
+        year,
+        userId
+      };
+
+      const apiResponse = await this.tryFindByMonthAndYear(params, response);
       return apiResponse;
     } catch (error) {
       const apiErrorResponse = this.catchError(error, response);
@@ -96,8 +109,13 @@ export class RevenueController {
     }
   }
 
-  private async tryList(userId: string, response: Response) {
-    const revenues = await this.revenueService.listByUserId(userId);
+  private async tryFindByMonthAndYear(
+    params: FindByMonthAndYearAndUserIdController,
+    response: Response
+  ) {
+    const revenues = await this.revenueService.findByUserIdAndMonthAndYear(
+      params
+    );
     return response.status(StatusCode.SUCCESS).json(revenues);
   }
 

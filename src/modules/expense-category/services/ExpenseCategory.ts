@@ -32,7 +32,7 @@ export class ExpenseCategoryService {
       user_id: customExpenseCategoryData.userId
     };
 
-    await this.userService.verifyUserExistence(
+    await this.userService.verifyUserExistenceAndThrowExceptionIfDoesntExists(
       customExpenseCategoryData.userId
     );
     await this.validateExpenseCategoryData(customExpenseCategoryData);
@@ -68,10 +68,12 @@ export class ExpenseCategoryService {
       user_id: customExpenseCategoryData.userId
     };
 
-    await this.userService.verifyUserExistence(
+    await this.userService.verifyUserExistenceAndThrowExceptionIfDoesntExists(
       customExpenseCategoryData.userId
     );
-    await this.verifyExpenseCategoryExistenceById(customExpenseCategoryData.id);
+    await this.verifyExpenseCategoryExistenceByIdAndThrowExceptionIfDoesntExist(
+      customExpenseCategoryData.id
+    );
     await this.verifyExpenseCategoryExistenceWithSameNameAndDifferentId(
       customExpenseCategoryData.name,
       customExpenseCategoryData.id
@@ -113,13 +115,19 @@ export class ExpenseCategoryService {
   }
 
   async delete(expenseCategoryId: string, userId: string) {
-    await this.verifyExpenseCategoryExistenceById(expenseCategoryId);
-    await this.userService.verifyUserExistence(userId);
+    await this.verifyExpenseCategoryExistenceByIdAndThrowExceptionIfDoesntExist(
+      expenseCategoryId
+    );
+    await this.userService.verifyUserExistenceAndThrowExceptionIfDoesntExists(
+      userId
+    );
 
     await this.customExpenseCategoryRepository.delete(expenseCategoryId);
   }
 
-  private async verifyExpenseCategoryExistenceById(id: string) {
+  async verifyExpenseCategoryExistenceByIdAndThrowExceptionIfDoesntExist(
+    id: string
+  ) {
     const existingExpenseCategory =
       await this.customExpenseCategoryRepository.findById(id);
 
@@ -129,7 +137,9 @@ export class ExpenseCategoryService {
   }
 
   async list(userId: string) {
-    await this.userService.verifyUserExistence(userId);
+    await this.userService.verifyUserExistenceAndThrowExceptionIfDoesntExists(
+      userId
+    );
 
     const userExpenseCategories =
       await this.customExpenseCategoryRepository.findByUserId(userId);

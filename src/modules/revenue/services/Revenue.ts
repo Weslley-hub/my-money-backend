@@ -7,27 +7,45 @@ import {
   CreateRevenueServiceInputDto,
   UpdateRevenueServiceInputDto,
   UpdateRevenueRepositoryInputDto,
-  RevenueServiceOutputDto
+  RevenueServiceOutputDto,
+  ExpenseCategoryPercentageServiceOutputDto
 } from "../dto";
 import { Month, MonthDescription, MonthKey, MonthKeys } from "../enums";
 import { RevenueRepository } from "../respository";
-import { FindByMonthAndYearAndNotId } from "../types";
+import {
+  FindByMonthAndYearAndNotIdRepository,
+  FindByMonthAndYearAndUserIdController,
+  FindByMonthAndYearAndUserIdRepository,
+  FindByMonthAndYearAndUserIdService
+} from "../types";
 import { RevenueValidationSchema } from "../validation";
+import { ExpenseCategoryPercentageService } from "./ExpenseCategoryPercentage";
 
 export class RevenueService {
   private userService: UserService;
+  private expenseCategoryPercentageService: ExpenseCategoryPercentageService;
+
   private revenueRepository: RevenueRepository;
 
   constructor() {
     this.userService = new UserService();
+    this.expenseCategoryPercentageService =
+      new ExpenseCategoryPercentageService();
+
     this.revenueRepository = new RevenueRepository();
   }
 
   async create(revenueData: CreateRevenueServiceInputDto) {
-    await this.validateRevenueData(revenueData);
-    await this.userService.verifyUserExistence(revenueData.userId);
+    await this.validateRevenueDataAndThrowExceptionIfDataIsInvalid(revenueData);
+    await this.expenseCategoryPercentageService.verifyAllCategoriesAndThrowExceptionIfCategoriesOrPercentagesAreInvalid(
+      revenueData.expenseCategoryPercentages
+    );
 
-    await this.verifyRevenueExistenceByMonthAndYear(
+    await this.userService.verifyUserExistenceAndThrowExceptionIfDoesntExists(
+      revenueData.userId
+    );
+
+    await this.verifyRevenueExistenceByMonthAndYearAndThrowExceptionIfExists(
       revenueData.month,
       revenueData.year
     );
@@ -39,10 +57,18 @@ export class RevenueService {
         revenueId,
         revenueData
       );
+
     await this.revenueRepository.create(revenueRepositoryData);
+    await this.expenseCategoryPercentageService.create(
+      revenueId,
+      revenueData.expenseCategoryPercentages
+    );
   }
 
-  async verifyRevenueExistenceByMonthAndYear(month: MonthKey, year: number) {
+  async verifyRevenueExistenceByMonthAndYearAndThrowExceptionIfExists(
+    month: MonthKey,
+    year: number
+  ) {
     const monthNumericValue = Month[month];
     const existingRevenue = await this.revenueRepository.findByMonthAndYear(
       monthNumericValue,
@@ -58,16 +84,19 @@ export class RevenueService {
   }
 
   async update(updatedData: UpdateRevenueServiceInputDto) {
-    await this.validateRevenueData(updatedData);
+    await this.validateRevenueDataAndThrowExceptionIfDataIsInvalid(updatedData);
+    await this.expenseCategoryPercentageService.verifyAllCategoriesAndThrowExceptionIfCategoriesOrPercentagesAreInvalid(
+      updatedData.expenseCategoryPercentages
+    );
 
     const existingRevenue = await this.findRevenueByIdOrThrowException(
       updatedData.id
     );
 
-    console.log(updatedData.id);
-
-    await this.userService.verifyUserExistence(updatedData.userId);
-    await this.verifyRevenueExistenceByMonthAndYearAndNotId(
+    await this.userService.verifyUserExistenceAndThrowExceptionIfDoesntExists(
+      updatedData.userId
+    );
+    await this.verifyRevenueExistenceByMonthAndYearAndNotIdAndThrowExceptionIfExists(
       updatedData.id,
       updatedData.month,
       updatedData.year
@@ -82,9 +111,18 @@ export class RevenueService {
     };
 
     await this.revenueRepository.update(revenueRepositoryData);
+    await this.expenseCategoryPercentageService.removeAllByRevenueId(
+      revenueRepositoryData.id
+    );
+    await this.expenseCategoryPercentageService.create(
+      revenueRepositoryData.id,
+      updatedData.expenseCategoryPercentages
+    );
   }
 
-  private async validateRevenueData(revenueData: CreateRevenueServiceInputDto) {
+  private async validateRevenueDataAndThrowExceptionIfDataIsInvalid(
+    revenueData: CreateRevenueServiceInputDto
+  ) {
     await RevenueValidationSchema.validate(revenueData, {
       abortEarly: false
     });
@@ -106,13 +144,13 @@ export class RevenueService {
     return revenueRepositoryData;
   }
 
-  async verifyRevenueExistenceByMonthAndYearAndNotId(
+  async verifyRevenueExistenceByMonthAndYearAndNotIdAndThrowExceptionIfExists(
     id: string,
     month: MonthKey,
     year: number
   ) {
     const monthNumericValue = Month[month];
-    const params: FindByMonthAndYearAndNotId = {
+    const params: FindByMonthAndYearAndNotIdRepository = {
       id,
       month: monthNumericValue,
       year
@@ -129,21 +167,52 @@ export class RevenueService {
     }
   }
 
-  async listByUserId(userId: string) {
-    await this.userService.verifyUserExistence(userId);
-
-    const repositoryRevenues = await this.revenueRepository.findAllByUserId(
-      userId
-    );
-    const revenues = repositoryRevenues.map((revenue) =>
-      this.convertRevenueRepositoryDtoToRevenueServiceOutputDto(revenue)
+  async findByUserIdAndMonthAndYear(
+    params: FindByMonthAndYearAndUserIdController
+  ) {
+    await this.userService.verifyUserExistenceAndThrowExceptionIfDoesntExists(
+      params.userId
     );
 
-    return revenues;
+    const repositoryParams = this.getFindByUserIdAndMonthAndYearParams(params);
+
+    const repositoryRevenue =
+      await this.findRevenueByUserIdAndMonthAndYearOrThrowException(
+        repositoryParams
+      );
+
+    const revenueExpenseCategoryPercentages =
+      await this.expenseCategoryPercentageService.findByRevenueId(
+        repositoryRevenue.id
+      );
+
+    const revenue = this.convertRevenueRepositoryDtoToRevenueServiceOutputDto(
+      repositoryRevenue,
+      revenueExpenseCategoryPercentages
+    );
+
+    return revenue;
+  }
+
+  private getFindByUserIdAndMonthAndYearParams(
+    params: FindByMonthAndYearAndUserIdController
+  ) {
+    const currentDate = new Date();
+    let month = (params.month as MonthKey) || MonthKeys[currentDate.getMonth()];
+    let year = Number(params.year) || currentDate.getFullYear();
+
+    const repositoryParams: FindByMonthAndYearAndUserIdService = {
+      month,
+      year,
+      userId: params.userId
+    };
+
+    return repositoryParams;
   }
 
   private convertRevenueRepositoryDtoToRevenueServiceOutputDto(
-    revenue: RevenueRepositoryDto
+    revenue: RevenueRepositoryDto,
+    revenueExpenseCategoryPercentages: ExpenseCategoryPercentageServiceOutputDto[]
   ): RevenueServiceOutputDto {
     const monthKeyIndex = revenue.month - 1;
     const monthEnumKey = MonthKeys[monthKeyIndex] as MonthKey;
@@ -153,7 +222,8 @@ export class RevenueService {
       month: monthEnumKey,
       year: revenue.year,
       amount: Number(revenue.amount),
-      usedAmount: Number(revenue.used_amount)
+      usedAmount: Number(revenue.used_amount),
+      categoryPercentages: revenueExpenseCategoryPercentages
     };
   }
 
@@ -170,5 +240,30 @@ export class RevenueService {
     }
 
     return existingRevenue;
+  }
+
+  async findRevenueByUserIdAndMonthAndYearOrThrowException(
+    params: FindByMonthAndYearAndUserIdService
+  ) {
+    const monthNumericValue = Month[params.month];
+
+    const repositoryQueryParams: FindByMonthAndYearAndUserIdRepository = {
+      month: monthNumericValue,
+      year: params.year,
+      userId: params.userId
+    };
+
+    const revenue = await this.revenueRepository.findByUserIdAndMonthAndYear(
+      repositoryQueryParams
+    );
+
+    if (!revenue) {
+      const monthDescription = MonthDescription[params.month];
+      throw new NotFoundException(
+        `Não existe uma receita para ${monthDescription} de ${params.year}`
+      );
+    }
+
+    return revenue;
   }
 }
