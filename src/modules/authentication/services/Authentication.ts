@@ -27,10 +27,11 @@ const userRepository = new UserRepository();
 
 class AuthenticationService {
   async register(userData: CreateUserDto) {
-    userData.password = UserPasswordService.encryptPassword(userData.password);
     await UserValidationSchema.validate(userData, {
       abortEarly: false
     });
+
+    userData.password = UserPasswordService.encryptPassword(userData.password);
     const existingUserWithEmail = await userRepository.findByEmail(
       userData.email
     );
