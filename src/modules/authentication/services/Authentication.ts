@@ -87,7 +87,7 @@ class AuthenticationService {
       data: {
         avatar: userData.avatar,
         email: userData.email,
-        name: userData.name,
+        name: userData.name
       }
     };
   }
@@ -98,7 +98,7 @@ class AuthenticationService {
       userEmail.email
     );
     if (existingUserWithEmail) {
-      return existingUserWithEmail;
+      return;
     } else {
       throw new NotFoundException(
         `Não existe usuario com o email ${userEmail.email}`

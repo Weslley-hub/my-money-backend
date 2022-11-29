@@ -19,13 +19,12 @@ class CardsService {
   }
 
   async register(cardData: FormCardDebitDto) {
-    await this.verificationExistingCardByNumber(cardData.number);
-    await this.verificationExistingUserById(cardData.userId);
-    await this.verificationCardTypeValid(cardData.type);
-
     await CardDeditValidationSchema.validate(cardData, {
       abortEarly: false
     });
+    await this.verificationExistingCardByNumber(cardData.number);
+    await this.verificationExistingUserById(cardData.userId);
+    await this.verificationCardTypeValid(cardData.type);
 
     const carId = uuidv4();
     await this.cardRepository.saveDebit({

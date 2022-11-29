@@ -22,14 +22,14 @@ class CardsService {
 
   async register(cardData: CreateCardDto) {
     const carId = uuidv4();
+    await CreditCardValidationSchema.validate(cardData, {
+      abortEarly: false
+    });
 
     await this.verificationExistingCardByNumber(cardData.number);
     await this.verificationExistingUserById(cardData.user_id);
     await this.verificationCardTypeValid(cardData.type);
 
-    await CreditCardValidationSchema.validate(cardData, {
-      abortEarly: false
-    });
     await this.cardRepository.saveCredit({
       id: carId,
       name: cardData.name,
@@ -64,15 +64,16 @@ class CardsService {
   }
 
   async list(userId: string) {
+    await this.verificationExistingUserById(userId);
     const listOfCreditCards = await this.cardRepository.findAllCreditByUserId(
       userId
     );
 
     return listOfCreditCards;
   }
-  async uniqueListing(userId: string) {
-    const creditCard = await this.cardRepository.findCreditById(userId);
-
+  async uniqueListing(cardId: string) {
+    await this.verificationExistingCreditCardById(cardId);
+    const creditCard = await this.cardRepository.findCreditById(cardId);
     return creditCard;
   }
 

@@ -7,7 +7,7 @@ const debitCardRouter = Router();
 const cardController = new CardController();
 
 debitCardRouter.post(
-  "/register",
+  "/",
   authenticationMiddleware,
   cardController.register.bind(cardController)
 );

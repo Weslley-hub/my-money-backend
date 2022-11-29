@@ -47,7 +47,10 @@ class AuthenticationController {
     const userEmail = request.body as UserEmailDTO;
     try {
       await authenticationService.confirmEmail(userEmail);
-      return response.sendStatus(StatusCode.SUCCESS);
+      return response.status(StatusCode.SUCCESS).json({
+        message: "Senha trocada com sucesso",
+        statuscode: StatusCode.SUCCESS
+      });
     } catch (error) {
       const apiErrorResponse =
         ExceptionHandler.parseErrorAndGetApiResponse(error);
@@ -62,7 +65,8 @@ class AuthenticationController {
     try {
       const newPassword = await authenticationService.newPassword(newPasswords);
       return response.status(StatusCode.SUCCESS).json({
-        newPassword
+        message: "Senha trocada com sucesso",
+        statuscode: StatusCode.SUCCESS
       });
     } catch (error) {
       const apiErrorResponse =
