@@ -14,7 +14,7 @@ class CardController {
       const apiResponse = await this.tryRegister(cardData, response);
       return apiResponse;
     } catch (error) {
-      return this.cathPattern(error, response);
+      return await this.cathPattern(error, response);
     }
   }
 
@@ -32,7 +32,7 @@ class CardController {
       const apiResponse = await this.tryList(userId, response);
       return apiResponse;
     } catch (error) {
-      return this.cathPattern(error, response);
+      return await this.cathPattern(error, response);
     }
   }
 
@@ -42,26 +42,26 @@ class CardController {
   }
 
   async uniqueListing(request: Request, response: Response) {
-    const userId = request.query.userId as string;
+    const cardId = request.query.userId as string;
     try {
-      const apiResponse = this.tryUniqueListing(userId, response);
+      const apiResponse = await this.tryUniqueListing(cardId, response);
       return apiResponse;
     } catch (error) {
-      return this.cathPattern(error, response);
+      return await this.cathPattern(error, response);
     }
   }
-  private async tryUniqueListing(userId: string, response: Response) {
-    const card = await cardsService.uniqueListing(userId);
+  private async tryUniqueListing(cardId: string, response: Response) {
+    const card = await cardsService.uniqueListing(cardId);
     return response.status(StatusCode.SUCCESS).json({ card });
   }
 
   async delete(request: Request, response: Response) {
     const cardId = request.query.cardId as string;
     try {
-      const apiResponse = this.tryDelete(cardId, response);
+      const apiResponse = await this.tryDelete(cardId, response);
       return apiResponse;
     } catch (error) {
-      return this.cathPattern(error, response);
+      return await this.cathPattern(error, response);
     }
   }
 
@@ -76,7 +76,7 @@ class CardController {
       const apiResponse = await this.tryUpdate(cardData, response);
       return apiResponse;
     } catch (error) {
-      return this.cathPattern(error, response);
+      return await this.cathPattern(error, response);
     }
   }
 

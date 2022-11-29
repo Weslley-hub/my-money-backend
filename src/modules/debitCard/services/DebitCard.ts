@@ -56,14 +56,16 @@ class CardsService {
   }
 
   async list(userId: string) {
+    await this.verificationExistingUserById(userId);
     const listOfDebitCards = await this.cardRepository.findAllDebitByUserId(
       userId
     );
 
     return listOfDebitCards;
   }
-  async uniqueListing(userId: string) {
-    const cardDebit = await this.cardRepository.findDebitById(userId);
+  async uniqueListing(cardId: string) {
+    await this.verificationExistingCardById(cardId);
+    const cardDebit = await this.cardRepository.findDebitById(cardId);
 
     return cardDebit;
   }
