@@ -83,11 +83,13 @@ class CardsService {
   }
 
   async update(cardData: FormCardCreditDto) {
+    await CardCreditValidationUpdate.validate(cardData, {
+      abortEarly: false
+    });
+
     await this.verificationCardTypeValid(cardData.type);
     await this.verificationExistingCreditCardById(cardData.id);
     await this.verificationExistingCardWithNumber(cardData.number, cardData.id);
-
-    await CardCreditValidationUpdate.validate(cardData);
 
     const creditCardDataUpdate = {
       id: cardData.id,

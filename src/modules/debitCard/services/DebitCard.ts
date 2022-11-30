@@ -75,7 +75,9 @@ class CardsService {
   }
 
   async update(cardData: FormCardDebitDto) {
-    await CardDebitValidationUpdate.validate(cardData);
+    await CardDebitValidationUpdate.validate(cardData, {
+      abortEarly: false
+    });
     await this.verificationExistingCardById(cardData.id);
     await this.verificationCardExistingWithNumber(cardData.number, cardData.id);
 
