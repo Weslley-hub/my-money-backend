@@ -3,6 +3,5 @@ export type FormCardDebitDto = {
   name: string;
   number: number;
   flag: string;
-  type: string;
   userId: string;
 };

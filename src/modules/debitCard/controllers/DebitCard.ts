@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ExceptionHandler } from "../../api/error-handler";
 import { StatusCode } from "../../api/types/StatusCode";
 import { FormCardDebitDto } from "../dto";
+import { CardType } from "../enums/CardType";
 import { CardsService } from "../services/DebitCard";
 
 const cardsService = new CardsService();
@@ -42,7 +43,7 @@ class CardController {
   }
 
   async uniqueListing(request: Request, response: Response) {
-    const cardId = request.query.userId as string;
+    const cardId = request.query.cardId as string;
     try {
       const apiResponse = await this.tryUniqueListing(cardId, response);
       return apiResponse;
@@ -86,7 +87,6 @@ class CardController {
       name: cardData.name,
       number: cardData.number,
       flag: cardData.flag,
-      type: cardData.type,
       userId: cardData.userId
     });
     return response.status(200).json({ message: "Cartão foi atualizado" });
