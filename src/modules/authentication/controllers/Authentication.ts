@@ -15,6 +15,7 @@ const authenticationService = new AuthenticationService();
 class AuthenticationController {
   async register(request: Request, response: Response) {
     const userData = request.body as CreateUserDto;
+    console.log(userData);
     try {
       await authenticationService.register(userData);
       return response.status(StatusCode.CREATED).json({
