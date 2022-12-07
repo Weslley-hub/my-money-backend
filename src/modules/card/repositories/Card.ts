@@ -35,6 +35,14 @@ export class CardRepository {
       .where("id", "=", id);
   }
 
+  findDebitCardByIdAndUserId(id: string, user_id: string) {
+    return dbConnection<RepositoryCardCreditDto>("credit_cards")
+      .select("*")
+      .where("id", "=", id)
+      .and.where("user_id", "=", user_id)
+      .first();
+  }
+
   findByUserId(user_id: string) {
     return dbConnection<RepositoryCardCreditDto>("credit_cards")
       .select("*")

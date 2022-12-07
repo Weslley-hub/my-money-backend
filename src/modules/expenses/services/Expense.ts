@@ -2,6 +2,7 @@ import { BusinessException } from "../../api/exception";
 import { CardRepository } from "../../card/repositories";
 import { ExpenseCategoryPercentageRepository } from "../../revenue/respository";
 import { RevenueService } from "../../revenue/services";
+import { UserRepository } from "../../user/repositories";
 import { CreateExpenseServiceInput } from "../dto";
 import { DebitCardKeys, PaymentType } from "../enums";
 import { ExpenseValidationSchema } from "../validation";
@@ -10,12 +11,14 @@ export class ExpenseService {
   private revenueService: RevenueService;
   private expenseCategoryPercentageRepository: ExpenseCategoryPercentageRepository;
   private cardRepository: CardRepository;
+  private userRepository: UserRepository;
 
   constructor() {
     this.revenueService = new RevenueService();
     this.expenseCategoryPercentageRepository =
       new ExpenseCategoryPercentageRepository();
     this.cardRepository = new CardRepository();
+    this.userRepository = new UserRepository();
   }
 
   async create(expenseData: CreateExpenseServiceInput) {
@@ -73,6 +76,20 @@ export class ExpenseService {
       throw new BusinessException(
         `O cartão de ID ${debitCardId} não está associado ao usuário de ID ${userId}`
       );
+    }
+  }
+  async list(userId: string) {
+    if (userId) {
+      await this.verificationExistingUserById(userId);
+      const userData = await this.cardRepository.findByUserId(userId);
+      return userData;
+    }
+  }
+  private async verificationExistingUserById(user_id: string) {
+    const id = await this.userRepository.findById(user_id);
+
+    if (!id) {
+      throw new BusinessException(`Não existe um usuario com o id: ${user_id}`);
     }
   }
 }

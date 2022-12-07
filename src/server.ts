@@ -7,6 +7,9 @@ async function initializeApp() {
   try {
     await initializeDatabase();
     startServer();
+    fetch("http://localhost:5173/gfg-articles")
+      .then((res) => res.json())
+      .then((gfg_articles) => console.log(gfg_articles));
   } catch (error) {
     console.error("[ERROR] Initializing application error");
     console.error(error);
