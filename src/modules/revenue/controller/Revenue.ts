@@ -91,8 +91,8 @@ export class RevenueController {
 
   async findByMonthAndYear(request: Request, response: Response) {
     const userId = request.userId || "";
-    const month = (request.query.month as string) || undefined;
-    const year = (request.query.year as string) || undefined;
+    const month = (request.query.month as string) || "";
+    const year = (request.query.year as string) || "";
 
     try {
       const params: FindByMonthAndYearAndUserIdController = {

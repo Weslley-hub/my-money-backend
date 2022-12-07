@@ -15,7 +15,7 @@ export class UserService {
     this.userRepository = new UserRepository();
   }
 
-  async update(updateUserProps: UpdateUserProps): Promise<void> {
+  async update(updateUserProps: UpdateUserDto): Promise<void> {
     const { id, data } = updateUserProps;
 
     await this.validateUserData(data);
@@ -75,13 +75,13 @@ export class UserService {
     return userOutputDto;
   }
 
-  private convertUserModelToUserOutputDto(userModal: UserModel): UserOutputDto {
+  private convertUserModelToUserOutputDto(
+    userModal: CreateUserDto
+  ): UserOutputDto {
     return {
       name: userModal.name,
       email: userModal.email,
-      password: userModal.password,
       avatar: userModal.avatar
-
     };
   }
 

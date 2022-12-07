@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ExceptionHandler } from "../../api/error-handler";
 import { StatusCode } from "../../api/types/StatusCode";
 import { FormCardDebitDto } from "../dto";
+import { BodyDebitCard } from "../dto/BodyDebitCard";
 import { CardType } from "../enums/CardType";
 import { CardsService } from "../services/DebitCard";
 
@@ -9,18 +10,24 @@ const cardsService = new CardsService();
 
 class CardController {
   async register(request: Request, response: Response) {
-    const cardData = request.body as FormCardDebitDto;
+    const userId = request.userId as string;
+    console.log(userId);
+    const cardData = request.body as BodyDebitCard;
 
     try {
-      const apiResponse = await this.tryRegister(cardData, response);
+      const apiResponse = await this.tryRegister(cardData, response, userId);
       return apiResponse;
     } catch (error) {
       return await this.cathPattern(error, response);
     }
   }
 
-  private async tryRegister(cardData: FormCardDebitDto, response: Response) {
-    await cardsService.register(cardData);
+  private async tryRegister(
+    cardData: BodyDebitCard,
+    response: Response,
+    userId: string
+  ) {
+    await cardsService.register(cardData, userId);
     return response.status(StatusCode.CREATED).json({
       message: "Criado com sucesso",
       statuscode: StatusCode.CREATED

@@ -3,6 +3,6 @@ export type CreateCardDto = {
   number: number;
   type: string;
   limit: number;
-  invoice_day: number;
-  user_id: string;
+  invoiceDay: number;
+  userId: string;
 };

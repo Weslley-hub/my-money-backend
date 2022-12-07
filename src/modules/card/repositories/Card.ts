@@ -6,7 +6,7 @@ export class CardRepository {
   saveCredit(card: RepositoryCardCreditDto) {
     return dbConnection<RepositoryCardCreditDto>("credit_cards").insert(card);
   }
-
+  //findDebitCardByIdAndUserId
   saveDebit(card: RepositoryCardDebitDto) {
     return dbConnection<RepositoryCardDebitDto>("debit_cards").insert(card);
   }
@@ -61,6 +61,21 @@ export class CardRepository {
     return dbConnection<RepositoryCardCreditDto>("debit_cards")
       .select("*")
       .where("id", "=", id)
+      .first();
+  }
+  findDebitCardByIdAndUserId(id: string, userId: string) {
+    return dbConnection<RepositoryCardCreditDto>("debit_cards")
+      .select("*")
+      .where("id", "=", id)
+      .and.where("user_id", "=", userId)
+      .first();
+  }
+
+  findCreditCardByIdAndUserId(id: string, userId: string) {
+    return dbConnection<RepositoryCardCreditDto>("credit_cards")
+      .select("*")
+      .where("id", "=", id)
+      .and.where("user_id", "=", userId)
       .first();
   }
 
