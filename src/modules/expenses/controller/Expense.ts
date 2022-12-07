@@ -45,4 +45,24 @@ export class ExpenseController {
       ExceptionHandler.parseErrorAndGetApiResponse(error);
     return response.status(apiErrorResponse.statusCode).json(apiErrorResponse);
   }
+  async list(request: Request, response: Response) {
+    try {
+      const userId = request.userId || "";
+
+      const apiResponse = await this.tryList(userId, response);
+      return apiResponse;
+    } catch (error) {
+      const apiErrorResponse = this.catchError(error, response);
+      return apiErrorResponse;
+    }
+  }
+  async tryList(userId: string, response: Response) {
+    const apiReponse: ApiResponse = {
+      message: "Gasto cadastrado com sucesso",
+      statusCode: StatusCode.SUCCESS
+    };
+
+    await this.expenseService.list(userId);
+    return response.status(apiReponse.statusCode).json(apiReponse);
+  }
 }

@@ -5,5 +5,5 @@ const expenseRouter = Router();
 const expenseController = new ExpenseController();
 
 expenseRouter.post("/", expenseController.create.bind(expenseController));
-
+expenseRouter.get("/", expenseController.list.bind(expenseController));
 export { expenseRouter };
