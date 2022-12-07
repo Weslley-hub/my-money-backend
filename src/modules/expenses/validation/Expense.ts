@@ -3,6 +3,7 @@ import { PaymentType, PaymentTypeKeys } from "../enums";
 
 export const ExpenseValidationSchema = Yup.object().shape({
   description: Yup.string().required("Descrição é obrigatória"),
+  userId: Yup.string().required("O userId é obrigatória"),
   amount: Yup.number().positive().required("Valor é obrigatório"),
   isPaid: Yup.boolean().required("Status de pago ou não é obrigatório"),
   paymentType: Yup.string()
@@ -33,5 +34,5 @@ function shoulValidateCreditCardId(paymentType: string) {
 }
 
 function shoulValidateDebitCardId(paymentType: string) {
-  return paymentType === PaymentType.DEBIT;
+  return paymentType === PaymentType.DEBIT_CARD;
 }
