@@ -19,7 +19,8 @@ export class ExpenseService {
 
   constructor() {
     this.revenueService = new RevenueService();
-    this.expenseCategoryPercentageRepository = new ExpenseCategoryPercentageRepository();
+    this.expenseCategoryPercentageRepository =
+      new ExpenseCategoryPercentageRepository();
     this.cardRepository = new CardRepository();
     this.userRepository = new UserRepository();
     this.expenseRepository = new ExpenseRepository();
@@ -54,6 +55,7 @@ export class ExpenseService {
     const id = uuidv4();
     await this.expenseRepository.create({
       id,
+      expense_user_id: expenseData.userId,
       description: expenseData.description,
       amount: expenseData.amount,
       paid: expenseData.isPaid,
@@ -129,8 +131,8 @@ export class ExpenseService {
   async list(userId: string) {
     if (userId) {
       await this.verificationExistingUserById(userId);
-      const userData = await this.cardRepository.findByUserId(userId);
-      return userData;
+      const expenseData = await this.expenseRepository.findExpenseById(userId);
+      return expenseData;
     }
   }
   private async verificationExistingUserById(user_id: string) {
