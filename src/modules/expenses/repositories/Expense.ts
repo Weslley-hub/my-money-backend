@@ -8,8 +8,7 @@ export class ExpenseRepository {
   findExpenseById(user_id: string) {
     return dbConnection<UpdateExpenseRepository>("expenses")
       .select("*")
-      .where("user_id", "=", user_id)
+      .where("expense_user_id", "=", user_id)
       .first();
-  }
   }
 }
