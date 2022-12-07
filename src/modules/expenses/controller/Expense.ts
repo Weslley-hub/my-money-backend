@@ -57,12 +57,12 @@ export class ExpenseController {
     }
   }
   async tryList(userId: string, response: Response) {
+    const dataExpense = await this.expenseService.list(userId);
     const apiReponse: ApiResponse = {
-      message: "Gasto cadastrado com sucesso",
-      statusCode: StatusCode.SUCCESS
+      message: "Dados Retornados com sucesso",
+      statusCode: StatusCode.SUCCESS,
+      data: { dataExpense }
     };
-
-    await this.expenseService.list(userId);
     return response.status(apiReponse.statusCode).json(apiReponse);
   }
 }
