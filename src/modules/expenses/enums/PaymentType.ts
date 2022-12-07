@@ -1,15 +1,15 @@
 export enum PaymentType {
   MONEY = "MONEY",
-  DEBIT = "DEBIT",
+  DEBIT_CARD = "DEBIT_CARD",
   DEBIT_CREDIT_CARD = "DEBIT_CREDIT_CARD",
   CREDIT_CARD = "CREDIT_CARD"
 }
 
 export const PaymentTypeKeys = [
   "MONEY",
-  "DEBIT",
+  "DEBIT_CARD",
   "DEBIT_CREDIT_CARD",
   "CREDIT_CARD"
 ];
-export const DebitCardKeys = ["DEBIT"];
+export const DebitCardKeys = ["DEBIT_CARD"];
 export const CreditCardKeys = ["CREDIT_CARD", "DEBIT_CREDIT_CARD"];
