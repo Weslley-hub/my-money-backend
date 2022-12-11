@@ -24,8 +24,8 @@ function createTable(knex: Knex) {
     table.string("credit_card_id").nullable();
     table.foreign("credit_card_id").references("id").inTable("credit_cards");
 
-    table.string("expense_user_id").notNullable();
-    table.foreign("expense_user_id").references("id").inTable("users");
+    table.string("user_id").notNullable();
+    table.foreign("user_id").references("id").inTable("users");
 
     table.string("expense_category_id");
     table
