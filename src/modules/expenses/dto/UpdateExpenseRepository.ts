@@ -10,7 +10,7 @@ export type UpdateExpenseRepository = {
   debit_card_id?: string | undefined;
   credit_card_id?: string | undefined;
   expense_category_id: string;
-  expense_user_id: string;
+  user_id: string;
   id: string;
   date: Date;
 };

@@ -55,7 +55,7 @@ export class ExpenseService {
     const id = uuidv4();
     await this.expenseRepository.create({
       id,
-      expense_user_id: expenseData.userId,
+      user_id: expenseData.userId,
       description: expenseData.description,
       amount: expenseData.amount,
       paid: expenseData.isPaid,
