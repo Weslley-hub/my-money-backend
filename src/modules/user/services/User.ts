@@ -1,4 +1,5 @@
 import { NotFoundException, BusinessException } from "../../api/exception";
+import { UserPasswordService } from "../../security/services";
 import {
   CreateUserDto,
   UpdateUserDto,
@@ -15,13 +16,14 @@ export class UserService {
     this.userRepository = new UserRepository();
   }
 
-  async update(updateUserProps: UpdateUserProps): Promise<void> {
+  async update(updateUserProps: UpdateUserDto): Promise<void> {
     const { id, data } = updateUserProps;
 
     await this.validateUserData(data);
     await this.verifyUserExistenceAndThrowExceptionIfDoesntExists(id);
     await this.verifyExistenceOfUsersWithSameEmail(data.email, id);
 
+    data.password = UserPasswordService.encryptPassword(data.password);
     await this.userRepository.update({
       avatar: data.avatar,
       email: data.email,
@@ -75,13 +77,13 @@ export class UserService {
     return userOutputDto;
   }
 
-  private convertUserModelToUserOutputDto(userModal: UserModel): UserOutputDto {
+  private convertUserModelToUserOutputDto(
+    userModal: UserRepositoryDto
+  ): UserOutputDto {
     return {
       name: userModal.name,
       email: userModal.email,
-      password: userModal.password,
       avatar: userModal.avatar
-
     };
   }
 
