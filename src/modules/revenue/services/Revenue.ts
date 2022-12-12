@@ -47,7 +47,8 @@ export class RevenueService {
 
     await this.verifyRevenueExistenceByMonthAndYearAndThrowExceptionIfExists(
       revenueData.month,
-      revenueData.year
+      revenueData.year,
+      revenueData.userId
     );
 
     const revenueId = generateUUIDV4();
@@ -67,12 +68,14 @@ export class RevenueService {
 
   async verifyRevenueExistenceByMonthAndYearAndThrowExceptionIfExists(
     month: MonthKey,
-    year: number
+    year: number,
+    userId: string
   ) {
     const monthNumericValue = Month[month];
     const existingRevenue = await this.revenueRepository.findByMonthAndYear(
       monthNumericValue,
-      year
+      year,
+      userId
     );
 
     if (existingRevenue) {

@@ -8,11 +8,12 @@ import {
 const TABLE_NAME = "revenues";
 
 export class RevenueRepository {
-  findByMonthAndYear(month: number, year: number) {
+  findByMonthAndYear(month: number, year: number, userId :string) {
     return dbConnection<RevenueRepositoryDto>(TABLE_NAME)
       .select()
       .where("month", "=", month)
       .and.where("year", "=", year)
+      .and.where("user_id","=",userId)
       .first();
   }
 
