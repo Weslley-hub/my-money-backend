@@ -4,8 +4,9 @@ import { ExpenseCategoryPercentageRepository } from "../../revenue/respository";
 import { RevenueService } from "../../revenue/services";
 import { UserRepository } from "../../user/repositories";
 import { CreateExpenseServiceInput } from "../dto";
+import { DebitCardKeys, PaymentType } from "../enums";
+import { ExpenseRepository } from "../repository/ExpenseRepository";
 import { CreditCardKeys, DebitCardKeys, PaymentType } from "../enums";
-import { ExpenseRepository } from "../repositories";
 import { ExpenseValidationSchema } from "../validation";
 import { v4 as uuidv4 } from "uuid";
 
@@ -15,7 +16,6 @@ export class ExpenseService {
   private cardRepository: CardRepository;
   private userRepository: UserRepository;
   private expenseRepository: ExpenseRepository;
-  //findDebitCardByIdAndUserId
 
   constructor() {
     this.revenueService = new RevenueService();
@@ -43,6 +43,7 @@ export class ExpenseService {
         expenseData.userId
       );
     }
+
     if (CreditCardKeys.includes(expenseData.paymentType)) {
       console.log("dados");
       console.log(expenseData.creditCardId);
@@ -131,8 +132,12 @@ export class ExpenseService {
   async list(userId: string) {
     if (userId) {
       await this.verificationExistingUserById(userId);
-      const expenseData = await this.expenseRepository.findExpenseById(userId);
-      return expenseData;
+      const userData = await this.cardRepository.findUserByDebitCard(userId);
+      return userData;
+//=======
+//      const expenseData = await this.expenseRepository.findExpenseById(userId);
+//      return expenseData;
+//>>>>>>> development
     }
   }
   private async verificationExistingUserById(user_id: string) {

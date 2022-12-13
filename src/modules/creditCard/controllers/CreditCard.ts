@@ -10,6 +10,7 @@ const cardsService = new CardsService();
 
 class CardController {
   async register(request: Request, response: Response) {
+    const userId = request.userId;
     const cardData = request.body as CreateCardDto;
 
     try {

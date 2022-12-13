@@ -1,4 +1,5 @@
 import { NotFoundException, BusinessException } from "../../api/exception";
+import { UserPasswordService } from "../../security/services";
 import {
   CreateUserDto,
   UpdateUserDto,
@@ -22,6 +23,7 @@ export class UserService {
     await this.verifyUserExistenceAndThrowExceptionIfDoesntExists(id);
     await this.verifyExistenceOfUsersWithSameEmail(data.email, id);
 
+    data.password = UserPasswordService.encryptPassword(data.password);
     await this.userRepository.update({
       avatar: data.avatar,
       email: data.email,
@@ -76,6 +78,9 @@ export class UserService {
   }
 
   private convertUserModelToUserOutputDto(
+//<<<<<<< integracaoAlexx
+//    userModal: UserRepositoryDto
+//=======
     userModal: CreateUserDto
   ): UserOutputDto {
     return {

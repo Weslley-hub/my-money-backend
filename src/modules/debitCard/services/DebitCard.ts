@@ -6,6 +6,7 @@ import { CardRepository } from "../repositories/DebitCard";
 import { CardDeditValidationSchema } from "../validation/DebitCard";
 import { CardDebitValidationUpdate } from "../validation/UpdateDebitCard";
 import { FormCardDebitDto } from "../dto";
+import { FormCardDebitUserIdDto } from "../dto/FormCardDebitUserId";
 import { BodyDebitCard } from "../dto/BodyDebitCard";
 
 const cardRepository = new CardRepository();
@@ -19,7 +20,7 @@ class CardsService {
     this.userRepository = new UserRepository();
   }
 
-  async register(cardData: BodyDebitCard, userId: string) {
+  async register(cardData: FormCardDebitUserIdDto) {
     await CardDeditValidationSchema.validate(cardData, {
       abortEarly: false
     });
@@ -76,7 +77,7 @@ class CardsService {
     await this.cardRepository.deleteDebit(cardId);
   }
 
-  async update(cardData: FormCardDebitDto) {
+  async update(cardData: FormCardDebitUserIdDto) {
     await CardDebitValidationUpdate.validate(cardData, {
       abortEarly: false
     });

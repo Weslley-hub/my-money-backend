@@ -28,8 +28,8 @@ export const ExpenseValidationSchema = Yup.object().shape({
 
 function shoulValidateCreditCardId(paymentType: string) {
   return (
-    paymentType === PaymentType.CREDIT_CARD ||
-    paymentType === PaymentType.DEBIT_CREDIT_CARD
+    paymentType === PaymentType.DEBIT ||
+    paymentType === PaymentType.DEBIT_CREDIT
   );
 }
 

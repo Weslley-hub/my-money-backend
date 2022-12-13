@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ExceptionHandler } from "../../api/error-handler";
 import { StatusCode } from "../../api/types/StatusCode";
 import { FormCardDebitDto } from "../dto";
+import { FormCardDebitUserIdDto } from "../dto/FormCardDebitUserId";
 import { BodyDebitCard } from "../dto/BodyDebitCard";
 import { CardType } from "../enums/CardType";
 import { CardsService } from "../services/DebitCard";
@@ -10,9 +11,13 @@ const cardsService = new CardsService();
 
 class CardController {
   async register(request: Request, response: Response) {
-    const userId = request.userId as string;
-    console.log(userId);
-    const cardData = request.body as BodyDebitCard;
+    const userId = request.userId;
+    const data = request.body as FormCardDebitDto;
+
+    const cardData: FormCardDebitUserIdDto = {
+      ...data,
+      userId: userId || ""
+    };
 
     try {
       const apiResponse = await this.tryRegister(cardData, response, userId);
@@ -79,7 +84,7 @@ class CardController {
   }
 
   async update(request: Request, response: Response) {
-    const cardData = request.body as FormCardDebitDto;
+    const cardData = request.body as FormCardDebitUserIdDto;
     try {
       const apiResponse = await this.tryUpdate(cardData, response);
       return apiResponse;
@@ -88,7 +93,10 @@ class CardController {
     }
   }
 
-  private async tryUpdate(cardData: FormCardDebitDto, response: Response) {
+  private async tryUpdate(
+    cardData: FormCardDebitUserIdDto,
+    response: Response
+  ) {
     await cardsService.update({
       id: cardData.id,
       name: cardData.name,

@@ -49,7 +49,7 @@ class AuthenticationController {
     try {
       await authenticationService.confirmEmail(userEmail);
       return response.status(StatusCode.SUCCESS).json({
-        message: "Email confimado com sucesso",
+        message: "Email confirmado com sucesso",
         statuscode: StatusCode.SUCCESS
       });
     } catch (error) {

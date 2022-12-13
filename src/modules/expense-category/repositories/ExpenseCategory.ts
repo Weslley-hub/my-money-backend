@@ -22,6 +22,14 @@ class ExpenseCategoryRepository {
       .and.where("id", "<>", id);
   }
 
+  findByNameAndUserId(name: string, userId: string) {
+    return dbConnection<ExpenseCategoryRepositoryDto>(TABLE_NAME)
+      .select()
+      .where("name", "=", name)
+      .and.where("user_id", "=", userId)
+      .first();
+  }
+
   update(data: ExpenseCategoryRepositoryDto) {
     const dataToUpdate = {
       icon: data.icon,

@@ -22,8 +22,7 @@ class ExpenseCategoryController {
     const customExpenseCategoryData = request.body as ExpenseCategoryInputDto;
 
     const data: CreateExpenseCategoryServiceInputDto = {
-      icon: customExpenseCategoryData.icon,
-      name: customExpenseCategoryData.name,
+      ...customExpenseCategoryData,
       userId: userId || ""
     };
 

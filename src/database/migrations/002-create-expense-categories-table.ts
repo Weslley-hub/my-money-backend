@@ -10,7 +10,7 @@ export async function up(knex: Knex) {
 function createTable(knex: Knex) {
   return knex.schema.withSchema("public").createTable(TABLE_NAME, (table) => {
     table.string("id").primary();
-    table.string("name").notNullable().unique();
+    table.string("name").notNullable();
     table.string("icon").notNullable();
 
     table.string("user_id").notNullable();
