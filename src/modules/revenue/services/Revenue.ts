@@ -261,7 +261,7 @@ export class RevenueService {
     );
 
     if (!revenue) {
-      const monthDescription = MonthDescription[params.month];
+      const monthDescription = Month[params.month];
       throw new NotFoundException(
         `Não existe uma receita para ${monthDescription} de ${params.year}`
       );

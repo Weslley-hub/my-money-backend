@@ -7,6 +7,7 @@ import { CardDeditValidationSchema } from "../validation/DebitCard";
 import { CardDebitValidationUpdate } from "../validation/UpdateDebitCard";
 import { FormCardDebitDto } from "../dto";
 import { FormCardDebitUserIdDto } from "../dto/FormCardDebitUserId";
+import { BodyDebitCard } from "../dto/BodyDebitCard";
 
 const cardRepository = new CardRepository();
 const userRepository = new UserRepository();
@@ -23,18 +24,19 @@ class CardsService {
     await CardDeditValidationSchema.validate(cardData, {
       abortEarly: false
     });
-    await this.verificationExistingCardByNumber(cardData.number);
-    await this.verificationExistingUserById(cardData.userId);
 
-    const carId = uuidv4();
-    await this.cardRepository.saveDebit({
-      id: carId,
-      name: cardData.name,
-      number: cardData.number,
-      flag: await this.verificationFlag(cardData.number),
-      type: CardType.DEBIT,
-      user_id: cardData.userId
-    });
+    await this.verificationExistingCardByNumber(cardData.number);
+    await this.verificationExistingUserById(userId);
+
+    const cardId = uuidv4();
+    const cardDataRegister = {
+      ...cardData,
+      user_id: userId,
+      id: cardId,
+      flag: await this.verificationFlag(cardData.number), //preciso mudar isso
+      type: CardType.DEBIT
+    };
+    await this.cardRepository.saveDebit(cardDataRegister);
   }
 
   private async verificationExistingUserById(user_id: string) {

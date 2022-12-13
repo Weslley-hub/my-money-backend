@@ -78,7 +78,10 @@ export class UserService {
   }
 
   private convertUserModelToUserOutputDto(
-    userModal: UserRepositoryDto
+//<<<<<<< integracaoAlexx
+//    userModal: UserRepositoryDto
+//=======
+    userModal: CreateUserDto
   ): UserOutputDto {
     return {
       name: userModal.name,

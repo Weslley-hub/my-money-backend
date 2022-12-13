@@ -21,13 +21,15 @@ class CardsService {
   }
 
   async register(cardData: CreateCardDto) {
-    const carId = uuidv4();
     await CreditCardValidationSchema.validate(cardData, {
       abortEarly: false
     });
+    const carId = uuidv4();
+    const cardFlag = await this.verificationFlag(cardData.number);
 
+    await this.verificaitonFlagValid(cardFlag);
     await this.verificationExistingCardByNumber(cardData.number);
-    await this.verificationExistingUserById(cardData.user_id);
+    await this.verificationExistingUserById(cardData.userId);
     await this.verificationCardTypeValid(cardData.type);
     const cardDataRepository = {
       id: carId,
@@ -45,12 +47,12 @@ class CardsService {
       id: carId,
       name: cardData.name,
       number: cardData.number,
-      flag: await this.verificationFlag(cardData.number),
+      flag: cardFlag,
       type: cardData.type,
       limit: cardData.limit,
       invoice_amount: 0,
-      invoice_day: cardData.invoice_day,
-      user_id: cardData.user_id
+      invoice_day: cardData.invoiceDay,
+      user_id: cardData.userId
     });
   }
 
@@ -71,6 +73,12 @@ class CardsService {
       throw new BusinessException(
         `Ja existe um cartão cadastrado com o número: ${number.toString()}`
       );
+    }
+  }
+
+  private async verificaitonFlagValid(flag: unknown) {
+    if (!flag) {
+      throw new BusinessException(`O número do cartão não é válido.`);
     }
   }
 

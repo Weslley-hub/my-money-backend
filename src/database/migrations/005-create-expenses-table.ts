@@ -18,8 +18,14 @@ function createTable(knex: Knex) {
 
     table.string("payment_type").notNullable();
 
-    table.string("debit_card_id");
+    table.string("debit_card_id").nullable();
     table.foreign("debit_card_id").references("id").inTable("debit_cards");
+
+    table.string("credit_card_id").nullable();
+    table.foreign("credit_card_id").references("id").inTable("credit_cards");
+
+    table.string("user_id").notNullable();
+    table.foreign("user_id").references("id").inTable("users");
 
     table.string("expense_category_id");
     table
@@ -29,6 +35,7 @@ function createTable(knex: Knex) {
 
     table.string("revenue_id");
     table.foreign("revenue_id").references("id").inTable("revenues");
+    table.integer("number_of_installments");
 
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());

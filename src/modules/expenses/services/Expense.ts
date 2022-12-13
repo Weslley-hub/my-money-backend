@@ -6,7 +6,9 @@ import { UserRepository } from "../../user/repositories";
 import { CreateExpenseServiceInput } from "../dto";
 import { DebitCardKeys, PaymentType } from "../enums";
 import { ExpenseRepository } from "../repository/ExpenseRepository";
+import { CreditCardKeys, DebitCardKeys, PaymentType } from "../enums";
 import { ExpenseValidationSchema } from "../validation";
+import { v4 as uuidv4 } from "uuid";
 
 export class ExpenseService {
   private revenueService: RevenueService;
@@ -41,9 +43,36 @@ export class ExpenseService {
         expenseData.userId
       );
     }
-    //isso esta na branch integrationAlex
-    this.expenseRepository.create(expenseData);
-    //bem aqui é pra criar
+
+    if (CreditCardKeys.includes(expenseData.paymentType)) {
+      console.log("dados");
+      console.log(expenseData.creditCardId);
+      console.log(expenseData.userId);
+      await this.verifyIfCreditCardIsAssociatedWithUserOrThrowException(
+        expenseData.creditCardId!,
+        expenseData.userId
+      );
+    }
+    const id = uuidv4();
+    await this.expenseRepository.create({
+      id,
+      user_id: expenseData.userId,
+      description: expenseData.description,
+      amount: expenseData.amount,
+      paid: expenseData.isPaid,
+      payment_type: expenseData.paymentType,
+      revenue_id: expenseData.revenueId,
+      number_of_installments: expenseData.numberOfInstallments,
+      debit_card_id: expenseData.debitCardId
+        ? expenseData.debitCardId
+        : undefined,
+      credit_card_id: expenseData.creditCardId
+        ? expenseData.creditCardId
+        : undefined,
+      expense_category_id: expenseData.expenseCategoryId,
+      //user_id: expenseData.userId, //ainda nao existe no Table expense no DB
+      date: new Date("2021-04-23T10:00:00.000")
+    });
   }
 
   private async validateExpenseData(expenseData: CreateExpenseServiceInput) {
@@ -69,16 +98,32 @@ export class ExpenseService {
     }
   }
 
+  private async verifyIfCreditCardIsAssociatedWithUserOrThrowException(
+    creditCardId: string,
+    userId: string
+  ) {
+    const creditCard = await this.cardRepository.findCreditCardByIdAndUserId(
+      creditCardId,
+      userId
+    );
+
+    if (!creditCard) {
+      throw new BusinessException(
+        `OO cartão de ID ${creditCardId} não está associado ao usuário de ID ${userId}`
+      );
+    }
+  }
+
   private async verifyIfDebitCardIsAssociatedWithUserOrThrowException(
     debitCardId: string,
     userId: string
   ) {
-    const debitCard = await this.cardRepository.findDebitCardByIdAndUserId(
+    const creditCard = await this.cardRepository.findDebitCardByIdAndUserId(
       debitCardId,
       userId
     );
 
-    if (!debitCard) {
+    if (!debitCardId) {
       throw new BusinessException(
         `O cartão de ID ${debitCardId} não está associado ao usuário de ID ${userId}`
       );
@@ -89,6 +134,10 @@ export class ExpenseService {
       await this.verificationExistingUserById(userId);
       const userData = await this.cardRepository.findUserByDebitCard(userId);
       return userData;
+//=======
+//      const expenseData = await this.expenseRepository.findExpenseById(userId);
+//      return expenseData;
+//>>>>>>> development
     }
   }
   private async verificationExistingUserById(user_id: string) {
