@@ -5,6 +5,7 @@ import { RevenueService } from "../../revenue/services";
 import { UserRepository } from "../../user/repositories";
 import { CreateExpenseServiceInput } from "../dto";
 import { DebitCardKeys, PaymentType } from "../enums";
+import { ExpenseRepository } from "../repository/ExpenseRepository";
 import { ExpenseValidationSchema } from "../validation";
 
 export class ExpenseService {
@@ -12,6 +13,7 @@ export class ExpenseService {
   private expenseCategoryPercentageRepository: ExpenseCategoryPercentageRepository;
   private cardRepository: CardRepository;
   private userRepository: UserRepository;
+  private expenseRepository: ExpenseRepository;
 
   constructor() {
     this.revenueService = new RevenueService();
@@ -19,6 +21,7 @@ export class ExpenseService {
       new ExpenseCategoryPercentageRepository();
     this.cardRepository = new CardRepository();
     this.userRepository = new UserRepository();
+    this.expenseRepository = new ExpenseRepository();
   }
 
   async create(expenseData: CreateExpenseServiceInput) {
@@ -38,6 +41,9 @@ export class ExpenseService {
         expenseData.userId
       );
     }
+    //isso esta na branch integrationAlex
+    this.expenseRepository.create(expenseData);
+    //bem aqui é pra criar
   }
 
   private async validateExpenseData(expenseData: CreateExpenseServiceInput) {
@@ -81,7 +87,7 @@ export class ExpenseService {
   async list(userId: string) {
     if (userId) {
       await this.verificationExistingUserById(userId);
-      const userData = await this.cardRepository.findByUserId(userId);
+      const userData = await this.cardRepository.findUserByDebitCard(userId);
       return userData;
     }
   }

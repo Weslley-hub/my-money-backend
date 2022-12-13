@@ -36,17 +36,18 @@ export class ExpenseCategoryService {
       customExpenseCategoryData.userId
     );
     await this.validateExpenseCategoryData(customExpenseCategoryData);
-    await this.verifyExpenseCategoryExistenceWithSameName(respositoryData.name);
+    await this.verifyExpenseCategoryExistenceWithSameNameAndUser(respositoryData.name, respositoryData.user_id);
 
     await this.customExpenseCategoryRepository.create(respositoryData);
   }
 
-  private async verifyExpenseCategoryExistenceWithSameName(name: string) {
+  private async verifyExpenseCategoryExistenceWithSameNameAndUser(name: string, userId: string) {
     const nameWithoutEndBlankSpaces = name.trimEnd();
 
     const expenseCategoryWithSameName =
-      await this.customExpenseCategoryRepository.findByName(
-        nameWithoutEndBlankSpaces
+      await this.customExpenseCategoryRepository.findByNameAndUserId(
+        nameWithoutEndBlankSpaces,
+        userId
       );
 
     if (expenseCategoryWithSameName) {

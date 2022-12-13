@@ -29,7 +29,18 @@ class CardsService {
     await this.verificationExistingCardByNumber(cardData.number);
     await this.verificationExistingUserById(cardData.user_id);
     await this.verificationCardTypeValid(cardData.type);
-
+    const cardDataRepository = {
+      id: carId,
+      name: cardData.name,
+      number: cardData.number,
+      flag: await this.verificationFlag(cardData.number),
+      type: cardData.type,
+      limit: cardData.limit,
+      invoice_amount: 0,
+      invoice_day: cardData.invoice_day,
+      user_id: cardData.user_id
+    };
+    console.log(cardDataRepository);
     await this.cardRepository.saveCredit({
       id: carId,
       name: cardData.name,
