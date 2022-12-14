@@ -43,4 +43,9 @@ export class ExpenseCategoryPercentageRepository {
       .delete()
       .where("revenue_id", "=", revenueId);
   }
+  deleteCategoryPercentageByUserId(userId: string) {
+    return dbConnection<ExpenseCategoryPercentageRepositoryDto>(TABLE_NAME)
+      .delete("*")
+      .where("user_id", "=", userId);
+  }
 }

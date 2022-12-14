@@ -1,19 +1,18 @@
 import { BusinessException } from "../../api/exception";
-import { CardRepository } from "../../card/repositories";
 import { ExpenseCategoryPercentageRepository } from "../../revenue/respository";
 import { RevenueService } from "../../revenue/services";
 import { UserRepository } from "../../user/repositories";
 import { CreateExpenseServiceInput } from "../dto";
-import { DebitCardKeys, PaymentType } from "../enums";
-import { ExpenseRepository } from "../repository/ExpenseRepository";
-import { CreditCardKeys, DebitCardKeys, PaymentType } from "../enums";
+import { ExpenseRepository } from "../repositories/Expense";
+import { CreditCardKeys, DebitCardKeys } from "../enums";
 import { ExpenseValidationSchema } from "../validation";
 import { v4 as uuidv4 } from "uuid";
+import { CreditCardRepository } from "../../creditCard/repositories";
 
 export class ExpenseService {
   private revenueService: RevenueService;
   private expenseCategoryPercentageRepository: ExpenseCategoryPercentageRepository;
-  private cardRepository: CardRepository;
+  private creditCardRepository: CreditCardRepository;
   private userRepository: UserRepository;
   private expenseRepository: ExpenseRepository;
 
@@ -21,7 +20,7 @@ export class ExpenseService {
     this.revenueService = new RevenueService();
     this.expenseCategoryPercentageRepository =
       new ExpenseCategoryPercentageRepository();
-    this.cardRepository = new CardRepository();
+    this.creditCardRepository = new CreditCardRepository();
     this.userRepository = new UserRepository();
     this.expenseRepository = new ExpenseRepository();
   }
@@ -102,11 +101,16 @@ export class ExpenseService {
     creditCardId: string,
     userId: string
   ) {
-    const creditCard = await this.cardRepository.findCreditCardByIdAndUserId(
-      creditCardId,
-      userId
-    );
+    const creditCard =
+      await this.creditCardRepository.findCreditCardByIdAndUserId(
+        creditCardId,
+        userId
+      );
+    console.log("creditCard");
+    console.log(creditCard);
+    console.log("userId");
 
+    console.log(userId);
     if (!creditCard) {
       throw new BusinessException(
         `OO cartão de ID ${creditCardId} não está associado ao usuário de ID ${userId}`
@@ -118,12 +122,13 @@ export class ExpenseService {
     debitCardId: string,
     userId: string
   ) {
-    const creditCard = await this.cardRepository.findDebitCardByIdAndUserId(
-      debitCardId,
-      userId
-    );
+    const debitCard =
+      await this.creditCardRepository.findDebitCardByIdAndUserId(
+        debitCardId,
+        userId
+      );
 
-    if (!debitCardId) {
+    if (!debitCard) {
       throw new BusinessException(
         `O cartão de ID ${debitCardId} não está associado ao usuário de ID ${userId}`
       );
@@ -132,12 +137,10 @@ export class ExpenseService {
   async list(userId: string) {
     if (userId) {
       await this.verificationExistingUserById(userId);
-      const userData = await this.cardRepository.findUserByDebitCard(userId);
-      return userData;
-//=======
-//      const expenseData = await this.expenseRepository.findExpenseById(userId);
-//      return expenseData;
-//>>>>>>> development
+      // const userData = await this.cardRepository.findUserByDebitCard(userId);
+      // return userData;
+      const expenseData = await this.expenseRepository.findExpenseById(userId);
+      return expenseData;
     }
   }
   private async verificationExistingUserById(user_id: string) {

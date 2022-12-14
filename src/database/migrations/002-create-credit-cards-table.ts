@@ -13,7 +13,11 @@ export async function up(knex: Knex) {
       table.integer("invoice_amount");
       table.integer("invoice_day").notNullable();
       table.string("user_id").notNullable();
-      table.foreign("user_id").references("users.id");
+      table
+        .foreign("user_id")
+        .references("users.id")
+        .onDelete("CASCADE")
+        .onUpdate("CASCADE");
       table.timestamp("created_at").defaultTo(knex.fn.now());
       table.timestamp("updated_at").defaultTo(knex.fn.now());
     });

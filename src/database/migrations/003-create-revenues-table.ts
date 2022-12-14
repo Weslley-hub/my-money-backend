@@ -17,7 +17,12 @@ function createTable(knex: Knex) {
     table.decimal("used_amount").notNullable();
 
     table.string("user_id").notNullable();
-    table.foreign("user_id").references("id").inTable("users");
+    table
+      .foreign("user_id")
+      .references("id")
+      .inTable("users")
+      .onDelete("CASCADE")
+      .onUpdate("CASCADE");
 
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());

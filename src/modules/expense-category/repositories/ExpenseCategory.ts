@@ -60,6 +60,11 @@ class ExpenseCategoryRepository {
       .delete()
       .where("id", "=", id);
   }
+  deleteCategoryByUserId(userId: string) {
+    return dbConnection<ExpenseCategoryRepositoryDto>(TABLE_NAME)
+      .delete("*")
+      .where("user_id", "=", userId);
+  }
 }
 
 export { ExpenseCategoryRepository };

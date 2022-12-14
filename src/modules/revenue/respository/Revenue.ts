@@ -8,12 +8,12 @@ import {
 const TABLE_NAME = "revenues";
 
 export class RevenueRepository {
-  findByMonthAndYear(month: number, year: number, userId :string) {
+  findByMonthAndYear(month: number, year: number, userId: string) {
     return dbConnection<RevenueRepositoryDto>(TABLE_NAME)
       .select()
       .where("month", "=", month)
       .and.where("year", "=", year)
-      .and.where("user_id","=",userId)
+      .and.where("user_id", "=", userId)
       .first();
   }
 
@@ -66,5 +66,10 @@ export class RevenueRepository {
     return dbConnection<RevenueRepositoryDto>(TABLE_NAME)
       .delete()
       .where("id", "=", id);
+  }
+  deleteRevenueByUserId(userId: string) {
+    return dbConnection<RevenueRepositoryDto>(TABLE_NAME)
+      .delete("*")
+      .where("user_id", "=", userId);
   }
 }

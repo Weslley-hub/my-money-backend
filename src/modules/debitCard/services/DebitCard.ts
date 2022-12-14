@@ -2,21 +2,21 @@ import { v4 as uuidv4 } from "uuid";
 import { BusinessException } from "../../api/exception";
 import { UserRepository } from "../../user/repositories/User";
 import { CardType } from "../enums/CardType";
-import { CardRepository } from "../repositories/DebitCard";
+import { DebitCardRepository } from "../repositories/DebitCard";
 import { CardDeditValidationSchema } from "../validation/DebitCard";
 import { CardDebitValidationUpdate } from "../validation/UpdateDebitCard";
 import { FormCardDebitDto } from "../dto";
 import { FormCardDebitUserIdDto } from "../dto/FormCardDebitUserId";
 import { BodyDebitCard } from "../dto/BodyDebitCard";
 
-const cardRepository = new CardRepository();
+const debitCardRepository = new DebitCardRepository();
 const userRepository = new UserRepository();
 class CardsService {
-  private cardRepository: CardRepository;
+  private debitCardRepository: DebitCardRepository;
   private userRepository: UserRepository;
 
   constructor() {
-    this.cardRepository = new CardRepository();
+    this.debitCardRepository = new DebitCardRepository();
     this.userRepository = new UserRepository();
   }
 
@@ -26,17 +26,18 @@ class CardsService {
     });
 
     await this.verificationExistingCardByNumber(cardData.number);
-    await this.verificationExistingUserById(userId);
+    await this.verificationExistingUserById(cardData.userId);
 
     const cardId = uuidv4();
     const cardDataRegister = {
-      ...cardData,
-      user_id: userId,
+      user_id: cardData.userId,
       id: cardId,
       flag: await this.verificationFlag(cardData.number), //preciso mudar isso
-      type: CardType.DEBIT
+      type: CardType.DEBIT,
+      name: cardData.name,
+      number: cardData.number
     };
-    await this.cardRepository.saveDebit(cardDataRegister);
+    await this.debitCardRepository.saveDebit(cardDataRegister);
   }
 
   private async verificationExistingUserById(user_id: string) {
@@ -48,7 +49,9 @@ class CardsService {
   }
 
   private async verificationExistingCardByNumber(number: number) {
-    const cardNumberDebit = await this.cardRepository.findByNumberDebit(number);
+    const cardNumberDebit = await this.debitCardRepository.findByNumberDebit(
+      number
+    );
 
     if (cardNumberDebit) {
       throw new BusinessException(
@@ -59,22 +62,21 @@ class CardsService {
 
   async list(userId: string) {
     await this.verificationExistingUserById(userId);
-    const listOfDebitCards = await this.cardRepository.findAllDebitByUserId(
-      userId
-    );
+    const listOfDebitCards =
+      await this.debitCardRepository.findAllDebitByUserId(userId);
 
     return listOfDebitCards;
   }
   async uniqueListing(cardId: string) {
     await this.verificationExistingCardById(cardId);
-    const debitCard = await this.cardRepository.findDebitById(cardId);
+    const debitCard = await this.debitCardRepository.findDebitById(cardId);
     return debitCard;
   }
 
   async delete(cardId: string) {
     await this.verificationExistingCardById(cardId);
 
-    await this.cardRepository.deleteDebit(cardId);
+    await this.debitCardRepository.deleteDebit(cardId);
   }
 
   async update(cardData: FormCardDebitUserIdDto) {
@@ -93,7 +95,7 @@ class CardsService {
       user_id: cardData.userId
     };
 
-    await this.cardRepository.updateDebit(debitCardDataUpdate);
+    await this.debitCardRepository.updateDebit(debitCardDataUpdate);
   }
 
   private async verificationCardTypeValid(cardType: string) {
@@ -103,7 +105,9 @@ class CardsService {
   }
 
   private async verificationExistingCardById(cardId: string) {
-    const existingdebitCard = await this.cardRepository.findDebitById(cardId);
+    const existingdebitCard = await this.debitCardRepository.findDebitById(
+      cardId
+    );
 
     if (!existingdebitCard) {
       throw new BusinessException(
@@ -116,7 +120,9 @@ class CardsService {
     cardNumber: number,
     cardId: string
   ) {
-    const debitCard = await this.cardRepository.findByNumberDebit(cardNumber);
+    const debitCard = await this.debitCardRepository.findByNumberDebit(
+      cardNumber
+    );
     if (debitCard) {
       if (
         await this.verificationCurrentNumberEqualNewNumber(cardNumber, cardId)
@@ -133,7 +139,7 @@ class CardsService {
     cardNumber: number,
     cardId: string
   ) {
-    const debitCard = await this.cardRepository.findDebitById(cardId);
+    const debitCard = await this.debitCardRepository.findDebitById(cardId);
     if (debitCard?.number == cardNumber) {
       return true;
     }

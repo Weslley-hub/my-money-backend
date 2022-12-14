@@ -27,8 +27,8 @@ app.use(express.json());
 // Routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRouter);
-app.use("/api/v1/credit-cards", creditCardRouter);
-app.use("/api/v1/debit-cards", debitCardRouter);
+app.use("/api/v1/credit-cards", authenticationMiddleware, creditCardRouter);
+app.use("/api/v1/debit-cards", authenticationMiddleware, debitCardRouter);
 
 app.use(
   "/api/v1/expense-categories",

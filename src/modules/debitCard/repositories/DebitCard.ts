@@ -1,7 +1,7 @@
 import { dbConnection } from "../../../database";
 import { RepositoryCardDebitDto } from "../dto/RepositoryCardDebit";
 
-export class CardRepository {
+export class DebitCardRepository {
   saveDebit(card: RepositoryCardDebitDto) {
     return dbConnection<RepositoryCardDebitDto>("debit_cards").insert(card);
   }
@@ -36,5 +36,11 @@ export class CardRepository {
       .select("*")
       .where("number", "=", number)
       .first();
+  }
+
+  deleteDebitByUserId(userId: string) {
+    return dbConnection<RepositoryCardDebitDto>("debit_cards")
+      .delete("*")
+      .where("user_id", "=", userId);
   }
 }

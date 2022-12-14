@@ -2,25 +2,26 @@ import { v4 as uuidv4 } from "uuid";
 import { BusinessException } from "../../api/exception";
 import { UserRepository } from "../../user/repositories/User";
 import { CreateCardDto } from "../dto/CreateCard";
+import { CreateCardUserId } from "../dto/CreateCardUserId";
 import { FormCardCreditDto } from "../dto/FormCreditCard";
 import { CardType } from "../enums/CardType";
 
-import { CardRepository } from "../repositories/CreditCard";
+import { CreditCardRepository } from "../repositories/CreditCard";
 import { CreditCardValidationSchema } from "../validation/CardCredit";
 import { CardCreditValidationUpdate } from "../validation/UpdateCreditCard";
 
-const cardRepository = new CardRepository();
+const creditCardRepository = new CreditCardRepository();
 const userRepository = new UserRepository();
 class CardsService {
-  private cardRepository: CardRepository;
+  private creditCardRepository: CreditCardRepository;
   private userRepository: UserRepository;
 
   constructor() {
-    this.cardRepository = new CardRepository();
+    this.creditCardRepository = new CreditCardRepository();
     this.userRepository = new UserRepository();
   }
 
-  async register(cardData: CreateCardDto) {
+  async register(cardData: CreateCardUserId) {
     await CreditCardValidationSchema.validate(cardData, {
       abortEarly: false
     });
@@ -39,11 +40,11 @@ class CardsService {
       type: cardData.type,
       limit: cardData.limit,
       invoice_amount: 0,
-      invoice_day: cardData.invoice_day,
-      user_id: cardData.user_id
+      invoice_day: cardData.invoiceDay,
+      user_id: cardData.userId
     };
     console.log(cardDataRepository);
-    await this.cardRepository.saveCredit({
+    await this.creditCardRepository.saveCredit({
       id: carId,
       name: cardData.name,
       number: cardData.number,
@@ -65,7 +66,7 @@ class CardsService {
   }
 
   private async verificationExistingCardByNumber(number: number) {
-    const creditCardByNumber = await this.cardRepository.findCreditByNumber(
+    const creditCardByNumber = await this.creditCardRepository.findCreditByNumber(
       number
     );
 
@@ -84,7 +85,7 @@ class CardsService {
 
   async list(userId: string) {
     await this.verificationExistingUserById(userId);
-    const listOfCreditCards = await this.cardRepository.findAllCreditByUserId(
+    const listOfCreditCards = await this.creditCardRepository.findAllCreditByUserId(
       userId
     );
 
@@ -92,13 +93,13 @@ class CardsService {
   }
   async uniqueListing(cardId: string) {
     await this.verificationExistingCreditCardById(cardId);
-    const creditCard = await this.cardRepository.findCreditById(cardId);
+    const creditCard = await this.creditCardRepository.findCreditById(cardId);
     return creditCard;
   }
 
   async delete(cardId: string) {
     await this.verificationExistingCreditCardById(cardId);
-    await this.cardRepository.deleteCredit(cardId);
+    await this.creditCardRepository.deleteCredit(cardId);
   }
 
   async update(cardData: FormCardCreditDto) {
@@ -122,7 +123,7 @@ class CardsService {
       user_id: cardData.userId
     };
 
-    await this.cardRepository.updateCredit(creditCardDataUpdate);
+    await this.creditCardRepository.updateCredit(creditCardDataUpdate);
   }
 
   private async verificationCardTypeValid(cardType: string) {
@@ -132,7 +133,7 @@ class CardsService {
   }
   //plagio
   private async verificationExistingCreditCardById(cardId: string) {
-    const existingCreditCard = await this.cardRepository.findCreditById(cardId);
+    const existingCreditCard = await this.creditCardRepository.findCreditById(cardId);
 
     if (!existingCreditCard) {
       throw new BusinessException(
@@ -146,7 +147,7 @@ class CardsService {
     cardNumber: number,
     cardId: string
   ) {
-    const cardCredit = await this.cardRepository.findCreditByNumber(cardNumber);
+    const cardCredit = await this.creditCardRepository.findCreditByNumber(cardNumber);
     if (cardCredit) {
       if (
         await this.verificationCurrentNumberEqualNewNumber(cardNumber, cardId)
@@ -163,7 +164,7 @@ class CardsService {
     cardNumber: number,
     cardId: string
   ) {
-    const cardCredit = await this.cardRepository.findCreditById(cardId);
+    const cardCredit = await this.creditCardRepository.findCreditById(cardId);
     if (cardCredit?.number == cardNumber) {
       return true;
     }

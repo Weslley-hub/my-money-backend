@@ -11,4 +11,9 @@ export class ExpenseRepository {
       .where("expense_user_id", "=", user_id)
       .first();
   }
+  deleteExpenseByUserId(userId: string){
+    return dbConnection<UpdateExpenseRepository>("expenses")
+      .delete("*")
+      .where("user_id", "=", userId);
+  }
 }

@@ -20,7 +20,7 @@ class CardController {
     };
 
     try {
-      const apiResponse = await this.tryRegister(cardData, response, userId);
+      const apiResponse = await this.tryRegister(cardData, response);
       return apiResponse;
     } catch (error) {
       return await this.cathPattern(error, response);
@@ -28,11 +28,10 @@ class CardController {
   }
 
   private async tryRegister(
-    cardData: BodyDebitCard,
-    response: Response,
-    userId: string
+    cardData: FormCardDebitUserIdDto,
+    response: Response
   ) {
-    await cardsService.register(cardData, userId);
+    await cardsService.register(cardData);
     return response.status(StatusCode.CREATED).json({
       message: "Criado com sucesso",
       statuscode: StatusCode.CREATED

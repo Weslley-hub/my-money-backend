@@ -22,17 +22,17 @@ export const ExpenseValidationSchema = Yup.object().shape({
   }),
   creditCardId: Yup.string().when("paymentType", {
     is: shoulValidateCreditCardId,
-    then: () => Yup.string().required("ID do cartão de débito é obrigatório")
+    then: () => Yup.string().required("ID do cartão de credito é obrigatório")
   })
 });
 
 function shoulValidateCreditCardId(paymentType: string) {
   return (
-    paymentType === PaymentType.DEBIT ||
+    paymentType === PaymentType.CREDIT ||
     paymentType === PaymentType.DEBIT_CREDIT
   );
 }
 
 function shoulValidateDebitCardId(paymentType: string) {
-  return paymentType === PaymentType.DEBIT_CARD;
+  return paymentType === PaymentType.DEBIT;
 }
